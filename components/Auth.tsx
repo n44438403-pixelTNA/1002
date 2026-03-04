@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, Board, ClassLevel, Stream, SystemSettings, RecoveryRequest } from '../types';
-import { ADMIN_EMAIL } from '../constants';
+import { ADMIN_EMAILS } from '../constants';
 import { saveUserToLive, auth, getUserByEmail, getUserByMobileOrId, rtdb, getUserData } from '../firebase';
 import { ref, set } from "firebase/database";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, signInAnonymously, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
@@ -281,7 +281,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                   email: firebaseUser.email || '',
                   password: '', // Passwordless for Google Auth
                   mobile: '',
-                  role: (firebaseUser.email === ADMIN_EMAIL) ? 'ADMIN' : 'STUDENT',
+                  role: (firebaseUser.email && ADMIN_EMAILS.includes(firebaseUser.email.toLowerCase())) ? 'ADMIN' : 'STUDENT',
                   createdAt: new Date().toISOString(),
                   credits: settings?.signupBonus || 2,
                   streak: 0,
@@ -354,7 +354,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                 if (appUser.isArchived) { setError('Account Deleted.'); return; }
 
                 // SUCCESS: Log them in instantly
-                if (appUser.email === ADMIN_EMAIL) {
+                if (appUser.email && ADMIN_EMAILS.includes(appUser.email.toLowerCase())) {
                     appUser.role = 'ADMIN';
                 }
                 logActivity("LOGIN", "Student Logged In (Custom DB Auth)", appUser);
@@ -395,7 +395,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                     email: input,
                     password: pass,
                     mobile: '',
-                    role: input === ADMIN_EMAIL ? 'ADMIN' : 'STUDENT',
+                    role: ADMIN_EMAILS.includes(input.toLowerCase()) ? 'ADMIN' : 'STUDENT',
                     createdAt: new Date().toISOString(),
                     credits: 0,
                     streak: 0,
