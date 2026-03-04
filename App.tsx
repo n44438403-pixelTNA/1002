@@ -779,7 +779,7 @@ const App: React.FC = () => {
              // Save back any migration changes immediately
              if (JSON.stringify(user) !== loggedInUserStr) {
                  localStorage.setItem('nst_current_user', JSON.stringify(user));
-                 saveUserToLive(user);
+                 // NOTE: We do not call saveUserToLive here to avoid overwriting backend role changes (e.g. if Admin promoted them in DB but local cache is old)
              }
         }
 
