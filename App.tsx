@@ -64,6 +64,7 @@ const App: React.FC = () => {
 
   // ABANDONMENT DISCOUNT STATE
   const [isFlashSaleActive, setIsFlashSaleActive] = useState(false);
+  const [isCloudSynced, setIsCloudSynced] = useState(false); // Cloud sync tracking to avoid overwriting remote DB
 
   useEffect(() => {
       // Check Discount Logic Periodically
@@ -351,7 +352,7 @@ const App: React.FC = () => {
   }, [state.user?.id]);
 
   useEffect(() => {
-    if (!state.user) return;
+    if (!state.user || !isCloudSynced) return;
     
     // Check for Admin Override
     if (state.user.email === ADMIN_EMAIL && state.user.role !== 'ADMIN') {
@@ -458,7 +459,7 @@ const App: React.FC = () => {
               setActiveReward(newReward);
           }
       }
-  }, [state.user?.id, state.user?.lastLoginRewardDate, activeReward, state.originalAdmin]); // Re-run when user or activeReward changes
+  }, [state.user?.id, state.user?.lastLoginRewardDate, activeReward, state.originalAdmin, isCloudSynced]); // Re-run when user or activeReward changes
 
   // --- ONLINE/OFFLINE DETECTOR & SYNC ---
   useEffect(() => {
@@ -630,7 +631,15 @@ const App: React.FC = () => {
                      setState(prev => ({...prev, user: cloudUser}));
                  }
              }
+             setIsCloudSynced(true);
+          }).catch(() => {
+             setIsCloudSynced(true);
           });
+      } else if (!state.user) {
+          setIsCloudSynced(false); // Reset when logged out
+      } else {
+          // If originalAdmin (impersonating), just mark as synced so features still work
+          setIsCloudSynced(true);
       }
   }, [state.user?.id, state.originalAdmin]);
 
