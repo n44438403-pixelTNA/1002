@@ -203,6 +203,7 @@ const App: React.FC = () => {
   const [tempSelectedChapter, setTempSelectedChapter] = useState<Chapter | null>(null);
   const [showTerms, setShowTerms] = useState(false);
   const [generationDataReady, setGenerationDataReady] = useState(false);
+  const [cloudSyncDone, setCloudSyncDone] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false); // NEW
   const [loadingMessage, setLoadingMessage] = useState<string>(''); // NEW
   const [activeWeeklyTest, setActiveWeeklyTest] = useState<WeeklyTest | null>(null);
@@ -352,6 +353,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (!state.user) return;
+    if (!cloudSyncDone) return; // WAIT FOR CLOUD SYNC
     
     // Check for Admin Override
     if (state.user.email === ADMIN_EMAIL && state.user.role !== 'ADMIN') {
@@ -458,7 +460,7 @@ const App: React.FC = () => {
               setActiveReward(newReward);
           }
       }
-  }, [state.user?.id, state.user?.lastLoginRewardDate, activeReward, state.originalAdmin]); // Re-run when user or activeReward changes
+  }, [state.user?.id, state.user?.lastLoginRewardDate, activeReward, state.originalAdmin, cloudSyncDone]); // Re-run when user or activeReward changes
 
   // --- ONLINE/OFFLINE DETECTOR & SYNC ---
   useEffect(() => {
@@ -630,7 +632,14 @@ const App: React.FC = () => {
                      setState(prev => ({...prev, user: cloudUser}));
                  }
              }
+             setCloudSyncDone(true);
+          }).catch(e => {
+             console.error("Cloud sync failed", e);
+             setCloudSyncDone(true);
           });
+      } else {
+          // If no user or impersonating, we don't block
+          setCloudSyncDone(true);
       }
   }, [state.user?.id, state.originalAdmin]);
 
@@ -770,7 +779,10 @@ const App: React.FC = () => {
              // Save back any migration changes immediately
              if (JSON.stringify(user) !== loggedInUserStr) {
                  localStorage.setItem('nst_current_user', JSON.stringify(user));
-                 saveUserToLive(user);
+                 // We MUST save this to cloud to keep sync, BUT ONLY IF cloud sync hasn't happened yet.
+                 // Actually, if cloud sync hasn't happened, we should save it if it's purely a local migration.
+                 // But this runs on mount, so cloudSyncDone is always false here.
+                 // We will rely on the `useEffect` listening to `cloudSyncDone` to handle saving the migrated local state back if needed, OR the cloud sync will simply pull the correct data and this will be overwritten, which is fine since the cloud should have the source of truth for subscriptions.
              }
         }
 
