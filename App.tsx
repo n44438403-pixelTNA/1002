@@ -35,7 +35,7 @@ import { UpdatePopup } from './components/UpdatePopup'; // NEW
 import { ErrorBoundary } from './components/ErrorBoundary'; // NEW
 import { generateDailyChallengeQuestions } from './utils/challengeGenerator';
 import { BrainCircuit, Globe, LogOut, LayoutDashboard, BookOpen, Headphones, HelpCircle, Newspaper, KeyRound, Lock, X, ShieldCheck, FileText, UserPlus, EyeOff, WifiOff } from 'lucide-react';
-import { SUPPORT_EMAIL, APP_VERSION, ADMIN_EMAIL } from './constants';
+import { SUPPORT_EMAIL, APP_VERSION, ADMIN_EMAILS } from './constants';
 import { StudentTab, PendingReward, MCQResult, SubscriptionHistoryEntry } from './types';
 import { storage } from './utils/storage';
 
@@ -64,7 +64,6 @@ const App: React.FC = () => {
 
   // ABANDONMENT DISCOUNT STATE
   const [isFlashSaleActive, setIsFlashSaleActive] = useState(false);
-  const [isCloudSynced, setIsCloudSynced] = useState(false); // Cloud sync tracking to avoid overwriting remote DB
 
   useEffect(() => {
       // Check Discount Logic Periodically
@@ -352,10 +351,10 @@ const App: React.FC = () => {
   }, [state.user?.id]);
 
   useEffect(() => {
-    if (!state.user || !isCloudSynced) return;
+    if (!state.user) return;
     
     // Check for Admin Override
-    if (state.user.email === ADMIN_EMAIL && state.user.role !== 'ADMIN') {
+    if (state.user.email && ADMIN_EMAILS.includes(state.user.email.toLowerCase()) && state.user.role !== 'ADMIN') {
         const updatedUser = { ...state.user, role: 'ADMIN' as const };
         setState(prev => ({ ...prev, user: updatedUser }));
         localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
@@ -459,7 +458,7 @@ const App: React.FC = () => {
               setActiveReward(newReward);
           }
       }
-  }, [state.user?.id, state.user?.lastLoginRewardDate, activeReward, state.originalAdmin, isCloudSynced]); // Re-run when user or activeReward changes
+  }, [state.user?.id, state.user?.lastLoginRewardDate, activeReward, state.originalAdmin]); // Re-run when user or activeReward changes
 
   // --- ONLINE/OFFLINE DETECTOR & SYNC ---
   useEffect(() => {
@@ -631,15 +630,7 @@ const App: React.FC = () => {
                      setState(prev => ({...prev, user: cloudUser}));
                  }
              }
-             setIsCloudSynced(true);
-          }).catch(() => {
-             setIsCloudSynced(true);
           });
-      } else if (!state.user) {
-          setIsCloudSynced(false); // Reset when logged out
-      } else {
-          // If originalAdmin (impersonating), just mark as synced so features still work
-          setIsCloudSynced(true);
       }
   }, [state.user?.id, state.originalAdmin]);
 

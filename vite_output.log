@@ -9,3 +9,6 @@
   ➜  Network: http://192.168.0.2:5000/
 [BABEL] Note: The code generator has deoptimised the styling of /app/components/AdminDashboard.tsx as it exceeds the max of 500KB.
 11:02:43 PM [vite] (client) hmr update /App.tsx
+11:39:09 PM [vite] (client) hmr update /App.tsx, /components/SubjectSelection.tsx, /components/Auth.tsx, /components/StudentDashboard.tsx, /components/AdminDashboard.tsx, /components/StudentAiAssistant.tsx, /components/SyllabusManager.tsx, /components/admin/ChallengeCreator20.tsx, /components/RevisionHub.tsx, /components/admin/NstaFeatureManager.tsx
+11:39:36 PM [vite] (client) hmr update /App.tsx
+11:39:40 PM [vite] (client) hmr update /components/Auth.tsx

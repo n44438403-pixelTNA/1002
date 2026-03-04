@@ -5,7 +5,7 @@ import { FULL_SYLLABUS } from './utils/full_syllabus_data';
 // import { COMPETITION_DATA } from './competition_syllabus';
 
 export const APP_VERSION = "1.0.1";
-export const ADMIN_EMAIL = "nadiman0636indo@gmail.com";
+export const ADMIN_EMAILS = ["nadiman0636indo@gmail.com", "nadimanwar794@gmail.com"];
 export const SUPPORT_EMAIL = "nadiman0636indo@gmail.com";
 
 export const DEFAULT_CONTENT_INFO_CONFIG = {
