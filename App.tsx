@@ -35,7 +35,7 @@ import { UpdatePopup } from './components/UpdatePopup'; // NEW
 import { ErrorBoundary } from './components/ErrorBoundary'; // NEW
 import { generateDailyChallengeQuestions } from './utils/challengeGenerator';
 import { BrainCircuit, Globe, LogOut, LayoutDashboard, BookOpen, Headphones, HelpCircle, Newspaper, KeyRound, Lock, X, ShieldCheck, FileText, UserPlus, EyeOff, WifiOff } from 'lucide-react';
-import { SUPPORT_EMAIL, APP_VERSION } from './constants';
+import { SUPPORT_EMAIL, APP_VERSION, ADMIN_EMAIL } from './constants';
 import { StudentTab, PendingReward, MCQResult, SubscriptionHistoryEntry } from './types';
 import { storage } from './utils/storage';
 
