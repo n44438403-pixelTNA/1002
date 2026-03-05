@@ -98,10 +98,11 @@ export const speakText = async (
     
     // Priority: Explicit Voice -> User Preferred Voice -> Auto-Detect Premium Indian -> Default
     let selectedVoice = voice;
+    let voices: SpeechSynthesisVoice[] = [];
     
     if (!selectedVoice) {
         try {
-             const voices = window.speechSynthesis.getVoices();
+             voices = window.speechSynthesis.getVoices();
              if (voices.length > 0) {
                  // 1. Try to get User Preferred Voice first
                  const uri = localStorage.getItem('nst_preferred_voice_uri');
@@ -128,6 +129,40 @@ export const speakText = async (
              }
         } catch (e) {
             console.warn("Failed to retrieve voices synchronously:", e);
+        }
+    }
+
+    // --- APK / WEBVIEW FALLBACK LOGIC ---
+    // If we have 0 voices loaded (common in AppGeyser/Median WebViews), native TTS will silently fail.
+    // We intercept this and route through a Google Translate Audio stream.
+    if (voices.length === 0 && !selectedVoice && navigator.userAgent.toLowerCase().includes('android')) {
+        console.warn("Native TTS missing voices. Falling back to Google TTS API.");
+        try {
+            if (onStart) onStart();
+
+            // Limit text length for free API (max 200 chars roughly per chunk, but modern browsers can handle long URLs)
+            // For robust chunking we just take the first ~200 chars in fallback to avoid URL length limits
+            const safeText = encodeURIComponent(cleanText.substring(0, 200));
+            const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${safeText}&tl=${lang.split('-')[0]}&client=tw-ob`;
+
+            const audio = new Audio(audioUrl);
+            audio.playbackRate = rate;
+
+            audio.onended = () => { if (onEnd) onEnd(); };
+            audio.onerror = () => { if (onEnd) onEnd(); };
+
+            // Save global reference to allow stopping
+            (window as any).fallbackAudioTTS = audio;
+            audio.play().catch(e => {
+                console.error("Fallback Audio Play Failed:", e);
+                if (onEnd) onEnd();
+            });
+
+            return null; // Not returning an utterance because we used Audio
+        } catch (err) {
+            console.error("Fallback TTS also failed", err);
+            if (onEnd) onEnd();
+            return null;
         }
     }
 
@@ -178,5 +213,12 @@ export const speakText = async (
 export const stopSpeech = () => {
     if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
+    }
+    // Stop fallback audio if playing
+    if ((window as any).fallbackAudioTTS) {
+        try {
+            (window as any).fallbackAudioTTS.pause();
+            (window as any).fallbackAudioTTS.currentTime = 0;
+        } catch(e) {}
     }
 };
