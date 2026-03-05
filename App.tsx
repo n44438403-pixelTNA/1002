@@ -107,8 +107,8 @@ const App: React.FC = () => {
   const [state, setState] = useState<AppState>({
     user: null,
     originalAdmin: null,
-    view: 'BOARDS',
-    selectedBoard: null,
+    view: 'CLASSES',
+    selectedBoard: 'CBSE',
     selectedClass: null,
     selectedStream: null,
     selectedSubject: null,
@@ -1014,7 +1014,7 @@ const App: React.FC = () => {
   const handleLogout = () => {
     logActivity("LOGOUT", "User Logged Out");
     localStorage.removeItem('nst_current_user');
-    setState(prev => ({ ...prev, user: null, originalAdmin: null, view: 'BOARDS', selectedBoard: null, selectedClass: null, selectedStream: null, selectedSubject: null, lessonContent: null, language: 'English' }));
+    setState(prev => ({ ...prev, user: null, originalAdmin: null, view: 'CLASSES', selectedBoard: 'CBSE', selectedClass: null, selectedStream: null, selectedSubject: null, lessonContent: null, language: 'English' }));
     setDailyStudySeconds(0);
   };
 
@@ -2046,7 +2046,10 @@ const App: React.FC = () => {
       }
 
       if (prev.view === 'STREAMS') return { ...prev, view: 'CLASSES', selectedStream: null };
-      if (prev.view === 'CLASSES') return { ...prev, view: 'BOARDS', selectedClass: null };
+      if (prev.view === 'CLASSES') {
+          const nextView = prev.user?.role === 'ADMIN' ? 'ADMIN_DASHBOARD' : 'STUDENT_DASHBOARD';
+          return { ...prev, view: nextView as any, selectedClass: null };
+      }
 
       // 4. Boards -> Dashboard or Admin
       if (prev.view === 'BOARDS') {
@@ -2284,7 +2287,7 @@ const App: React.FC = () => {
                 
                 {(!activeWeeklyTest && state.view === 'BOARDS') && <BoardSelection onSelect={handleBoardSelect} onBack={goBack} />}
                 {state.view === 'ONBOARDING' && state.user && <Onboarding user={state.user} onComplete={handleLogin} onLogout={handleLogout} />}
-                {state.view === 'CLASSES' && <ClassSelection selectedBoard={state.selectedBoard} allowedClasses={state.user?.role === 'ADMIN' ? undefined : state.settings.allowedClasses} settings={state.settings} user={state.user} onSelect={handleClassSelect} onBack={goBack} />}
+                {state.view === 'CLASSES' && <ClassSelection selectedBoard={state.selectedBoard} allowedClasses={state.user?.role === 'ADMIN' ? undefined : state.settings.allowedClasses} settings={state.settings} user={state.user} onSelect={handleClassSelect} onBoardChange={handleBoardSelect} onBack={goBack} />}
                 {state.view === 'STREAMS' && <StreamSelection onSelect={handleStreamSelect} onBack={goBack} />}
                 {state.view === 'SUBJECTS' && state.selectedClass && <SubjectSelection classLevel={state.selectedClass} stream={state.selectedStream} board={state.selectedBoard || undefined} onSelect={handleSubjectSelect} onBack={goBack} />}
                 {state.view === 'CHAPTERS' && state.selectedSubject && <ChapterSelection chapters={state.chapters} subject={state.selectedSubject} classLevel={state.selectedClass!} loading={state.loading && state.view === 'CHAPTERS'} user={state.user} onSelect={onChapterClick} onBack={goBack}/>}
