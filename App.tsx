@@ -63,7 +63,7 @@ const App: React.FC = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('nst_dark_mode') === 'true');
   const [showSplash, setShowSplash] = useState(() => {
-    return localStorage.getItem('app_has_seen_splash') !== 'true';
+    return sessionStorage.getItem('app_session_splash') !== 'true';
   }); // NEW
 
   // ABANDONMENT DISCOUNT STATE
@@ -2087,7 +2087,7 @@ const App: React.FC = () => {
 
   if (showSplash && state.settings) {
       return <SplashScreen settings={state.settings} onComplete={() => {
-          localStorage.setItem('app_has_seen_splash', 'true');
+          sessionStorage.setItem('app_session_splash', 'true');
           setShowSplash(false);
       }} />;
   }

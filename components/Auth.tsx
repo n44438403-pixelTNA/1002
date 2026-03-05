@@ -503,20 +503,20 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
 
   if (view === 'SUCCESS_ID') {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4 font-sans">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 font-sans">
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                  <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] bg-blue-500/20 blur-[120px] rounded-full"></div>
                  <div className="absolute top-[60%] -left-[10%] w-[40%] h-[40%] bg-purple-500/20 blur-[120px] rounded-full"></div>
             </div>
-            <div className="bg-slate-800/80 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-md border border-slate-700 text-center animate-in zoom-in relative z-10">
+            <div className="bg-white/90 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-md border border-slate-200 text-center animate-in zoom-in relative z-10">
                 <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20">
                     <ShieldCheck size={40} />
                 </div>
-                <h2 className="text-3xl font-black text-white mb-2">Account Created!</h2>
-                <p className="text-slate-400 text-sm mb-8">Save this secure Login ID.</p>
-                <div className="bg-slate-900 p-5 rounded-2xl border border-slate-700 mb-8 flex items-center justify-between group">
-                    <span className="text-3xl font-mono font-bold text-white tracking-[0.2em] ml-2">{generatedId}</span>
-                    <button onClick={handleCopyId} className="w-12 h-12 flex items-center justify-center bg-slate-800 rounded-xl text-slate-300 hover:text-white hover:bg-blue-600 transition-all active:scale-95 shadow-lg">
+                <h2 className="text-3xl font-black text-slate-800 mb-2">Account Created!</h2>
+                <p className="text-slate-500 text-sm mb-8">Save this secure Login ID.</p>
+                <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 mb-8 flex items-center justify-between group">
+                    <span className="text-3xl font-mono font-bold text-slate-800 tracking-[0.2em] ml-2">{generatedId}</span>
+                    <button onClick={handleCopyId} className="w-12 h-12 flex items-center justify-center bg-white rounded-xl text-slate-600 hover:text-slate-800 hover:bg-blue-600 transition-all active:scale-95 shadow-lg">
                         {copied ? <Check size={24} /> : <Copy size={24} />}
                     </button>
                 </div>
@@ -528,7 +528,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                         if (newUser) onLogin(newUser);
                         else setView('LOGIN'); 
                     }} 
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-4 rounded-2xl shadow-xl shadow-blue-900/50 transition-all active:scale-95 text-lg"
+                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-slate-800 font-bold py-4 rounded-2xl shadow-xl shadow-blue-900/50 transition-all active:scale-95 text-lg"
                 >
                     Start Learning Now <ArrowRight className="inline-block ml-2" size={20} />
                 </button>
@@ -538,7 +538,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4 font-sans py-10 relative">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 font-sans py-10 relative">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
            <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-600/10 blur-[100px] rounded-full animate-pulse"></div>
            <div className="absolute top-[50%] -right-[10%] w-[50%] h-[50%] bg-purple-600/10 blur-[120px] rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
@@ -554,21 +554,21 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
       />
       {showGuide && <LoginGuide onClose={() => setShowGuide(false)} />}
 
-        <div className="bg-slate-800/60 backdrop-blur-2xl p-10 rounded-[2.5rem] shadow-2xl w-full max-w-[440px] border border-slate-700/50 relative overflow-hidden z-10">
+        <div className="bg-white/80 backdrop-blur-2xl p-10 rounded-[2.5rem] shadow-2xl w-full max-w-[440px] border border-slate-200/50 relative overflow-hidden z-10">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 opacity-50"></div>
 
           <div className="text-center mb-8 pt-2">
-            <div className="w-24 h-24 bg-slate-900 rounded-3xl flex items-center justify-center mx-auto mb-5 shadow-inner border border-slate-700/50 p-2 relative">
+            <div className="w-24 h-24 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-5 shadow-inner border border-slate-200/50 p-2 relative">
               <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-3xl"></div>
               {settings?.appLogo ? (
                   <img src={settings.appLogo} alt="App Logo" className="w-full h-full object-cover rounded-2xl relative z-10" />
               ) : (
-                  <div className="w-full h-full bg-slate-800 rounded-2xl flex items-center justify-center relative z-10">
-                      <h1 className="text-3xl font-black text-white">{settings?.appShortName?.[0] || 'N'}</h1>
+                  <div className="w-full h-full bg-white rounded-2xl flex items-center justify-center relative z-10">
+                      <h1 className="text-3xl font-black text-slate-800">{settings?.appShortName?.[0] || 'N'}</h1>
                   </div>
               )}
             </div>
-            <h1 className="text-3xl font-black text-white mb-1 tracking-tight">
+            <h1 className="text-3xl font-black text-slate-800 mb-1 tracking-tight">
                 {settings?.appShortName || 'NSTA'}
             </h1>
             <p className="text-blue-400 font-bold text-[11px] uppercase tracking-[0.3em] opacity-80">Premium Education</p>
@@ -577,11 +577,11 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
         {view !== 'HOME' && (
             <div className="mb-8">
                 {view === 'SIGNUP' && signupStep > 1 && (
-                     <button type="button" onClick={() => setSignupStep(1)} className="text-slate-400 hover:text-white mb-4 flex items-center gap-1 text-sm font-bold transition-colors">
+                     <button type="button" onClick={() => setSignupStep(1)} className="text-slate-500 hover:text-slate-800 mb-4 flex items-center gap-1 text-sm font-bold transition-colors">
                          <ArrowRight className="rotate-180" size={16} /> Back
                      </button>
                 )}
-                <h2 className="text-2xl font-black text-white flex items-center gap-3 relative z-10">
+                <h2 className="text-2xl font-black text-slate-800 flex items-center gap-3 relative z-10">
                   <span className="flex-1">
                     {view === 'LOGIN' && 'Welcome Back 🚀'}
                     {view === 'SIGNUP' && signupStep === 1 && 'Create Account ✨'}
@@ -590,7 +590,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                     {view === 'ADMIN' && (showAdminVerify ? 'Secure Verification' : 'Admin Portal')}
                   </span>
                 </h2>
-                <p className="text-slate-400 text-sm mt-1">
+                <p className="text-slate-500 text-sm mt-1">
                     {view === 'LOGIN' && 'Sign in to continue your learning journey.'}
                     {view === 'SIGNUP' && signupStep === 1 && 'Join the premium learning platform today.'}
                     {view === 'SIGNUP' && signupStep === 2 && 'Customize your experience.'}
@@ -607,12 +607,12 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
 
         {view === 'HOME' && (
             <div className="space-y-4 relative z-10 animate-in fade-in zoom-in-95 duration-500 mt-10">
-                 <button type="button" onClick={() => setView('LOGIN')} className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/50">
+                 <button type="button" onClick={() => setView('LOGIN')} className="w-full bg-blue-600 hover:bg-blue-500 text-slate-800 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/50">
                      <LogIn size={20} />
                      Login to Dashboard
                  </button>
 
-                 <button type="button" onClick={() => { setView('SIGNUP'); setSignupStep(1); }} className="w-full bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] mt-6">
+                 <button type="button" onClick={() => { setView('SIGNUP'); setSignupStep(1); }} className="w-full bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] mt-6">
                      <UserPlus size={20} />
                      Create Student Account
                  </button>
@@ -624,42 +624,42 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
               {view === 'SIGNUP' && signupStep === 1 && (
                   <div className="animate-in slide-in-from-right-4 fade-in duration-300 space-y-5">
                     <div className="space-y-1.5">
-                        <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Full Name</label>
-                        <input name="name" type="text" placeholder="John Doe" value={formData.name} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none" />
+                        <label className="text-[11px] font-bold text-slate-500 uppercase ml-1 tracking-wider">Full Name</label>
+                        <input name="name" type="text" placeholder="John Doe" value={formData.name} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50/50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none" />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Email Address</label>
-                        <input name="email" type="email" placeholder="name@email.com" value={formData.email} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none" />
+                        <label className="text-[11px] font-bold text-slate-500 uppercase ml-1 tracking-wider">Email Address</label>
+                        <input name="email" type="email" placeholder="name@email.com" value={formData.email} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50/50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none" />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Secure Password</label>
+                        <label className="text-[11px] font-bold text-slate-500 uppercase ml-1 tracking-wider">Secure Password</label>
                         <div className="relative">
-                            <input name="password" type={showPassword ? "text" : "password"} placeholder="Min. 8 characters" value={formData.password} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none pr-12" maxLength={20} />
-                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
+                            <input name="password" type={showPassword ? "text" : "password"} placeholder="Min. 8 characters" value={formData.password} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50/50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none pr-12" maxLength={20} />
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-800 transition-colors">
                                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
                         </div>
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Mobile Number</label>
-                        <input name="mobile" type="tel" placeholder="10-digit number" value={formData.mobile} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none" maxLength={10} />
+                        <label className="text-[11px] font-bold text-slate-500 uppercase ml-1 tracking-wider">Mobile Number</label>
+                        <input name="mobile" type="tel" placeholder="10-digit number" value={formData.mobile} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50/50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none" maxLength={10} />
                     </div>
 
-                    <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl mt-6 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/50 text-lg flex items-center justify-center gap-2">
+                    <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-slate-800 font-bold py-4 rounded-2xl mt-6 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/50 text-lg flex items-center justify-center gap-2">
                         Next Step <ArrowRight size={20} />
                     </button>
 
                     {settings?.showGoogleLogin !== false && (
                         <div className="space-y-5 mt-8">
                             <div className="relative flex items-center py-2">
-                                <div className="flex-grow border-t border-slate-700/50"></div>
+                                <div className="flex-grow border-t border-slate-200/50"></div>
                                 <span className="flex-shrink mx-4 text-slate-500 text-[10px] font-bold uppercase tracking-widest">Or continue with</span>
-                                <div className="flex-grow border-t border-slate-700/50"></div>
+                                <div className="flex-grow border-t border-slate-200/50"></div>
                             </div>
                             <button
                                 type="button"
                                 onClick={handleGoogleAuth}
-                                className="w-full flex items-center justify-center gap-3 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-2xl border border-slate-600 transition-all active:scale-95"
+                                className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-100 text-slate-800 font-bold py-3.5 rounded-2xl border border-slate-200 transition-all active:scale-95"
                             >
                                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/smartlock/icon_google.svg" alt="Google" className="w-5 h-5" />
                                 Continue with Google
@@ -672,7 +672,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
               {view === 'SIGNUP' && signupStep === 2 && (
                   <div className="animate-in slide-in-from-right-4 fade-in duration-300 space-y-6">
                       <div className="space-y-2">
-                          <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Select Board Name</label>
+                          <label className="text-[11px] font-bold text-slate-500 uppercase ml-1 tracking-wider">Select Board Name</label>
                           <div className="grid grid-cols-2 gap-3">
                               {['CBSE', 'BSEB', 'COMPETITION'].map(b => {
                                   // Skip Competition if we want to keep it simple or if not configured, but user asked for "board name".
@@ -683,7 +683,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                                       key={b}
                                       type="button"
                                       onClick={() => setFormData({...formData, board: b})}
-                                      className={`py-3 px-4 rounded-xl border font-bold text-center transition-all ${formData.board === b ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-900/20' : 'bg-slate-900/50 border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-slate-500'}`}
+                                      className={`py-3 px-4 rounded-xl border font-bold text-center transition-all ${formData.board === b ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-200' : 'bg-slate-50/50 border-slate-200 text-slate-600 hover:bg-white hover:border-slate-500'}`}
                                   >
                                       {b}
                                   </button>
@@ -692,14 +692,14 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                       </div>
 
                       <div className="space-y-2">
-                          <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Select Class</label>
+                          <label className="text-[11px] font-bold text-slate-500 uppercase ml-1 tracking-wider">Select Class</label>
                           <div className="grid grid-cols-4 gap-2">
                               {['6','7','8','9','10','11','12'].map(c => (
                                   <button
                                       key={c}
                                       type="button"
                                       onClick={() => setFormData({...formData, classLevel: c, stream: (c === '11' || c === '12') ? formData.stream : ''})}
-                                      className={`py-3 rounded-xl border font-black transition-all ${formData.classLevel === c ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-900/20' : 'bg-slate-900/50 border-slate-700 text-slate-400 hover:bg-slate-800'}`}
+                                      className={`py-3 rounded-xl border font-black transition-all ${formData.classLevel === c ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-200' : 'bg-slate-50/50 border-slate-200 text-slate-500 hover:bg-white'}`}
                                   >
                                       {c}
                                   </button>
@@ -718,7 +718,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                                           key={s}
                                           type="button"
                                           onClick={() => setFormData({...formData, stream: s})}
-                                          className={`py-2 px-1 rounded-xl border text-xs font-bold transition-all ${formData.stream === s ? 'bg-orange-600 border-orange-500 text-white shadow-lg' : 'bg-slate-900/50 border-slate-700 text-slate-400 hover:bg-slate-800'}`}
+                                          className={`py-2 px-1 rounded-xl border text-xs font-bold transition-all ${formData.stream === s ? 'bg-orange-600 border-orange-500 text-white shadow-lg' : 'bg-slate-50/50 border-slate-200 text-slate-500 hover:bg-white'}`}
                                       >
                                           {s}
                                       </button>
@@ -727,7 +727,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                           </div>
                       )}
 
-                      <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-2xl mt-8 transition-all active:scale-[0.98] shadow-lg shadow-emerald-900/50 text-lg flex items-center justify-center gap-2">
+                      <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-800 font-bold py-4 rounded-2xl mt-8 transition-all active:scale-[0.98] shadow-lg shadow-emerald-900/50 text-lg flex items-center justify-center gap-2">
                           <Check size={20} /> Create Premium Account
                       </button>
                   </div>
@@ -736,36 +736,36 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
               {view === 'LOGIN' && (
                   <div className="space-y-5">
                      <div className="space-y-1.5">
-                        <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Credentials</label>
-                        <input name="id" type="text" placeholder="Email, Mobile ya ID" value={formData.id} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none font-medium" />
+                        <label className="text-[11px] font-bold text-slate-500 uppercase ml-1 tracking-wider">Credentials</label>
+                        <input name="id" type="text" placeholder="Email, Mobile ya ID" value={formData.id} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50/50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none font-medium" />
                      </div>
                      <div className="space-y-1.5">
                          <div className="flex justify-between items-center mb-1">
-                            <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Password</label>
+                            <label className="text-[11px] font-bold text-slate-500 uppercase ml-1 tracking-wider">Password</label>
                             <button type="button" onClick={() => setView('RECOVERY')} className="text-[11px] font-bold text-blue-400 hover:text-blue-300 transition-colors">Forgot?</button>
                          </div>
                          <div className="relative">
-                             <input name="password" type={showPassword ? "text" : "password"} placeholder="Enter your password" value={formData.password} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none font-medium pr-12" />
-                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
+                             <input name="password" type={showPassword ? "text" : "password"} placeholder="Enter your password" value={formData.password} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50/50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none font-medium pr-12" />
+                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-800 transition-colors">
                                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                              </button>
                          </div>
                      </div>
-                     <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl mt-6 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/50 text-lg">
+                     <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-slate-800 font-bold py-4 rounded-2xl mt-6 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/50 text-lg">
                         Login Now
                      </button>
 
                             {settings?.showGoogleLogin !== false && (
                                 <div className="space-y-5 mt-8">
                                     <div className="relative flex items-center py-2">
-                                        <div className="flex-grow border-t border-slate-700/50"></div>
+                                        <div className="flex-grow border-t border-slate-200/50"></div>
                                         <span className="flex-shrink mx-4 text-slate-500 text-[10px] font-bold uppercase tracking-widest">Or continue with</span>
-                                        <div className="flex-grow border-t border-slate-700/50"></div>
+                                        <div className="flex-grow border-t border-slate-200/50"></div>
                                     </div>
                                     <button 
                                         type="button"
                                         onClick={handleGoogleAuth}
-                                        className="w-full flex items-center justify-center gap-3 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-2xl border border-slate-600 transition-all active:scale-95"
+                                        className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-100 text-slate-800 font-bold py-3.5 rounded-2xl border border-slate-200 transition-all active:scale-95"
                                     >
                                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/smartlock/icon_google.svg" alt="Google" className="w-5 h-5" />
                                         Continue with Google
@@ -777,9 +777,9 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
               
               {view === 'ADMIN' && (
                   <>
-                    <div className="space-y-1.5"><label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Admin Email</label><input name="email" type="email" placeholder="admin@platform.com" value={formData.email} onChange={handleChange} disabled={showAdminVerify} className={`w-full px-5 py-3.5 border rounded-xl transition-all outline-none font-medium ${showAdminVerify ? 'bg-slate-800 border-slate-700 text-slate-500' : 'bg-slate-900/50 border-slate-700 text-white placeholder-slate-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500'}`} /></div>
-                    {showAdminVerify && (<div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300"><label className="text-[11px] font-bold text-purple-400 uppercase flex items-center gap-1 ml-1 tracking-wider"><ShieldAlert size={12} /> Secure Access Code</label><input name="adminAuthCode" type="password" placeholder="••••••••" value={adminAuthCode} onChange={(e) => setAdminAuthCode(e.target.value)} className="w-full px-5 py-3.5 bg-purple-900/20 border border-purple-500/50 text-white focus:border-purple-400 focus:ring-1 focus:ring-purple-400 rounded-xl outline-none text-center text-2xl tracking-[0.5em] font-mono" autoFocus /></div>)}
-                    <button type="submit" className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 rounded-2xl mt-8 flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-purple-900/50 text-lg">{showAdminVerify ? <><Lock size={20} /> Enter Dashboard</> : 'Verify Admin Email'}</button>
+                    <div className="space-y-1.5"><label className="text-[11px] font-bold text-slate-500 uppercase ml-1 tracking-wider">Admin Email</label><input name="email" type="email" placeholder="admin@platform.com" value={formData.email} onChange={handleChange} disabled={showAdminVerify} className={`w-full px-5 py-3.5 border rounded-xl transition-all outline-none font-medium ${showAdminVerify ? 'bg-white border-slate-200 text-slate-500' : 'bg-slate-50/50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-purple-500 focus:ring-1 focus:ring-purple-500'}`} /></div>
+                    {showAdminVerify && (<div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300"><label className="text-[11px] font-bold text-purple-400 uppercase flex items-center gap-1 ml-1 tracking-wider"><ShieldAlert size={12} /> Secure Access Code</label><input name="adminAuthCode" type="password" placeholder="••••••••" value={adminAuthCode} onChange={(e) => setAdminAuthCode(e.target.value)} className="w-full px-5 py-3.5 bg-purple-900/20 border border-purple-500/50 text-slate-800 focus:border-purple-400 focus:ring-1 focus:ring-purple-400 rounded-xl outline-none text-center text-2xl tracking-[0.5em] font-mono" autoFocus /></div>)}
+                    <button type="submit" className="w-full bg-purple-600 hover:bg-purple-500 text-slate-800 font-bold py-4 rounded-2xl mt-8 flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-purple-900/50 text-lg">{showAdminVerify ? <><Lock size={20} /> Enter Dashboard</> : 'Verify Admin Email'}</button>
                   </>
               )}
             </form>
@@ -787,7 +787,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
 
         {(view === 'SIGNUP' || view === 'ADMIN' || view === 'RECOVERY' || view === 'LOGIN') && (
             <div className="mt-10 text-center relative z-10">
-                <button onClick={() => { setView('HOME'); setSignupStep(1); }} className="group flex items-center gap-2 mx-auto text-slate-500 font-bold text-sm hover:text-white transition-colors">
+                <button onClick={() => { setView('HOME'); setSignupStep(1); }} className="group flex items-center gap-2 mx-auto text-slate-500 font-bold text-sm hover:text-slate-800 transition-colors">
                     <ArrowRight size={16} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
                     Back to Main Menu
                 </button>
