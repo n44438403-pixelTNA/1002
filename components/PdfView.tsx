@@ -368,14 +368,6 @@ export const PdfView: React.FC<Props> = ({
                             }
                         }
 
-                        // 1.5. Extract new explicit `.topic-card` blocks
-                        const topicCards = tempDiv.querySelectorAll('.topic-card');
-                        topicCards.forEach(card => {
-                            if (card.outerHTML) {
-                                currentTopicPoints.push(card.outerHTML);
-                            }
-                        });
-
                         // 2. DOM based extraction using TreeWalker
                         const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_ELEMENT, {
                             acceptNode: (node: Element) => {
@@ -847,7 +839,8 @@ export const PdfView: React.FC<Props> = ({
                                        stopAllSpeech();
                                    } else {
                                        setIsAutoPlaying(true);
-                                       const fullText = quickRevisionPoints.flatMap(g => g.points).map(p => p.replace(/<[^>]*>?/gm, ' ')).join('. ');
+                                       // speakText will handle HTML stripping and Emoji removal natively via stripHtml
+                                       const fullText = quickRevisionPoints.flatMap(g => g.points).join('. ');
                                        speakText(fullText, null, speechRate, 'hi-IN', undefined, () => setIsAutoPlaying(false));
                                    }
                                }}
@@ -876,8 +869,9 @@ export const PdfView: React.FC<Props> = ({
                                        <button
                                            onClick={() => {
                                                stopAllSpeech();
-                                               const plainText = group.points.map(p => p.replace(/<[^>]*>?/gm, ' ')).join('. ');
-                                               speakText(plainText, null, speechRate, 'hi-IN');
+                                               // stripHtml handles tags and emojis natively inside speakText
+                                               const rawHtmlPoints = group.points.join('. ');
+                                               speakText(rawHtmlPoints, null, speechRate, 'hi-IN');
                                            }}
                                            className="p-2 bg-yellow-50 text-yellow-600 rounded-full hover:bg-yellow-100 transition-colors"
                                            title="Read Topic Revision"
