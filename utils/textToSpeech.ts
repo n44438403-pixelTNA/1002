@@ -53,7 +53,18 @@ export const getPreferredVoice = async (): Promise<SpeechSynthesisVoice | undefi
 export const stripHtml = (html: string): string => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
-    return tempDiv.textContent || tempDiv.innerText || "";
+    let text = tempDiv.textContent || tempDiv.innerText || "";
+
+    // Remove emojis and common non-alphanumeric symbols that often break speech synthesis engines
+    text = text.replace(/[\u{1F600}-\u{1F64F}]/gu, ''); // Emoticons
+    text = text.replace(/[\u{1F300}-\u{1F5FF}]/gu, ''); // Misc Symbols and Pictographs
+    text = text.replace(/[\u{1F680}-\u{1F6FF}]/gu, ''); // Transport and Map
+    text = text.replace(/[\u{2600}-\u{26FF}]/gu, ''); // Misc symbols
+    text = text.replace(/[\u{2700}-\u{27BF}]/gu, ''); // Dingbats
+    text = text.replace(/[\u{1F900}-\u{1F9FF}]/gu, ''); // Supplemental Symbols and Pictographs
+    text = text.replace(/[\u{1FA70}-\u{1FAFF}]/gu, ''); // Symbols and Pictographs Extended-A
+
+    return text;
 };
 
 export const speakText = async (
