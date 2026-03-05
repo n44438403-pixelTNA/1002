@@ -12,3 +12,5 @@
 11:39:09 PM [vite] (client) hmr update /App.tsx, /components/SubjectSelection.tsx, /components/Auth.tsx, /components/StudentDashboard.tsx, /components/AdminDashboard.tsx, /components/StudentAiAssistant.tsx, /components/SyllabusManager.tsx, /components/admin/ChallengeCreator20.tsx, /components/RevisionHub.tsx, /components/admin/NstaFeatureManager.tsx
 11:39:36 PM [vite] (client) hmr update /App.tsx
 11:39:40 PM [vite] (client) hmr update /components/Auth.tsx
+12:24:43 AM [vite] (client) hmr update /components/AdminPowerManager.tsx
+1:01:13 AM [vite] (client) hmr update /components/RevisionHub.tsx
