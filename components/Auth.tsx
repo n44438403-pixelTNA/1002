@@ -37,6 +37,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
     stream: '',
     recoveryCode: ''
   });
+  const [signupStep, setSignupStep] = useState(1);
   
   // ADMIN VERIFICATION STATE
   const [showAdminVerify, setShowAdminVerify] = useState(false);
@@ -129,9 +130,11 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
             streak: 0,
             lastLoginDate: new Date().toISOString(),
             redeemedCodes: [],
-            board: "", profileCompleted: false, provider: "manual",
-            classLevel: "",
-            stream: "",
+            board: formData.board || "",
+            profileCompleted: !!(formData.board && formData.classLevel),
+            provider: "manual",
+            classLevel: formData.classLevel || "",
+            stream: formData.stream || "",
             progress: {},
             subscriptionTier: 'WEEKLY',
             subscriptionEndDate: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
@@ -428,33 +431,41 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
         }
 
     } else if (view === 'SIGNUP') {
-      if (!formData.password || !formData.name || !formData.mobile || !formData.email) {
-        setError('Please fill in all required fields');
-        return;
-      }
-
-
-
-
-
-      if (settings && settings.allowSignup === false) {
-          setError('Registration is currently closed by Admin.');
+      if (signupStep === 1) {
+          if (!formData.password || !formData.name || !formData.mobile || !formData.email) {
+            setError('Please fill in all required fields');
+            return;
+          }
+          if (settings && settings.allowSignup === false) {
+              setError('Registration is currently closed by Admin.');
+              return;
+          }
+          if (!validateEmail(formData.email)) {
+              setError('Please enter a valid, real Email Address.');
+              return;
+          }
+          if (formData.mobile.length !== 10 || !/^\d+$/.test(formData.mobile)) {
+              setError('Mobile number must be exactly 10 digits.');
+              return;
+          }
+          if (formData.password.length < 8 || formData.password.length > 20) {
+              setError('Password must be between 8 and 20 characters.');
+              return;
+          }
+          setSignupStep(2);
+          setError(null);
           return;
+      } else if (signupStep === 2) {
+          if (!formData.board || !formData.classLevel) {
+              setError('Please select a Board and Class to continue.');
+              return;
+          }
+          if (['11', '12'].includes(formData.classLevel) && !formData.stream) {
+              setError('Please select a stream for class 11/12.');
+              return;
+          }
+          await handleCompleteSignup();
       }
-      if (!validateEmail(formData.email)) {
-          setError('Please enter a valid, real Email Address.');
-          return;
-      }
-      if (formData.mobile.length !== 10 || !/^\d+$/.test(formData.mobile)) {
-          setError('Mobile number must be exactly 10 digits.');
-          return;
-      }
-      if (formData.password.length < 8 || formData.password.length > 20) {
-          setError('Password must be between 8 and 20 characters.');
-          return;
-      }
-
-      await handleCompleteSignup();
 
     } else if (view === 'ADMIN') {
         if (!showAdminVerify) {
@@ -492,17 +503,21 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
 
   if (view === 'SUCCESS_ID') {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 font-sans">
-            <div className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-slate-200 text-center animate-in zoom-in">
-                <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ShieldCheck size={32} />
+        <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4 font-sans">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                 <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] bg-blue-500/20 blur-[120px] rounded-full"></div>
+                 <div className="absolute top-[60%] -left-[10%] w-[40%] h-[40%] bg-purple-500/20 blur-[120px] rounded-full"></div>
+            </div>
+            <div className="bg-slate-800/80 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-md border border-slate-700 text-center animate-in zoom-in relative z-10">
+                <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20">
+                    <ShieldCheck size={40} />
                 </div>
-                <h2 className="text-2xl font-black text-slate-800 mb-2">Account Created!</h2>
-                <p className="text-slate-500 text-sm mb-6">Here is your unique Login ID.</p>
-                <div className="bg-slate-100 p-4 rounded-xl border border-slate-200 mb-6 flex items-center justify-between">
-                    <span className="text-2xl font-mono font-bold text-slate-800 tracking-wider">{generatedId}</span>
-                    <button onClick={handleCopyId} className="text-slate-400 hover:text-blue-600">
-                        {copied ? <Check size={20} /> : <Copy size={20} />}
+                <h2 className="text-3xl font-black text-white mb-2">Account Created!</h2>
+                <p className="text-slate-400 text-sm mb-8">Save this secure Login ID.</p>
+                <div className="bg-slate-900 p-5 rounded-2xl border border-slate-700 mb-8 flex items-center justify-between group">
+                    <span className="text-3xl font-mono font-bold text-white tracking-[0.2em] ml-2">{generatedId}</span>
+                    <button onClick={handleCopyId} className="w-12 h-12 flex items-center justify-center bg-slate-800 rounded-xl text-slate-300 hover:text-white hover:bg-blue-600 transition-all active:scale-95 shadow-lg">
+                        {copied ? <Check size={24} /> : <Copy size={24} />}
                     </button>
                 </div>
                 <button 
@@ -513,9 +528,9 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                         if (newUser) onLogin(newUser);
                         else setView('LOGIN'); 
                     }} 
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl"
+                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-4 rounded-2xl shadow-xl shadow-blue-900/50 transition-all active:scale-95 text-lg"
                 >
-                    Start Learning Now
+                    Start Learning Now <ArrowRight className="inline-block ml-2" size={20} />
                 </button>
             </div>
         </div>
@@ -523,7 +538,12 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 px-4 font-sans py-10">
+    <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4 font-sans py-10 relative">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+           <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-600/10 blur-[100px] rounded-full animate-pulse"></div>
+           <div className="absolute top-[50%] -right-[10%] w-[50%] h-[50%] bg-purple-600/10 blur-[120px] rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+      </div>
+
       <CustomAlert 
           isOpen={alertConfig.isOpen} 
           message={alertConfig.message} 
@@ -533,62 +553,66 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
           }} 
       />
       {showGuide && <LoginGuide onClose={() => setShowGuide(false)} />}
-        <div className="bg-white p-10 rounded-[2rem] shadow-xl w-full max-w-md border border-slate-100 relative overflow-hidden">
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-slate-100 p-1">
+
+        <div className="bg-slate-800/60 backdrop-blur-2xl p-10 rounded-[2.5rem] shadow-2xl w-full max-w-[440px] border border-slate-700/50 relative overflow-hidden z-10">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 opacity-50"></div>
+
+          <div className="text-center mb-8 pt-2">
+            <div className="w-24 h-24 bg-slate-900 rounded-3xl flex items-center justify-center mx-auto mb-5 shadow-inner border border-slate-700/50 p-2 relative">
+              <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-3xl"></div>
               {settings?.appLogo ? (
-                  <img src={settings.appLogo} alt="App Logo" className="w-full h-full object-cover rounded-xl" />
+                  <img src={settings.appLogo} alt="App Logo" className="w-full h-full object-cover rounded-2xl relative z-10" />
               ) : (
-                  <div className="w-full h-full bg-slate-800 rounded-xl flex items-center justify-center">
-                      <h1 className="text-2xl font-black text-white">{settings?.appShortName?.[0] || 'N'}</h1>
+                  <div className="w-full h-full bg-slate-800 rounded-2xl flex items-center justify-center relative z-10">
+                      <h1 className="text-3xl font-black text-white">{settings?.appShortName?.[0] || 'N'}</h1>
                   </div>
               )}
             </div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-1 tracking-tight">
+            <h1 className="text-3xl font-black text-white mb-1 tracking-tight">
                 {settings?.appShortName || 'NSTA'}
             </h1>
-            <p className="text-slate-400 font-medium text-xs uppercase tracking-widest">Premium Learning Platform</p>
+            <p className="text-blue-400 font-bold text-[11px] uppercase tracking-[0.3em] opacity-80">Premium Education</p>
           </div>
 
         {view !== 'HOME' && (
-            <h2 className="text-xl font-bold text-slate-800 mb-8 flex items-center gap-3 relative z-10">
-              <div className="p-2 bg-blue-50 rounded-lg">
-                {view === 'LOGIN' && <LogIn className="text-blue-600" size={20} />}
-                {view === 'SIGNUP' && <UserPlus className="text-blue-600" size={20} />}
-                {view === 'RECOVERY' && <KeyRound className="text-orange-500" size={20} />}
-              </div>
-
-              <span className="flex-1">
-                {view === 'LOGIN' && 'Welcome Back'}
-                {view === 'SIGNUP' && 'Create Account'}
-                {view === 'RECOVERY' && 'Request Login'}
-                {view === 'ADMIN' && (showAdminVerify ? 'Admin Verification' : 'Admin Login')}
-              </span>
-
-              {view === 'LOGIN' && <SpeakButton text="Welcome back! Please enter your credentials to continue." className="text-blue-600 hover:bg-blue-50" />}
-            </h2>
+            <div className="mb-8">
+                {view === 'SIGNUP' && signupStep > 1 && (
+                     <button type="button" onClick={() => setSignupStep(1)} className="text-slate-400 hover:text-white mb-4 flex items-center gap-1 text-sm font-bold transition-colors">
+                         <ArrowRight className="rotate-180" size={16} /> Back
+                     </button>
+                )}
+                <h2 className="text-2xl font-black text-white flex items-center gap-3 relative z-10">
+                  <span className="flex-1">
+                    {view === 'LOGIN' && 'Welcome Back 🚀'}
+                    {view === 'SIGNUP' && signupStep === 1 && 'Create Account ✨'}
+                    {view === 'SIGNUP' && signupStep === 2 && 'Academic Profile 📚'}
+                    {view === 'RECOVERY' && 'Recover Access 🔑'}
+                    {view === 'ADMIN' && (showAdminVerify ? 'Secure Verification' : 'Admin Portal')}
+                  </span>
+                </h2>
+                <p className="text-slate-400 text-sm mt-1">
+                    {view === 'LOGIN' && 'Sign in to continue your learning journey.'}
+                    {view === 'SIGNUP' && signupStep === 1 && 'Join the premium learning platform today.'}
+                    {view === 'SIGNUP' && signupStep === 2 && 'Customize your experience.'}
+                    {view === 'RECOVERY' && 'Get back into your account securely.'}
+                </p>
+            </div>
         )}
 
         {error && (
-          <div className="bg-red-50 text-red-600 text-sm font-semibold p-4 rounded-2xl mb-8 border border-red-100 flex items-start gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
-            <AlertTriangle size={18} className="shrink-0 mt-0.5 text-red-500" /> {error}
+          <div className="bg-red-500/10 text-red-400 text-sm font-semibold p-4 rounded-2xl mb-8 border border-red-500/20 flex items-start gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+            <AlertTriangle size={18} className="shrink-0 mt-0.5 text-red-400" /> {error}
           </div>
         )}
 
         {view === 'HOME' && (
-            <div className="space-y-4 relative z-10 animate-in fade-in zoom-in-95 duration-500">
-                 <button type="button" onClick={() => setView('LOGIN')} className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-slate-200">
+            <div className="space-y-4 relative z-10 animate-in fade-in zoom-in-95 duration-500 mt-10">
+                 <button type="button" onClick={() => setView('LOGIN')} className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/50">
                      <LogIn size={20} />
                      Login to Dashboard
                  </button>
 
-                 <div className="relative flex items-center py-2">
-                    <div className="flex-grow border-t border-slate-100"></div>
-                    <span className="flex-shrink mx-4 text-slate-400 text-xs font-bold uppercase tracking-widest">New here?</span>
-                    <div className="flex-grow border-t border-slate-100"></div>
-                 </div>
-
-                 <button type="button" onClick={() => setView('SIGNUP')} className="w-full bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-100 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98]">
+                 <button type="button" onClick={() => { setView('SIGNUP'); setSignupStep(1); }} className="w-full bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] mt-6">
                      <UserPlus size={20} />
                      Create Student Account
                  </button>
@@ -597,100 +621,165 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
 
         {view !== 'HOME' && (
             <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
-              {view === 'SIGNUP' && (
-                  <>
+              {view === 'SIGNUP' && signupStep === 1 && (
+                  <div className="animate-in slide-in-from-right-4 fade-in duration-300 space-y-5">
                     <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-slate-500 uppercase ml-1">Full Name</label>
-                        <input name="name" type="text" placeholder="John Doe" value={formData.name} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-2xl outline-none" />
+                        <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Full Name</label>
+                        <input name="name" type="text" placeholder="John Doe" value={formData.name} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none" />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-slate-500 uppercase ml-1">Email Address</label>
-                        <input name="email" type="email" placeholder="name@email.com" value={formData.email} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-2xl outline-none" />
+                        <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Email Address</label>
+                        <input name="email" type="email" placeholder="name@email.com" value={formData.email} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none" />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-slate-500 uppercase ml-1">Secure Password</label>
+                        <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Secure Password</label>
                         <div className="relative">
-                            <input name="password" type={showPassword ? "text" : "password"} placeholder="Min. 8 characters" value={formData.password} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-2xl outline-none pr-12" maxLength={20} />
-                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                            <input name="password" type={showPassword ? "text" : "password"} placeholder="Min. 8 characters" value={formData.password} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none pr-12" maxLength={20} />
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
                                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
                         </div>
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-slate-500 uppercase ml-1">Mobile Number</label>
-                        <input name="mobile" type="tel" placeholder="10-digit number" value={formData.mobile} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-2xl outline-none" maxLength={10} />
+                        <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Mobile Number</label>
+                        <input name="mobile" type="tel" placeholder="10-digit number" value={formData.mobile} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none" maxLength={10} />
                     </div>
-                    <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl mt-4 transition-all active:scale-[0.98] shadow-xl shadow-blue-100">
-                        Register Now
+
+                    <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl mt-6 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/50 text-lg flex items-center justify-center gap-2">
+                        Next Step <ArrowRight size={20} />
                     </button>
 
                     {settings?.showGoogleLogin !== false && (
-                        <div className="space-y-4 mt-6">
+                        <div className="space-y-5 mt-8">
                             <div className="relative flex items-center py-2">
-                                <div className="flex-grow border-t border-slate-100"></div>
-                                <span className="flex-shrink mx-4 text-slate-400 text-[10px] font-bold uppercase tracking-widest">Or register with</span>
-                                <div className="flex-grow border-t border-slate-100"></div>
+                                <div className="flex-grow border-t border-slate-700/50"></div>
+                                <span className="flex-shrink mx-4 text-slate-500 text-[10px] font-bold uppercase tracking-widest">Or continue with</span>
+                                <div className="flex-grow border-t border-slate-700/50"></div>
                             </div>
                             <button
                                 type="button"
                                 onClick={handleGoogleAuth}
-                                className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 rounded-2xl border border-slate-200 shadow-sm transition-all active:scale-95"
+                                className="w-full flex items-center justify-center gap-3 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-2xl border border-slate-600 transition-all active:scale-95"
                             >
                                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/smartlock/icon_google.svg" alt="Google" className="w-5 h-5" />
                                 Continue with Google
                             </button>
                         </div>
                     )}
-                  </>
+                  </div>
+              )}
+
+              {view === 'SIGNUP' && signupStep === 2 && (
+                  <div className="animate-in slide-in-from-right-4 fade-in duration-300 space-y-6">
+                      <div className="space-y-2">
+                          <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Select Board Name</label>
+                          <div className="grid grid-cols-2 gap-3">
+                              {['CBSE', 'BSEB', 'COMPETITION'].map(b => {
+                                  // Skip Competition if we want to keep it simple or if not configured, but user asked for "board name".
+                                  // Let's just show CBSE and BSEB as primary.
+                                  if (b === 'COMPETITION' && !settings?.allowedBoards?.includes('COMPETITION')) return null;
+                                  return (
+                                  <button
+                                      key={b}
+                                      type="button"
+                                      onClick={() => setFormData({...formData, board: b})}
+                                      className={`py-3 px-4 rounded-xl border font-bold text-center transition-all ${formData.board === b ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-900/20' : 'bg-slate-900/50 border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-slate-500'}`}
+                                  >
+                                      {b}
+                                  </button>
+                              )})}
+                          </div>
+                      </div>
+
+                      <div className="space-y-2">
+                          <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Select Class</label>
+                          <div className="grid grid-cols-4 gap-2">
+                              {['6','7','8','9','10','11','12'].map(c => (
+                                  <button
+                                      key={c}
+                                      type="button"
+                                      onClick={() => setFormData({...formData, classLevel: c, stream: (c === '11' || c === '12') ? formData.stream : ''})}
+                                      className={`py-3 rounded-xl border font-black transition-all ${formData.classLevel === c ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-900/20' : 'bg-slate-900/50 border-slate-700 text-slate-400 hover:bg-slate-800'}`}
+                                  >
+                                      {c}
+                                  </button>
+                              ))}
+                          </div>
+                      </div>
+
+                      {['11', '12'].includes(formData.classLevel) && (
+                          <div className="space-y-2 animate-in fade-in zoom-in-95">
+                              <label className="text-[11px] font-bold text-orange-400 uppercase ml-1 tracking-wider flex items-center gap-1">
+                                  Select Stream
+                              </label>
+                              <div className="grid grid-cols-3 gap-2">
+                                  {['Science', 'Commerce', 'Arts'].map(s => (
+                                      <button
+                                          key={s}
+                                          type="button"
+                                          onClick={() => setFormData({...formData, stream: s})}
+                                          className={`py-2 px-1 rounded-xl border text-xs font-bold transition-all ${formData.stream === s ? 'bg-orange-600 border-orange-500 text-white shadow-lg' : 'bg-slate-900/50 border-slate-700 text-slate-400 hover:bg-slate-800'}`}
+                                      >
+                                          {s}
+                                      </button>
+                                  ))}
+                              </div>
+                          </div>
+                      )}
+
+                      <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-2xl mt-8 transition-all active:scale-[0.98] shadow-lg shadow-emerald-900/50 text-lg flex items-center justify-center gap-2">
+                          <Check size={20} /> Create Premium Account
+                      </button>
+                  </div>
               )}
 
               {view === 'LOGIN' && (
-                  <>
+                  <div className="space-y-5">
                      <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-slate-500 uppercase ml-1">Credentials</label>
-                        <input name="id" type="text" placeholder="Email, Mobile or ID" value={formData.id} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-2xl outline-none font-medium" />
+                        <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Credentials</label>
+                        <input name="id" type="text" placeholder="Email, Mobile ya ID" value={formData.id} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none font-medium" />
                      </div>
                      <div className="space-y-1.5">
                          <div className="flex justify-between items-center mb-1">
-                            <label className="text-xs font-bold text-slate-500 uppercase ml-1">Password</label>
-                            <button type="button" onClick={() => setView('RECOVERY')} className="text-[10px] font-bold text-blue-600 hover:text-blue-700 uppercase tracking-tighter">Forgot Password?</button>
+                            <label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Password</label>
+                            <button type="button" onClick={() => setView('RECOVERY')} className="text-[11px] font-bold text-blue-400 hover:text-blue-300 transition-colors">Forgot?</button>
                          </div>
                          <div className="relative">
-                             <input name="password" type={showPassword ? "text" : "password"} placeholder="Enter your password" value={formData.password} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-2xl outline-none font-medium pr-12" />
-                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                             <input name="password" type={showPassword ? "text" : "password"} placeholder="Enter your password" value={formData.password} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all rounded-xl outline-none font-medium pr-12" />
+                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
                                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                              </button>
                          </div>
                      </div>
-                     <button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl mt-4 transition-all active:scale-[0.98] shadow-xl shadow-slate-200">
-                        Sign In
+                     <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl mt-6 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/50 text-lg">
+                        Login Now
                      </button>
 
                             {settings?.showGoogleLogin !== false && (
-                                <div className="space-y-4 mt-6">
+                                <div className="space-y-5 mt-8">
                                     <div className="relative flex items-center py-2">
-                                        <div className="flex-grow border-t border-slate-100"></div>
-                                        <span className="flex-shrink mx-4 text-slate-400 text-[10px] font-bold uppercase tracking-widest">Or login with</span>
-                                        <div className="flex-grow border-t border-slate-100"></div>
+                                        <div className="flex-grow border-t border-slate-700/50"></div>
+                                        <span className="flex-shrink mx-4 text-slate-500 text-[10px] font-bold uppercase tracking-widest">Or continue with</span>
+                                        <div className="flex-grow border-t border-slate-700/50"></div>
                                     </div>
                                     <button 
                                         type="button"
                                         onClick={handleGoogleAuth}
-                                        className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 rounded-2xl border border-slate-200 shadow-sm transition-all active:scale-95"
+                                        className="w-full flex items-center justify-center gap-3 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-2xl border border-slate-600 transition-all active:scale-95"
                                     >
                                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/smartlock/icon_google.svg" alt="Google" className="w-5 h-5" />
                                         Continue with Google
                                     </button>
                                 </div>
                             )}
-                  </>
+                  </div>
               )}
               
               {view === 'ADMIN' && (
                   <>
-                    <div className="space-y-1.5"><label className="text-xs font-bold text-slate-500 uppercase ml-1">Admin Email</label><input name="email" type="email" placeholder="admin@platform.com" value={formData.email} onChange={handleChange} disabled={showAdminVerify} className={`w-full px-5 py-3.5 border rounded-2xl transition-all outline-none ${showAdminVerify ? 'bg-slate-100 border-slate-200 text-slate-500' : 'bg-slate-50 border-slate-100 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10'}`} /></div>
-                    {showAdminVerify && (<div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300"><label className="text-xs font-bold text-purple-600 uppercase flex items-center gap-1 ml-1"><ShieldAlert size={12} /> Secure Access Code</label><input name="adminAuthCode" type="password" placeholder="••••••••" value={adminAuthCode} onChange={(e) => setAdminAuthCode(e.target.value)} className="w-full px-5 py-3.5 bg-purple-50 border border-purple-100 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 rounded-2xl outline-none text-center text-xl tracking-[0.5em]" autoFocus /></div>)}
-                    <button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-2xl mt-6 flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-xl shadow-purple-100">{showAdminVerify ? <><Lock size={18} /> Enter Dashboard</> : 'Verify Admin Email'}</button>
+                    <div className="space-y-1.5"><label className="text-[11px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Admin Email</label><input name="email" type="email" placeholder="admin@platform.com" value={formData.email} onChange={handleChange} disabled={showAdminVerify} className={`w-full px-5 py-3.5 border rounded-xl transition-all outline-none font-medium ${showAdminVerify ? 'bg-slate-800 border-slate-700 text-slate-500' : 'bg-slate-900/50 border-slate-700 text-white placeholder-slate-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500'}`} /></div>
+                    {showAdminVerify && (<div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300"><label className="text-[11px] font-bold text-purple-400 uppercase flex items-center gap-1 ml-1 tracking-wider"><ShieldAlert size={12} /> Secure Access Code</label><input name="adminAuthCode" type="password" placeholder="••••••••" value={adminAuthCode} onChange={(e) => setAdminAuthCode(e.target.value)} className="w-full px-5 py-3.5 bg-purple-900/20 border border-purple-500/50 text-white focus:border-purple-400 focus:ring-1 focus:ring-purple-400 rounded-xl outline-none text-center text-2xl tracking-[0.5em] font-mono" autoFocus /></div>)}
+                    <button type="submit" className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 rounded-2xl mt-8 flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-purple-900/50 text-lg">{showAdminVerify ? <><Lock size={20} /> Enter Dashboard</> : 'Verify Admin Email'}</button>
                   </>
               )}
             </form>
@@ -698,9 +787,9 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
 
         {(view === 'SIGNUP' || view === 'ADMIN' || view === 'RECOVERY' || view === 'LOGIN') && (
             <div className="mt-10 text-center relative z-10">
-                <button onClick={() => setView('HOME')} className="group flex items-center gap-2 mx-auto text-slate-400 font-bold text-sm hover:text-slate-800 transition-colors">
+                <button onClick={() => { setView('HOME'); setSignupStep(1); }} className="group flex items-center gap-2 mx-auto text-slate-500 font-bold text-sm hover:text-white transition-colors">
                     <ArrowRight size={16} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
-                    Return to Main Menu
+                    Back to Main Menu
                 </button>
             </div>
         )}
