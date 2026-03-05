@@ -8,6 +8,7 @@ interface Props {
   allowedClasses?: ClassLevel[]; // Passed from App State
   syllabusMode?: 'SCHOOL' | 'COMPETITION' | 'BOTH'; // DEPRECATED: Kept for legacy compatibility if needed
   onSelect: (level: ClassLevel) => void;
+  onBoardChange?: (board: Board) => void; // Optional board toggle
   onBack: () => void;
   settings?: SystemSettings; // NEW: To read permissions
   user?: User | null; // NEW: To check role
@@ -15,7 +16,7 @@ interface Props {
 
 const all_classes: ClassLevel[] = ['6', '7', '8', '9', '10', '11', '12', 'COMPETITION'];
 
-export const ClassSelection: React.FC<Props> = ({ selectedBoard, allowedClasses, onSelect, onBack, settings, user }) => {
+export const ClassSelection: React.FC<Props> = ({ selectedBoard, allowedClasses, onSelect, onBoardChange, onBack, settings, user }) => {
   
   // Determine Allowed Modes based on User Status
   const isPremium = user?.isPremium && user?.subscriptionEndDate && new Date(user?.subscriptionEndDate) > new Date();
@@ -62,11 +63,26 @@ export const ClassSelection: React.FC<Props> = ({ selectedBoard, allowedClasses,
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex items-center mb-6">
-        <button onClick={onBack} className="text-slate-500 hover:text-slate-800 transition-colors mr-4">
+      <div className="flex items-center justify-between mb-6 px-4 max-w-4xl mx-auto">
+        <button onClick={onBack} className="text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium">
           &larr; Back
         </button>
-         <span className="text-sm font-semibold text-slate-400 uppercase tracking-widest">{selectedBoard} Board</span>
+        {onBoardChange && (
+            <div className="flex items-center bg-slate-100 p-1 rounded-xl">
+                <button
+                    onClick={() => onBoardChange('CBSE')}
+                    className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${selectedBoard === 'CBSE' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                >
+                    CBSE
+                </button>
+                <button
+                    onClick={() => onBoardChange('BSEB')}
+                    className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${selectedBoard === 'BSEB' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                >
+                    BSEB
+                </button>
+            </div>
+        )}
       </div>
 
       <div className="text-center mb-10">
