@@ -360,11 +360,34 @@ export const PdfView: React.FC<Props> = ({
                         const currentTopicPoints: string[] = [];
 
                         // 1. Explicit CSS Class Extraction (For newly styled notes)
-                        const specificBlocks = tempDiv.querySelectorAll('.recap, .quick-revision');
-                        if (specificBlocks.length > 0) {
-                            specificBlocks.forEach(block => {
-                                if (block.outerHTML) {
-                                    currentTopicPoints.push(block.outerHTML);
+                        const topicCards = tempDiv.querySelectorAll('.topic-card');
+
+                        if (topicCards.length > 0) {
+                            // If structured topic cards exist, group by each card
+                            topicCards.forEach((card, cardIndex) => {
+                                // Find title specific to this card
+                                let cardTitle = `Topic ${cardIndex + 1}`;
+                                const heading = card.querySelector('h1, h2, h3, h4');
+                                if (heading && heading.textContent) {
+                                    cardTitle = heading.textContent.trim();
+                                } else {
+                                    // If no heading inside card, try to find one right before it
+                                    const prevElement = card.previousElementSibling;
+                                    if (prevElement && /^h[1-6]$/i.test(prevElement.tagName) && prevElement.textContent) {
+                                        cardTitle = prevElement.textContent.trim();
+                                    }
+                                }
+
+                                const cardPoints: string[] = [];
+                                const specificBlocks = card.querySelectorAll('.recap, .quick-revision');
+                                specificBlocks.forEach(block => {
+                                    if (block.outerHTML) {
+                                        cardPoints.push(block.outerHTML);
+                                    }
+                                });
+
+                                if (cardPoints.length > 0) {
+                                    quickGroups.push({ title: cardTitle, points: cardPoints });
                                 }
                             });
                         } else {
@@ -435,10 +458,10 @@ export const PdfView: React.FC<Props> = ({
                                 }
                                 currentNode = walker.nextNode() as Element | null;
                             }
-                        }
 
-                        if (currentTopicPoints.length > 0) {
-                            quickGroups.push({ title: topicTitle, points: currentTopicPoints });
+                            if (currentTopicPoints.length > 0) {
+                                quickGroups.push({ title: topicTitle, points: currentTopicPoints });
+                            }
                         }
                     }
                 });
