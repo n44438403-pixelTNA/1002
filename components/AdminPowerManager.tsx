@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SystemSettings, FeatureCategory } from '../types';
-import { DollarSign, Eye, Save, Search, Settings, Lock, Package, Trash2, Edit3, X, Plus, Crown, LayoutGrid, List, CheckSquare, Gamepad2, BrainCircuit, Activity, BarChart3, Star, Zap, PenTool, Banknote, Layers } from 'lucide-react';
+import { DollarSign, Eye, Save, Search, Settings, Lock, Package, Trash2, Edit3, X, Plus, Crown, LayoutGrid, List, CheckSquare, Gamepad2, BrainCircuit, Activity, BarChart3, Star, Zap, PenTool, Banknote, Layers, Megaphone } from 'lucide-react';
 
 interface Props {
     settings: SystemSettings;

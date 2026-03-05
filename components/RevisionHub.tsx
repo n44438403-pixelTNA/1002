@@ -778,6 +778,18 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
                 </div>
             </div>
 
+            {/* LOGIC EXPLANATION FOR USER */}
+            <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 mb-6">
+                <p className="text-xs text-purple-800 leading-relaxed">
+                    <strong className="text-sm">Revision & Spaced Repetition Logic:</strong>
+                    <br/>• Score &lt; 50% (Weak) → Retest in 3 Days
+                    <br/>• Score 50-80% (Average) → Retest in 5 Days
+                    <br/>• Score &gt; 80% (Strong) → Retest in 10 Days
+                    <br/>• 30-Day Mastery Logic: If score &gt; 80% twice consecutively, mastered for 30 Days.
+                    <br/>• Mistake Pattern: Automatically captures and schedules incorrect answers.
+                </p>
+            </div>
+
             {/* NEW TAB SYSTEM (Phase 3 Compression) */}
             <div className="flex p-1 bg-slate-100 rounded-xl mb-6 relative z-10">
                 <button
@@ -796,7 +808,14 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
                 >
                     <TrendingUp size={14} /> Topic Strength
                 </button>
-
+                <button
+                    onClick={() => setActiveFilter('MISTAKES')}
+                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                        activeFilter === 'MISTAKES' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'
+                    }`}
+                >
+                    <AlertOctagon size={14} /> Mistakes
+                </button>
             </div>
 
             {/* SUB-TABS FOR TOPIC STRENGTH (Only visible when active) */}
