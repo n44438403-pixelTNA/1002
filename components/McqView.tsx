@@ -50,6 +50,37 @@ export const McqView: React.FC<Props> = ({
   const [mcqMode, setMcqMode] = useState<'FREE' | 'PREMIUM'>('FREE');
 
   // Load topics on mount if content exists locally or via minimal fetch
+  // Screen Wake Lock for MCQ Test
+  useEffect(() => {
+    let wakeLock: any = null;
+    const requestWakeLock = async () => {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await (navigator as any).wakeLock.request('screen');
+        }
+      } catch (err: any) {
+        console.warn(`Wake Lock error: ${err?.name}, ${err?.message}`);
+      }
+    };
+
+    requestWakeLock();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        requestWakeLock();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (wakeLock !== null) {
+        wakeLock.release().catch(console.error);
+      }
+    };
+  }, []);
+
   useEffect(() => {
       // Helper to extract unique topics from chapter data (optimistic)
       const streamKey = (classLevel === '11' || classLevel === '12') && stream ? `-${stream}` : '';

@@ -794,6 +794,22 @@ export const PdfView: React.FC<Props> = ({
       );
   }
 
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `Notes: ${chapter.title}`,
+          text: `Check out the revision notes for ${chapter.title} on IIC App!`,
+          url: window.location.href,
+        });
+      } else {
+        setAlertConfig({ isOpen: true, message: "Share is not supported on this device." });
+      }
+    } catch (err) {
+      console.warn("Error sharing:", err);
+    }
+  };
+
   // --- NEW TABBED VIEW ---
   return (
     <div className="bg-slate-50 min-h-screen pb-20 animate-in fade-in slide-in-from-right-8">
@@ -810,10 +826,17 @@ export const PdfView: React.FC<Props> = ({
                    <ArrowLeft size={20} />
                </button>
                <div className="flex-1">
-                   <h3 className="font-bold text-slate-800 leading-tight line-clamp-1">{chapter.title}</h3>
-                   <div className="flex gap-2 mt-1">
-                     <button onClick={() => setSyllabusMode('SCHOOL')} className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${syllabusMode === 'SCHOOL' ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-500'}`}>School</button>
-                     <button onClick={() => setSyllabusMode('COMPETITION')} className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${syllabusMode === 'COMPETITION' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-500'}`}>Competition</button>
+                   <div className="flex justify-between items-start">
+                     <div>
+                       <h3 className="font-bold text-slate-800 leading-tight line-clamp-1">{chapter.title}</h3>
+                       <div className="flex gap-2 mt-1">
+                         <button onClick={() => setSyllabusMode('SCHOOL')} className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${syllabusMode === 'SCHOOL' ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-500'}`}>School</button>
+                         <button onClick={() => setSyllabusMode('COMPETITION')} className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${syllabusMode === 'COMPETITION' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-500'}`}>Competition</button>
+                       </div>
+                     </div>
+                     <button onClick={handleShare} className="p-2 bg-slate-50 text-slate-600 hover:bg-slate-100 rounded-xl transition-colors shrink-0 border border-slate-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                     </button>
                    </div>
                </div>
            </div>
