@@ -52,7 +52,10 @@ export const getPreferredVoice = async (): Promise<SpeechSynthesisVoice | undefi
 
 export const stripHtml = (html: string): string => {
     const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = html;
+    // Replace closing tags with themselves plus a space to avoid word mashing during textContent extraction
+    // e.g. <li>A</li><li>B</li> -> A B instead of AB
+    const spacedHtml = html.replace(/(<\/[a-z0-9]+>)/gi, '$1 ');
+    tempDiv.innerHTML = spacedHtml;
     let text = tempDiv.textContent || tempDiv.innerText || "";
 
     // Remove emojis and common non-alphanumeric symbols that often break speech synthesis engines
@@ -93,19 +96,35 @@ export const speakText = async (
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     
-    // Priority: Explicit Voice -> User Preferred Voice -> Auto-Detect -> Default
+    // Priority: Explicit Voice -> User Preferred Voice -> Auto-Detect Premium Indian -> Default
     let selectedVoice = voice;
     
     if (!selectedVoice) {
-        // Try to get preferred voice, but don't block if not available immediately
-        // For WebView, we might just want to speak with default if voices aren't ready
         try {
-             // We attempt to get voices, but if it takes too long, we proceed
-             // This avoids the "TTS not working" perception if loading fails
              const voices = window.speechSynthesis.getVoices();
              if (voices.length > 0) {
+                 // 1. Try to get User Preferred Voice first
                  const uri = localStorage.getItem('nst_preferred_voice_uri');
-                 if (uri) selectedVoice = voices.find(v => v.voiceURI === uri);
+                 if (uri) {
+                     selectedVoice = voices.find(v => v.voiceURI === uri);
+                 }
+
+                 // 2. If no user preference, and language is Hindi, proactively search for high-quality Indian voices
+                 if (!selectedVoice && lang.includes('hi')) {
+                     // Rank premium/online voices higher than standard local robotic ones
+                     const premiumHindi = voices.filter(v => v.lang === 'hi-IN' || v.lang === 'hi_IN').sort((a, b) => {
+                         const aName = a.name.toLowerCase();
+                         const bName = b.name.toLowerCase();
+                         // Google's online voices and Microsoft's Natural voices sound much better
+                         const aScore = (aName.includes('google') || aName.includes('natural') || aName.includes('online')) ? 1 : 0;
+                         const bScore = (bName.includes('google') || bName.includes('natural') || bName.includes('online')) ? 1 : 0;
+                         return bScore - aScore;
+                     });
+
+                     if (premiumHindi.length > 0) {
+                         selectedVoice = premiumHindi[0];
+                     }
+                 }
              }
         } catch (e) {
             console.warn("Failed to retrieve voices synchronously:", e);
