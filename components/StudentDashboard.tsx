@@ -17,7 +17,7 @@ import { LessonActionModal } from './LessonActionModal';
 import { RedeemSection } from './RedeemSection';
 import { PrizeList } from './PrizeList';
 import { Store } from './Store';
-import { Globe, Layout, Gift, Sparkles, Megaphone, Lock, BookOpen, AlertCircle, Edit, Settings, Play, Pause, RotateCcw, MessageCircle, Gamepad2, Timer, CreditCard, Send, CheckCircle, Mail, X, Ban, Smartphone, Trophy, ShoppingBag, ArrowRight, Video, Youtube, Home, User as UserIcon, Book, BookOpenText, List, BarChart3, Award, Bell, Headphones, LifeBuoy, WifiOff, Zap, Star, Crown, History, ListChecks, Rocket, Ticket, TrendingUp, BrainCircuit, FileText, CheckSquare, Menu, LayoutGrid, Compass, User as UserIconOutline, MessageSquare, Bot, HelpCircle, Database, Activity, Download, Calendar, LogOut, Target } from 'lucide-react';
+import { Globe, Layout, Gift, Sparkles, Megaphone, Lock, BookOpen, AlertCircle, Edit, Settings, Play, Pause, RotateCcw, MessageCircle, Gamepad2, Timer, CreditCard, Send, CheckCircle, Mail, X, Ban, Smartphone, Trophy, ShoppingBag, ArrowRight, Video, Youtube, Home, User as UserIcon, Book, BookOpenText, List, BarChart3, Award, Bell, Headphones, LifeBuoy, WifiOff, Zap, Star, Crown, History, ListChecks, Rocket, Ticket, TrendingUp, BrainCircuit, FileText, CheckSquare, Menu, LayoutGrid, Compass, User as UserIconOutline, MessageSquare, Bot, HelpCircle, Database, Activity, Download, Calendar, LogOut } from 'lucide-react';
 import { SubjectSelection } from './SubjectSelection';
 import { BannerCarousel } from './BannerCarousel';
 import { ChapterSelection } from './ChapterSelection'; // Imported for Video Flow
@@ -952,53 +952,10 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                 {/* MAIN ACTION BUTTONS (RESTORED OLD LAYOUT) */}
                 <DashboardSectionWrapper id="section_main_actions" label="Main Actions" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
                     <div className="grid grid-cols-2 gap-4">
-                        {/* FEATURE GRID (Replaces old Study section) */}
+                        {/* STUDY SECTION (REPLACED MY COURSES) */}
                         <div className="col-span-2 bg-white rounded-3xl p-5 border border-slate-100 shadow-sm">
                             <h3 className="font-black text-slate-800 text-lg mb-4 flex items-center gap-2">
-                                <Sparkles className="text-blue-600" size={24} /> Features
-                            </h3>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-
-                                <button onClick={() => onTabChange('REVISION' as any)} className="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all active:scale-95 border-2 bg-indigo-50 border-indigo-100 text-indigo-700">
-                                    <div className="p-2 rounded-full bg-white shadow-sm"><Zap size={20} className="text-indigo-600" /></div>
-                                    <span className="text-[10px] font-bold uppercase text-center leading-tight">Feature 1<br/>Smart Revision</span>
-                                </button>
-
-                                <button onClick={() => {onTabChange('COURSES');}} className="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all active:scale-95 border-2 bg-blue-50 border-blue-100 text-blue-700">
-                                    <div className="p-2 rounded-full bg-white shadow-sm"><BookOpen size={20} className="text-blue-600" /></div>
-                                    <span className="text-[10px] font-bold uppercase text-center leading-tight">Feature 2<br/>Notes</span>
-                                </button>
-
-                                <button onClick={() => {
-                                        const access = checkFeatureAccess('VIDEO_ACCESS', user, settings || {});
-                                        if (!access.hasAccess) { showAlert("🔒 Video content is locked by Admin.", "ERROR"); return; }
-                                        onTabChange('UNIVERSAL_VIDEO');
-                                    }} className="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all active:scale-95 border-2 bg-rose-50 border-rose-100 text-rose-700">
-                                    <div className="p-2 rounded-full bg-white shadow-sm"><Play size={20} className="text-rose-600" /></div>
-                                    <span className="text-[10px] font-bold uppercase text-center leading-tight">Feature 3<br/>Video</span>
-                                </button>
-
-                                <button onClick={() => {onTabChange('COURSES');}} className="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all active:scale-95 border-2 bg-purple-50 border-purple-100 text-purple-700">
-                                    <div className="p-2 rounded-full bg-white shadow-sm"><Headphones size={20} className="text-purple-600" /></div>
-                                    <span className="text-[10px] font-bold uppercase text-center leading-tight">Feature 4<br/>Audio</span>
-                                </button>
-
-                                <button onClick={() => onTabChange('ANALYTICS')} className="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all active:scale-95 border-2 bg-emerald-50 border-emerald-100 text-emerald-700">
-                                    <div className="p-2 rounded-full bg-white shadow-sm"><BarChart3 size={20} className="text-emerald-600" /></div>
-                                    <span className="text-[10px] font-bold uppercase text-center leading-tight">Feature 5<br/>Performance Analysis</span>
-                                </button>
-
-                                <button onClick={() => {onTabChange('MCQ_REVIEW');}} className="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all active:scale-95 border-2 bg-orange-50 border-orange-100 text-orange-700">
-                                    <div className="p-2 rounded-full bg-white shadow-sm"><Target size={20} className="text-orange-600" /></div>
-                                    <span className="text-[10px] font-bold uppercase text-center leading-tight">Feature 6<br/>MCQ</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* STUDY SECTION (MOVED DOWN) */}
-                        <div className="col-span-2 bg-white rounded-3xl p-5 border border-slate-100 shadow-sm mt-4">
-                            <h3 className="font-black text-slate-800 text-lg mb-4 flex items-center gap-2">
-                                <BookOpen className="text-blue-600" size={24} /> My Subjects
+                                <BookOpen className="text-blue-600" size={24} /> Study
                             </h3>
                             <div className="grid grid-cols-3 gap-3">
                                 {getSubjectsList(user.classLevel || '10', user.stream || 'Science', user.board).map((subject) => {
@@ -1010,10 +967,21 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                                                 onTabChange('COURSES');
                                                 handleContentSubjectSelect(subject);
                                             }}
-                                            className={`flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all active:scale-95 border-2 bg-slate-50 border-slate-100 text-slate-700`}
+                                            className={`flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all active:scale-95 border-2 ${
+                                                subject.id.includes('science') ? 'bg-purple-50 border-purple-100 text-purple-700' :
+                                                subject.id.includes('math') ? 'bg-blue-50 border-blue-100 text-blue-700' :
+                                                subject.id.includes('social') ? 'bg-orange-50 border-orange-100 text-orange-700' :
+                                                'bg-slate-50 border-slate-100 text-slate-700'
+                                            }`}
                                         >
                                             <div className={`p-2 rounded-full bg-white shadow-sm`}>
-                                                <BookOpen size={20} className="text-slate-600" />
+                                                {/* Simple Icon Mapping or default */}
+                                                <BookOpen size={20} className={
+                                                    subject.id.includes('science') ? 'text-purple-600' :
+                                                    subject.id.includes('math') ? 'text-blue-600' :
+                                                    subject.id.includes('social') ? 'text-orange-600' :
+                                                    'text-slate-600'
+                                                } />
                                             </div>
                                             <span className="text-[10px] font-bold uppercase text-center leading-tight">
                                                 {subject.name}
@@ -1023,6 +991,45 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                                 })}
                             </div>
                         </div>
+
+                        {(() => {
+                            // UNLOCKED AS PER REQUEST
+                            const isLocked = false;
+                            return (
+                                <button
+                                    onClick={() => {
+                                        onTabChange('ANALYTICS');
+                                    }}
+                                    className={`bg-white border-2 border-slate-100 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-2 group active:scale-95 transition-all hover:border-blue-200 h-32 relative overflow-hidden ${isLocked ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
+                                >
+                                    <BarChart3 size={28} className="text-blue-600 mb-1" />
+                                    <span className="font-black text-slate-700 text-sm tracking-wide uppercase text-center">My Analysis</span>
+                                    {isLocked && <div className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"><Lock size={12} /></div>}
+                                </button>
+                            );
+                        })()}
+
+                        {(() => {
+                            // Using VIDEO_ACCESS as proxy for Universal Video as it's the closest content type
+                            const access = checkFeatureAccess('VIDEO_ACCESS', user, settings || {});
+                            const isLocked = !access.hasAccess;
+                            return (
+                                <button
+                                    onClick={() => {
+                                        if (isLocked) { showAlert("🔒 Video content is locked by Admin.", "ERROR"); return; }
+                                        onTabChange('UNIVERSAL_VIDEO');
+                                    }}
+                                    className={`bg-white border-2 border-slate-100 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-2 group active:scale-95 transition-all hover:border-rose-200 h-32 relative overflow-hidden ${isLocked ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
+                                >
+                                    <div className="relative">
+                                        <Video size={28} className="text-rose-600 mb-1" />
+                                        <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse border border-white"></div>
+                                    </div>
+                                    <span className="font-black text-slate-700 text-sm tracking-wide uppercase text-center">Universal Video</span>
+                                    {isLocked && <div className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"><Lock size={12} /></div>}
+                                </button>
+                            );
+                        })()}
                     </div>
                 </DashboardSectionWrapper>
               </div>
@@ -1115,7 +1122,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                 <div className="animate-in fade-in zoom-in duration-300 pb-24">
                     <div className={`rounded-3xl p-8 text-center text-slate-800 mb-6 shadow-sm border border-slate-200 relative overflow-hidden transition-all duration-500 ${
                         user.subscriptionLevel === 'ULTRA' && user.isPremium
-                        ? 'bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 shadow-purple-500/10 ring-2 ring-purple-200/50'
+                        ? 'bg-gradient-to-br from-slate-200 via-slate-100 to-slate-300 shadow-amber-500/10 ring-2 ring-amber-200/50'
                         : user.subscriptionLevel === 'BASIC' && user.isPremium
                         ? 'bg-gradient-to-br from-blue-50 via-cyan-50 to-sky-50 shadow-blue-500/10'
                         : 'bg-gradient-to-br from-white to-slate-50'
@@ -1124,8 +1131,8 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                         {user.subscriptionLevel === 'ULTRA' && user.isPremium && (
                             <>
                                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 animate-spin-slow"></div>
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                                <div className="absolute -top-20 -right-20 w-64 h-64 bg-purple-500/30 rounded-full blur-3xl animate-pulse"></div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                                <div className="absolute -top-20 -right-20 w-64 h-64 bg-amber-500/20 rounded-full blur-3xl animate-pulse"></div>
                             </>
                         )}
 
@@ -1137,19 +1144,19 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                         {/* SPECIAL BANNER ANIMATION (7/30/365) */}
                         {(user.subscriptionTier === 'WEEKLY' || user.subscriptionTier === 'MONTHLY' || user.subscriptionTier === 'YEARLY' || user.subscriptionTier === 'LIFETIME') && user.isPremium && (
                             <div className="absolute top-2 right-2 animate-bounce">
-                                <span className={`px-3 py-1 rounded-full text-xs font-bold border shadow-lg ${user.subscriptionLevel === 'ULTRA' ? 'bg-gradient-to-r from-amber-200 to-yellow-400 text-yellow-900 border-yellow-300' : 'bg-white/20 backdrop-blur-md border-white/30 text-white'}`}>
+                                <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold border border-white/30">
                                     {user.subscriptionTier === 'WEEKLY' ? '7 DAYS' : user.subscriptionTier === 'MONTHLY' ? '30 DAYS' : user.subscriptionTier === 'LIFETIME' ? '∞' : '365 DAYS'}
                                 </span>
                             </div>
                         )}
 
                         <div className={`w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-4xl font-black shadow-2xl relative z-10 ${
-                            user.subscriptionLevel === 'ULTRA' && user.isPremium ? 'text-purple-700 ring-4 ring-purple-300 animate-bounce-slow' :
+                            user.subscriptionLevel === 'ULTRA' && user.isPremium ? 'text-amber-600 ring-4 ring-amber-300 animate-bounce-slow' :
                             user.subscriptionLevel === 'BASIC' && user.isPremium ? 'text-blue-600 ring-4 ring-cyan-300' :
                             'text-slate-800'
                         }`}>
                             {user.name.charAt(0)}
-                            {user.subscriptionLevel === 'ULTRA' && user.isPremium && <div className="absolute -top-2 -right-2 text-2xl">👑</div>}
+                            {user.subscriptionLevel === 'ULTRA' && user.isPremium && <div className="absolute -top-2 -right-2 text-2xl drop-shadow-lg">👑</div>}
                         </div>
 
                         <div className="flex items-center justify-center gap-2 relative z-10">
@@ -1171,8 +1178,8 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                         )}
 
                         <div className="mt-4 relative z-10">
-                            <span className={`px-6 py-2 rounded-full text-sm font-black uppercase tracking-widest shadow-lg shadow-black/20 border-2 ${
-                                user.subscriptionLevel === 'ULTRA' && user.isPremium ? 'bg-purple-500 text-white border-purple-300 animate-pulse' :
+                            <span className={`px-6 py-2 rounded-full text-sm font-black uppercase tracking-widest shadow-lg shadow-black/10 border-2 ${
+                                user.subscriptionLevel === 'ULTRA' && user.isPremium ? 'bg-gradient-to-r from-amber-200 to-yellow-400 text-yellow-900 border-amber-300' :
                                 user.subscriptionLevel === 'BASIC' && user.isPremium ? 'bg-cyan-500 text-white border-cyan-300' : 'bg-slate-600 text-slate-400 border-slate-500'
                             }`}>
                                 {user.isPremium
@@ -1446,7 +1453,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
   };
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen bg-slate-50 pb-20">
         {/* ADMIN SWITCH BUTTON */}
         {(user.role === 'ADMIN' || isImpersonating) && (
              <div className="fixed bottom-36 right-4 z-50 flex flex-col gap-3 items-end">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SystemSettings } from '../types';
 import { BrainCircuit, BookOpen, PlayCircle, Headphones, Target, LineChart, Zap } from 'lucide-react';
 
@@ -9,15 +9,20 @@ interface Props {
 
 export const SplashScreen: React.FC<Props> = ({ settings, onComplete }) => {
   const [progress, setProgress] = useState(0);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
   const [currentFeature, setCurrentFeature] = useState(0);
 
   const features = [
-    { icon: <Zap size={20} />, text: 'Smart Revision' },
-    { icon: <BookOpen size={20} />, text: 'Premium Notes' },
-    { icon: <PlayCircle size={20} />, text: 'Video Lectures' },
-    { icon: <Headphones size={20} />, text: 'Audio Studio' },
-    { icon: <Target size={20} />, text: 'MCQ Practice' },
-    { icon: <LineChart size={20} />, text: 'Performance Analysis' },
+    { icon: <Zap size={20} />, text: 'Feature 1: Smart Revision' },
+    { icon: <BookOpen size={20} />, text: 'Feature 2: Premium Notes' },
+    { icon: <PlayCircle size={20} />, text: 'Feature 3: Video Lectures' },
+    { icon: <Headphones size={20} />, text: 'Feature 4: Audio Studio' },
+    { icon: <LineChart size={20} />, text: 'Feature 5: Performance Analysis' },
+    { icon: <Target size={20} />, text: 'Feature 6: MCQ Practice' },
   ];
 
   useEffect(() => {
@@ -36,29 +41,27 @@ export const SplashScreen: React.FC<Props> = ({ settings, onComplete }) => {
         clearInterval(timer);
         setProgress(100);
         // Add a tiny delay at 100% before firing complete
-        setTimeout(() => onComplete(), 400);
+        setTimeout(() => {
+           if (onCompleteRef.current) {
+               onCompleteRef.current();
+           }
+        }, 400);
       }
     }, intervalTime);
 
-    // 2. Feature Rotation Logic
-    const featureTimer = setInterval(() => {
-      setCurrentFeature(prev => (prev + 1) % features.length);
-    }, 400); // Change text every 400ms
-
     return () => {
       clearInterval(timer);
-      clearInterval(featureTimer);
     };
-  }, [onComplete, features.length]);
+  }, []);
 
   return (
-    <div className="fixed inset-0 z-[999] bg-slate-900 flex flex-col items-center justify-between py-12 px-6 animate-in fade-in duration-500 overflow-hidden">
+    <div className="fixed inset-0 z-[999] bg-slate-50 flex flex-col items-center justify-between py-12 px-6 animate-in fade-in duration-500 overflow-hidden">
 
         {/* TOP SECTION: AI Branding */}
         <div className="flex flex-col items-center justify-center pt-8 animate-in slide-in-from-top-8 duration-700">
              <div className="relative mb-4">
                  <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full animate-pulse"></div>
-                 <div className="w-20 h-20 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-2xl flex items-center justify-center text-white shadow-2xl relative z-10 border border-white/10">
+                 <div className="w-20 h-20 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-2xl flex items-center justify-center text-slate-800 shadow-2xl relative z-10 border border-slate-200">
                     {settings.appLogo ? (
                         <img src={settings.appLogo} alt="Logo" className="w-12 h-12 object-contain" />
                     ) : (
@@ -66,7 +69,7 @@ export const SplashScreen: React.FC<Props> = ({ settings, onComplete }) => {
                     )}
                  </div>
              </div>
-             <h1 className="text-3xl font-black text-white text-center tracking-tight">
+             <h1 className="text-3xl font-black text-slate-800 text-center tracking-tight">
                  {settings.appName || 'NST App'}
              </h1>
              <p className="text-blue-400 font-bold mt-1 tracking-widest text-sm uppercase">
@@ -75,24 +78,26 @@ export const SplashScreen: React.FC<Props> = ({ settings, onComplete }) => {
         </div>
 
         {/* MIDDLE SECTION: Features & Loading Bar */}
-        <div className="w-full max-w-sm flex flex-col items-center justify-center space-y-8">
+        <div className="w-full max-w-sm flex flex-col items-center justify-center space-y-8 mt-4">
 
-            {/* Dynamic Feature Text */}
-            <div className="h-12 flex items-center justify-center">
-                <div key={currentFeature} className="flex items-center gap-2 text-slate-300 bg-slate-800/50 px-5 py-2.5 rounded-full border border-slate-700/50 backdrop-blur-sm animate-in zoom-in-95 fade-in duration-300">
-                    <span className="text-blue-400">{features[currentFeature].icon}</span>
-                    <span className="font-semibold text-sm">{features[currentFeature].text}</span>
-                </div>
+            {/* All Features Grid */}
+            <div className="grid grid-cols-2 gap-3 w-full animate-in zoom-in-95 fade-in duration-700 delay-200">
+                {features.map((feat, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-slate-600 bg-white/80 px-3 py-2.5 rounded-2xl border border-slate-200 shadow-sm backdrop-blur-sm">
+                        <span className="text-blue-500 bg-blue-50 p-1.5 rounded-lg">{feat.icon}</span>
+                        <span className="font-bold text-[10px] leading-tight text-slate-700">{feat.text}</span>
+                    </div>
+                ))}
             </div>
 
             {/* Progress Bar Container */}
-            <div className="w-full space-y-3">
+            <div className="w-full space-y-3 mt-4">
                 <div className="flex justify-between items-end px-1">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Starting</span>
-                    <span className="text-2xl font-black text-white">{progress}%</span>
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Loading Features</span>
+                    <span className="text-2xl font-black text-slate-800">{progress}%</span>
                 </div>
 
-                <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden p-0.5">
+                <div className="w-full h-2 bg-white rounded-full overflow-hidden p-0.5">
                     <div
                         className="h-full bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-400 rounded-full transition-all duration-75 ease-linear relative"
                         style={{ width: `${progress}%` }}
@@ -107,7 +112,7 @@ export const SplashScreen: React.FC<Props> = ({ settings, onComplete }) => {
         {/* BOTTOM SECTION: Developer Info */}
         <div className="flex flex-col items-center justify-center pb-4 opacity-60">
              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-1">Developed By</span>
-             <span className="text-xs font-black text-slate-400 tracking-wider">
+             <span className="text-xs font-black text-slate-500 tracking-wider">
                  {settings.footerText || 'Nadim Anwar'}
              </span>
         </div>
