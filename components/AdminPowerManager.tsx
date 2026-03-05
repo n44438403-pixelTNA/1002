@@ -126,7 +126,22 @@ export const AdminPowerManager: React.FC<Props> = ({ settings, onUpdate }) => {
                                             </select>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-2">
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <div>
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Show Every (Hours)</label>
+                                                <input
+                                                    type="number"
+                                                    value={popup.intervalHours !== undefined ? popup.intervalHours : 4}
+                                                    onChange={(e) => {
+                                                        const updated = [...(localSettings.adminCustomPopups || [])];
+                                                        updated[idx].intervalHours = Number(e.target.value);
+                                                        updateSetting('adminCustomPopups', updated);
+                                                    }}
+                                                    placeholder="e.g. 4"
+                                                    className="w-full bg-white border rounded-lg px-3 py-2 text-xs outline-none font-bold"
+                                                    min="0"
+                                                />
+                                            </div>
                                             <div>
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Class</label>
                                                 <input 
