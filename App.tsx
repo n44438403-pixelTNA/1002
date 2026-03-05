@@ -21,6 +21,7 @@ import { StudentDashboard } from './components/StudentDashboard';
 import { AudioStudio } from './components/AudioStudio';
 import { PremiumModal } from './components/PremiumModal';
 import { LoadingOverlay } from './components/LoadingOverlay';
+import { SplashScreen } from './components/SplashScreen'; // NEW
 import { RulesPage } from './components/RulesPage';
 import { IICPage } from './components/IICPage';
 import { WeeklyTestView } from './components/WeeklyTestView';
@@ -61,6 +62,7 @@ const TermsPopup: React.FC<{ onClose: () => void, text?: string }> = ({ onClose,
 const App: React.FC = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('nst_dark_mode') === 'true');
+  const [showSplash, setShowSplash] = useState(true); // NEW
 
   // ABANDONMENT DISCOUNT STATE
   const [isFlashSaleActive, setIsFlashSaleActive] = useState(false);
@@ -2080,6 +2082,10 @@ const App: React.FC = () => {
   // --- MAINTENANCE SCREEN ---
   const [mCode, setMCode] = useState('');
   const isMaintenanceBypassed = sessionStorage.getItem('nst_maintenance_bypassed') === 'true';
+
+  if (showSplash && state.settings) {
+      return <SplashScreen settings={state.settings} onComplete={() => setShowSplash(false)} />;
+  }
 
   if (state.settings.maintenanceMode && !isMaintenanceBypassed) {
       return (
