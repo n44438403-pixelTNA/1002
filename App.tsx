@@ -581,7 +581,7 @@ const App: React.FC = () => {
                           deadline = referenceTime + graceDuration;
 
                           // If Expired => FORCE SHOW (Always)
-                          if (now >= deadline) {
+                          if (newSettings.forceUpdate || now >= deadline) {
                               shouldShow = true;
                           } else {
                               // If NOT Expired => Check Frequency (Recurrence)
@@ -2456,6 +2456,7 @@ const App: React.FC = () => {
               gracePeriodDays={state.settings.updateGracePeriodDays}
               gracePeriod={state.settings.updateGracePeriod}
               durationSeconds={state.settings.updatePopupDurationSeconds}
+              isManualForce={state.settings.forceUpdate}
               onClose={() => {
                   setShowUpdatePopup(false);
                   localStorage.setItem(`nst_update_dismissed_${state.settings.latestVersion}`, Date.now().toString());

@@ -589,6 +589,7 @@ export interface SystemSettings {
   latestVersion?: string; // NEW: Force Update Version
   updateUrl?: string; // NEW: Update Link
   launchDate?: string; // NEW: Timer for App Launch (ISO)
+  forceUpdate?: boolean; // NEW: Manual Force Override
   updateGracePeriodDays?: number; // Days before update becomes forced (Default 7)
   updatePopupDurationSeconds?: number; // Seconds to show popup (Default 0 = Infinite)
   updateGracePeriod?: TimeConfig; // NEW: Granular Grace Period

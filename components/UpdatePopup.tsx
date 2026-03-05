@@ -9,11 +9,12 @@ interface Props {
     gracePeriodDays?: number; // NEW
     gracePeriod?: TimeConfig; // NEW: Granular Config
     durationSeconds?: number; // NEW
+    isManualForce?: boolean; // NEW: Direct override from admin
     onClose?: () => void;
 }
 
-export const UpdatePopup: React.FC<Props> = ({ latestVersion, updateUrl, launchDate, gracePeriodDays, gracePeriod, durationSeconds, onClose }) => {
-    const [isForceUpdate, setIsForceUpdate] = useState(false);
+export const UpdatePopup: React.FC<Props> = ({ latestVersion, updateUrl, launchDate, gracePeriodDays, gracePeriod, durationSeconds, isManualForce, onClose }) => {
+    const [isForceUpdate, setIsForceUpdate] = useState(isManualForce || false);
     const [timeLeft, setTimeLeft] = useState('');
 
     // Auto Dismiss if durationSeconds > 0
@@ -60,7 +61,7 @@ export const UpdatePopup: React.FC<Props> = ({ latestVersion, updateUrl, launchD
             }
 
             // Check Status
-            if (now >= deadline) {
+            if (isManualForce || now >= deadline) {
                 setIsForceUpdate(true);
                 setTimeLeft("Expired");
             } else {
@@ -80,7 +81,7 @@ export const UpdatePopup: React.FC<Props> = ({ latestVersion, updateUrl, launchD
         const interval = setInterval(updateTimer, 1000);
         return () => clearInterval(interval);
 
-    }, [latestVersion, launchDate, gracePeriodDays, gracePeriod]);
+    }, [latestVersion, launchDate, gracePeriodDays, gracePeriod, isManualForce]);
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm animate-in fade-in">
