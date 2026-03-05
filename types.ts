@@ -508,6 +508,7 @@ export interface SystemSettings {
     class?: string;
     lesson?: string;
     showTo: 'ALL' | 'FREE' | 'PREMIUM';
+    intervalHours?: number; // Configurable timing
   }[];
   popupConfigs?: {
       isExpiryWarningEnabled: boolean;

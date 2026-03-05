@@ -262,20 +262,29 @@ const App: React.FC = () => {
         return true;
     });
 
-    if (activePopups.length > 0) {
-        const p = activePopups[0];
-        setAlertConfig({
-            isOpen: true,
-            title: p.title,
-            message: p.message,
-            type: p.type,
-            copyableText: p.copyableText,
-            actionText: p.actionText,
-            actionUrl: p.actionUrl,
-            class: p.class,
-            subject: p.subject,
-            lesson: p.lesson
-        });
+    // Ensure we track when this specific user last saw this specific popup
+    const now = Date.now();
+    for (const p of activePopups) {
+        const popupKey = `custom_popup_${p.title.replace(/\s+/g, '_')}_${state.user.id}`;
+        const lastSeen = parseInt(localStorage.getItem(popupKey) || '0');
+        const intervalMs = p.intervalHours !== undefined ? p.intervalHours * 3600 * 1000 : 14400 * 1000; // Default 4 hours
+
+        if (now - lastSeen > intervalMs) {
+            setAlertConfig({
+                isOpen: true,
+                title: p.title,
+                message: p.message,
+                type: p.type,
+                copyableText: p.copyableText,
+                actionText: p.actionText,
+                actionUrl: p.actionUrl,
+                class: p.class,
+                subject: p.subject,
+                lesson: p.lesson
+            });
+            localStorage.setItem(popupKey, now.toString());
+            break; // Show one at a time
+        }
     }
   }, [state.user?.id, state.settings.adminCustomPopups]);
   const [confirmConfig, setConfirmConfig] = useState<{isOpen: boolean, title: string, message: string, onConfirm: () => void}>({isOpen: false, title: '', message: '', onConfirm: () => {}});
