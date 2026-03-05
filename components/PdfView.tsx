@@ -368,6 +368,14 @@ export const PdfView: React.FC<Props> = ({
                             }
                         }
 
+                        // 1.5. Extract new explicit `.topic-card` blocks
+                        const topicCards = tempDiv.querySelectorAll('.topic-card');
+                        topicCards.forEach(card => {
+                            if (card.outerHTML) {
+                                currentTopicPoints.push(card.outerHTML);
+                            }
+                        });
+
                         // 2. DOM based extraction using TreeWalker
                         const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_ELEMENT, {
                             acceptNode: (node: Element) => {
