@@ -32,10 +32,11 @@ export const SplashScreen: React.FC<Props> = ({ settings, onComplete }) => {
       const newProgress = Math.min(100, Math.floor((currentStep / steps) * 100));
       setProgress(newProgress);
 
-      if (newProgress === 100) {
+      if (newProgress >= 100) {
         clearInterval(timer);
+        setProgress(100);
         // Add a tiny delay at 100% before firing complete
-        setTimeout(onComplete, 400);
+        setTimeout(() => onComplete(), 400);
       }
     }, intervalTime);
 

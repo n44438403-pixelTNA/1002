@@ -62,7 +62,9 @@ const TermsPopup: React.FC<{ onClose: () => void, text?: string }> = ({ onClose,
 const App: React.FC = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('nst_dark_mode') === 'true');
-  const [showSplash, setShowSplash] = useState(true); // NEW
+  const [showSplash, setShowSplash] = useState(() => {
+    return localStorage.getItem('app_has_seen_splash') !== 'true';
+  }); // NEW
 
   // ABANDONMENT DISCOUNT STATE
   const [isFlashSaleActive, setIsFlashSaleActive] = useState(false);
@@ -2084,7 +2086,10 @@ const App: React.FC = () => {
   const isMaintenanceBypassed = sessionStorage.getItem('nst_maintenance_bypassed') === 'true';
 
   if (showSplash && state.settings) {
-      return <SplashScreen settings={state.settings} onComplete={() => setShowSplash(false)} />;
+      return <SplashScreen settings={state.settings} onComplete={() => {
+          localStorage.setItem('app_has_seen_splash', 'true');
+          setShowSplash(false);
+      }} />;
   }
 
   if (state.settings.maintenanceMode && !isMaintenanceBypassed) {
@@ -2139,7 +2144,7 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-    <div className="min-h-screen flex flex-col bg-white font-sans relative pt-[env(safe-area-inset-top,24px)] pb-[env(safe-area-inset-bottom,32px)]">
+    <div className="min-h-screen flex flex-col font-sans relative pt-[env(safe-area-inset-top,24px)] pb-[env(safe-area-inset-bottom,32px)]">
       {/* STATUS BAR BACKGROUND */}
       <div className="fixed top-0 left-0 right-0 h-[env(safe-area-inset-top,24px)] bg-slate-900 z-[100]"></div>
       {/* BOTTOM SAFE AREA BACKGROUND */}

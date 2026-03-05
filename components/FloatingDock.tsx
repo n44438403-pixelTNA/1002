@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Youtube, FileText, CheckSquare, MessageCircle, Trophy, Gamepad2, History, Gift, ShoppingBag, Calendar, Settings, ChevronLeft, Home, Menu, X, Bot } from 'lucide-react';
+import { Youtube, FileText, CheckSquare, MessageCircle, Trophy, Gamepad2, History, Gift, ShoppingBag, Calendar, Settings, ChevronLeft, Home, Menu, X, Bot, Search } from 'lucide-react';
 import { StudentTab, ViewState, SystemSettings } from '../types';
+import { GlobalSearch } from './GlobalSearch';
 
 interface Props {
     onTabSelect: (tab: StudentTab) => void;
@@ -12,6 +13,7 @@ interface Props {
 
 export const FloatingDock: React.FC<Props> = ({ onTabSelect, onGoHome, onGoBack, isStudent, settings }) => {
     const [isMaximized, setIsMaximized] = useState(false);
+    const [showSearch, setShowSearch] = useState(false);
 
     if (!isStudent) return null; 
 
@@ -49,7 +51,14 @@ export const FloatingDock: React.FC<Props> = ({ onTabSelect, onGoHome, onGoBack,
 
     if (!isMaximized) {
         return (
-            <div className="fixed bottom-24 right-4 z-[9999] flex flex-col gap-2 animate-in fade-in slide-in-from-right">
+            <>
+            <div className="fixed bottom-24 right-4 z-[9999] flex flex-col gap-3 animate-in fade-in slide-in-from-right">
+                <button
+                    onClick={() => setShowSearch(true)}
+                    className="w-12 h-12 bg-white rounded-full shadow-lg border border-slate-200 flex items-center justify-center text-blue-600 hover:bg-slate-50 active:scale-90 transition-all"
+                >
+                    <Search size={24} />
+                </button>
                 <button 
                     onClick={() => setIsMaximized(true)} 
                     className="w-12 h-12 bg-blue-600 rounded-full shadow-xl shadow-blue-600/30 flex items-center justify-center text-white hover:bg-blue-700 active:scale-90 transition-all"
@@ -57,6 +66,8 @@ export const FloatingDock: React.FC<Props> = ({ onTabSelect, onGoHome, onGoBack,
                     <Menu size={24} />
                 </button>
             </div>
+            {showSearch && <GlobalSearch onClose={() => setShowSearch(false)} isDarkMode={false} />}
+            </>
         );
     }
 
