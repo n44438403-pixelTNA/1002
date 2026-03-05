@@ -41,6 +41,22 @@ export default defineConfig(({ mode }) => {
                 type: 'image/png',
                 purpose: 'maskable'
               }
+            ],
+            shortcuts: [
+              {
+                name: "Revision Hub",
+                short_name: "Revision",
+                description: "Quickly access your revision notes",
+                url: "/?action=revision",
+                icons: [{ src: "icon-192x192.png", sizes: "192x192" }]
+              },
+              {
+                name: "AI Tutor",
+                short_name: "Ask AI",
+                description: "Ask your AI Tutor a question",
+                url: "/?action=ai",
+                icons: [{ src: "icon-192x192.png", sizes: "192x192" }]
+              }
             ]
           },
           workbox: {

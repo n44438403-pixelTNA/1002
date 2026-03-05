@@ -80,6 +80,10 @@
 }
 
 /* GLOBAL UI STABILITY FIXES */
+body {
+  background-color: #f8fafc; /* Unified light slate background */
+}
+
 button {
   cursor: pointer;
   white-space: normal; /* Force wrapping */
@@ -90,6 +94,11 @@ button {
 .min-h-screen {
   min-height: 100vh;
   overflow-x: hidden; /* Prevent horizontal scroll */
+  background-color: #f8fafc; /* Enforce unified background on root wrapper */
+}
+
+.dark-mode .min-h-screen, .dark-mode body {
+  background-color: #000000 !important;
 }
 
 /* App Logo Watermark positioning */

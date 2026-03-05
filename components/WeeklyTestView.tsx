@@ -22,6 +22,29 @@ export const WeeklyTestView: React.FC<Props> = ({ test, onComplete, onExit }) =>
 
   const safeQuestions = Array.isArray(test.questions) ? test.questions : [];
 
+  // Screen Wake Lock
+  useEffect(() => {
+    let wakeLock: any = null;
+
+    const requestWakeLock = async () => {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await (navigator as any).wakeLock.request('screen');
+        }
+      } catch (err) {
+        // console.error(`${err.name}, ${err.message}`);
+      }
+    };
+
+    requestWakeLock();
+
+    return () => {
+      if (wakeLock !== null) {
+        wakeLock.release().catch(console.error);
+      }
+    };
+  }, []);
+
   // Initialize Timer
   useEffect(() => {
     const DURATION_SECONDS = (test.durationMinutes || 120) * 60;
