@@ -623,6 +623,24 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                     <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl mt-4 transition-all active:scale-[0.98] shadow-xl shadow-blue-100">
                         Register Now
                     </button>
+
+                    {settings?.showGoogleLogin !== false && (
+                        <div className="space-y-4 mt-6">
+                            <div className="relative flex items-center py-2">
+                                <div className="flex-grow border-t border-slate-100"></div>
+                                <span className="flex-shrink mx-4 text-slate-400 text-[10px] font-bold uppercase tracking-widest">Or register with</span>
+                                <div className="flex-grow border-t border-slate-100"></div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleGoogleAuth}
+                                className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 rounded-2xl border border-slate-200 shadow-sm transition-all active:scale-95"
+                            >
+                                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/smartlock/icon_google.svg" alt="Google" className="w-5 h-5" />
+                                Continue with Google
+                            </button>
+                        </div>
+                    )}
                   </>
               )}
 
