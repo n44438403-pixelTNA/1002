@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, Board, ClassLevel, Stream, SystemSettings, RecoveryRequest } from '../types';
+// Import the list of authorized admin emails
 import { ADMIN_EMAILS } from '../constants';
 import { saveUserToLive, auth, getUserByEmail, getUserByMobileOrId, rtdb, getUserData } from '../firebase';
 import { ref, set } from "firebase/database";

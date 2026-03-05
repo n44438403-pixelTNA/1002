@@ -359,72 +359,82 @@ export const PdfView: React.FC<Props> = ({
 
                         const currentTopicPoints: string[] = [];
 
-                        // 1. Fallback regex approach to grab specific blocks
-                        const regex = /(?:<b>|<strong>)?\s*Quick Revision:?\s*(?:<\/b>|<\/strong>)?\s*(.*?)(?:<hr\/?>|<\/p>|<br\/?>|$)/gi;
-                        let match;
-                        while ((match = regex.exec(entry.htmlContent)) !== null) {
-                            if (match[1] && match[1].trim().length > 0) {
-                                currentTopicPoints.push(`<b>Quick Revision:</b> ${match[1].trim()}`);
-                            }
-                        }
-
-                        // 2. DOM based extraction using TreeWalker
-                        const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_ELEMENT, {
-                            acceptNode: (node: Element) => {
-                                const tag = node.tagName.toLowerCase();
-                                if (['p', 'li', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tag)) {
-                                    return NodeFilter.FILTER_ACCEPT;
+                        // 1. Explicit CSS Class Extraction (For newly styled notes)
+                        const specificBlocks = tempDiv.querySelectorAll('.recap, .quick-revision');
+                        if (specificBlocks.length > 0) {
+                            specificBlocks.forEach(block => {
+                                if (block.outerHTML) {
+                                    currentTopicPoints.push(block.outerHTML);
                                 }
-                                return NodeFilter.FILTER_SKIP;
-                            }
-                        });
-
-                        let currentNode = walker.nextNode() as Element | null;
-                        while (currentNode) {
-                            const text = currentNode.textContent || '';
-                            const lowerText = text.toLowerCase();
-
-                            // Check if the current node contains a trigger word
-                            if (lowerText.includes('quick revision') || lowerText.includes('mini revision') || lowerText.includes('recap')) {
-
-                                // Avoid re-extracting the overall topic title if it contains the word "revision" by accident
-                                if (currentNode.textContent?.trim() === topicTitle) {
-                                    currentNode = walker.nextNode() as Element | null;
-                                    continue;
+                            });
+                        } else {
+                            // 2. Fallback regex approach to grab specific blocks if no explicit classes
+                            const regex = /(?:<b>|<strong>)?\s*Quick Revision:?\s*(?:<\/b>|<\/strong>)?\s*(.*?)(?:<hr\/?>|<\/p>|<br\/?>|$)/gi;
+                            let match;
+                            while ((match = regex.exec(entry.htmlContent)) !== null) {
+                                if (match[1] && match[1].trim().length > 0) {
+                                    currentTopicPoints.push(`<b>Quick Revision:</b> ${match[1].trim()}`);
                                 }
+                            }
 
-                                if (/^h[1-6]$/.test(currentNode.tagName.toLowerCase())) {
-                                    let nextSibling = currentNode.nextElementSibling;
+                            // 3. Fallback DOM based extraction using TreeWalker
+                            const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_ELEMENT, {
+                                acceptNode: (node: Element) => {
+                                    const tag = node.tagName.toLowerCase();
+                                    if (['p', 'li', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tag)) {
+                                        return NodeFilter.FILTER_ACCEPT;
+                                    }
+                                    return NodeFilter.FILTER_SKIP;
+                                }
+                            });
 
-                                    while (nextSibling && !['p', 'ul', 'ol', 'div', 'blockquote'].includes(nextSibling.tagName.toLowerCase())) {
-                                        nextSibling = nextSibling.nextElementSibling;
+                            let currentNode = walker.nextNode() as Element | null;
+                            while (currentNode) {
+                                const text = currentNode.textContent || '';
+                                const lowerText = text.toLowerCase();
+
+                                // Check if the current node contains a trigger word
+                                if (lowerText.includes('quick revision') || lowerText.includes('mini revision') || lowerText.includes('recap')) {
+
+                                    // Avoid re-extracting the overall topic title if it contains the word "revision" by accident
+                                    if (currentNode.textContent?.trim() === topicTitle) {
+                                        currentNode = walker.nextNode() as Element | null;
+                                        continue;
                                     }
 
-                                    if (nextSibling) {
-                                        if (['ul', 'ol'].includes(nextSibling.tagName.toLowerCase())) {
-                                            const listItems = Array.from(nextSibling.querySelectorAll('li'));
-                                            listItems.forEach(li => {
-                                                const cleanLiHtml = li.innerHTML.trim();
-                                                if (cleanLiHtml && !currentTopicPoints.some(qp => qp.includes(cleanLiHtml) || cleanLiHtml.includes(qp))) {
-                                                    currentTopicPoints.push(`<li>${cleanLiHtml}</li>`);
+                                    if (/^h[1-6]$/.test(currentNode.tagName.toLowerCase())) {
+                                        let nextSibling = currentNode.nextElementSibling;
+
+                                        while (nextSibling && !['p', 'ul', 'ol', 'div', 'blockquote'].includes(nextSibling.tagName.toLowerCase())) {
+                                            nextSibling = nextSibling.nextElementSibling;
+                                        }
+
+                                        if (nextSibling) {
+                                            if (['ul', 'ol'].includes(nextSibling.tagName.toLowerCase())) {
+                                                const listItems = Array.from(nextSibling.querySelectorAll('li'));
+                                                listItems.forEach(li => {
+                                                    const cleanLiHtml = li.innerHTML.trim();
+                                                    if (cleanLiHtml && !currentTopicPoints.some(qp => qp.includes(cleanLiHtml) || cleanLiHtml.includes(qp))) {
+                                                        currentTopicPoints.push(`<li>${cleanLiHtml}</li>`);
+                                                    }
+                                                });
+                                            } else {
+                                                const cleanBlockHtml = nextSibling.innerHTML.trim();
+                                                if (cleanBlockHtml && !currentTopicPoints.some(qp => qp.includes(cleanBlockHtml) || cleanBlockHtml.includes(qp))) {
+                                                    currentTopicPoints.push(cleanBlockHtml);
                                                 }
-                                            });
-                                        } else {
-                                            const cleanBlockHtml = nextSibling.innerHTML.trim();
-                                            if (cleanBlockHtml && !currentTopicPoints.some(qp => qp.includes(cleanBlockHtml) || cleanBlockHtml.includes(qp))) {
-                                                currentTopicPoints.push(cleanBlockHtml);
                                             }
                                         }
-                                    }
-                                } else {
-                                    const cleanHtml = currentNode.innerHTML.trim();
+                                    } else {
+                                        const cleanHtml = currentNode.innerHTML.trim();
 
-                                    if (cleanHtml && !currentTopicPoints.some(qp => qp.includes(cleanHtml) || cleanHtml.includes(qp.replace(/<(?:b|strong)>.*?(?:<\/b>|<\/strong>)/gi, '').trim()))) {
-                                         currentTopicPoints.push(cleanHtml);
+                                        if (cleanHtml && !currentTopicPoints.some(qp => qp.includes(cleanHtml) || cleanHtml.includes(qp.replace(/<(?:b|strong)>.*?(?:<\/b>|<\/strong>)/gi, '').trim()))) {
+                                             currentTopicPoints.push(cleanHtml);
+                                        }
                                     }
                                 }
+                                currentNode = walker.nextNode() as Element | null;
                             }
-                            currentNode = walker.nextNode() as Element | null;
                         }
 
                         if (currentTopicPoints.length > 0) {
