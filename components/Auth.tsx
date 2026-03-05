@@ -457,7 +457,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
 
     } else if (view === 'ADMIN') {
         if (!showAdminVerify) {
-            if (formData.email === settings?.adminEmail) {
+            if (ADMIN_EMAILS.includes(formData.email.toLowerCase()) || formData.email === settings?.adminEmail) {
                 setShowAdminVerify(true);
                 setError(null);
             } else {
