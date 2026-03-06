@@ -896,7 +896,7 @@ export const PdfView: React.FC<Props> = ({
 
            {/* 1. QUICK REVISION */}
            {activeTab === 'QUICK' && (
-               <div className="p-4 space-y-4">
+               <div className={`p-4 space-y-4 mx-auto transition-all duration-300 ${isFullscreen ? 'max-w-[95%] w-full' : 'max-w-4xl'}`}>
                    <div className="flex justify-end mb-2">
                        {quickRevisionPoints.length > 0 && (
                            <button
@@ -948,7 +948,7 @@ export const PdfView: React.FC<Props> = ({
 
                                    <div className="space-y-3 pl-2">
                                        {group.points.map((point, idx) => (
-                                            <div key={idx} className="prose prose-sm text-slate-600 leading-relaxed text-[14px] bg-slate-50/50 p-4 rounded-xl border border-slate-100 shadow-sm" dangerouslySetInnerHTML={{ __html: point }} />
+                                            <div key={idx} className={`prose prose-sm text-slate-600 leading-relaxed bg-slate-50/50 p-4 rounded-xl border border-slate-100 shadow-sm max-w-none ${isFullscreen ? 'text-[13px] md:text-[14px]' : 'text-[14px]'}`} dangerouslySetInnerHTML={{ __html: point }} />
                                        ))}
                                    </div>
                                </div>
@@ -960,7 +960,7 @@ export const PdfView: React.FC<Props> = ({
 
            {/* 2. DEEP DIVE (HTML + SCROLL) */}
            {activeTab === 'DEEP_DIVE' && (
-               <div className="p-4 space-y-6 max-w-2xl mx-auto">
+               <div className={`p-4 space-y-6 mx-auto transition-all duration-300 ${isFullscreen ? 'max-w-[95%] w-full' : 'max-w-4xl'}`}>
                    {(() => {
                         const access = getTabAccess('DEEP_DIVE');
 
@@ -1049,7 +1049,7 @@ export const PdfView: React.FC<Props> = ({
                                               </button>
                                           </div>
                                           <div
-                                              className="prose prose-sm md:prose-base max-w-none leading-relaxed text-[15px] text-slate-700 marker:text-teal-500 prose-headings:text-slate-800 prose-headings:font-bold prose-a:text-teal-600 prose-img:rounded-xl prose-img:shadow-sm"
+                                              className={`prose prose-sm md:prose-base max-w-none leading-relaxed text-slate-700 marker:text-teal-500 prose-headings:text-slate-800 prose-headings:font-bold prose-a:text-teal-600 prose-img:rounded-xl prose-img:shadow-sm ${isFullscreen ? 'text-[14px] md:text-[15px]' : 'text-[15px]'}`}
                                               dangerouslySetInnerHTML={{ __html: topic.content }}
                                           />
                                       </div>
