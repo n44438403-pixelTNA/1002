@@ -4,7 +4,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { Chapter, User, Subject, SystemSettings, HtmlModule, PremiumNoteSlot, DeepDiveEntry, AdditionalNoteEntry } from '../types';
-import { FileText, Lock, ArrowLeft, Crown, Star, CheckCircle, AlertCircle, Globe, Maximize, Layers, HelpCircle, Minus, Plus, Volume2, Square, Zap, Headphones, BookOpen, Music, Play, Pause, SkipForward, SkipBack, Book, List, Layout, ExternalLink } from 'lucide-react';
+import { FileText, Lock, ArrowLeft, Crown, Star, CheckCircle, AlertCircle, Globe, Maximize, Minimize, Layers, HelpCircle, Minus, Plus, Volume2, Square, Zap, Headphones, BookOpen, Music, Play, Pause, SkipForward, SkipBack, Book, List, Layout, ExternalLink } from 'lucide-react';
 import { CustomAlert } from './CustomDialogs';
 import { getChapterData, saveUserToLive } from '../firebase';
 import { CreditConfirmationModal } from './CreditConfirmationModal';
@@ -281,11 +281,23 @@ export const PdfView: React.FC<Props> = ({
   };
 
   const pdfContainerRef = useRef<HTMLDivElement>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+      const handleFullscreenChange = () => {
+          setIsFullscreen(!!document.fullscreenElement);
+      };
+      document.addEventListener('fullscreenchange', handleFullscreenChange);
+      return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
   const toggleFullScreen = () => {
       if (!document.fullscreenElement) {
-          pdfContainerRef.current?.requestFullscreen().catch(err => console.error(err));
+          pdfContainerRef.current?.requestFullscreen().catch(err => console.error("Error attempting to enable full-screen mode:", err));
       } else {
-          document.exitFullscreen();
+          if (document.exitFullscreen) {
+              document.exitFullscreen();
+          }
       }
   };
 
@@ -812,7 +824,7 @@ export const PdfView: React.FC<Props> = ({
 
   // --- NEW TABBED VIEW ---
   return (
-    <div className="bg-slate-50 min-h-screen pb-20 animate-in fade-in slide-in-from-right-8">
+    <div ref={pdfContainerRef} className={`bg-slate-50 min-h-screen pb-20 animate-in fade-in slide-in-from-right-8 ${isFullscreen ? 'overflow-y-auto' : ''}`}>
        <CustomAlert
            isOpen={alertConfig.isOpen}
            message={alertConfig.message}
@@ -834,9 +846,14 @@ export const PdfView: React.FC<Props> = ({
                          <button onClick={() => setSyllabusMode('COMPETITION')} className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${syllabusMode === 'COMPETITION' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-500'}`}>Competition</button>
                        </div>
                      </div>
-                     <button onClick={handleShare} className="p-2 bg-slate-50 text-slate-600 hover:bg-slate-100 rounded-xl transition-colors shrink-0 border border-slate-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                     </button>
+                     <div className="flex items-center gap-2">
+                         <button onClick={toggleFullScreen} className="p-2 bg-slate-50 text-slate-600 hover:bg-slate-100 rounded-xl transition-colors shrink-0 border border-slate-200" title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}>
+                             {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
+                         </button>
+                         <button onClick={handleShare} className="p-2 bg-slate-50 text-slate-600 hover:bg-slate-100 rounded-xl transition-colors shrink-0 border border-slate-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                         </button>
+                     </div>
                    </div>
                </div>
            </div>
