@@ -779,11 +779,11 @@ export const PdfView: React.FC<Props> = ({
                       </div>
                   ) : (
                       // TEXT ONLY VIEW (Light Mode Reader)
-                      <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50">
+                      <div className="flex-1 overflow-y-auto p-2 md:p-8 bg-slate-50">
                           <div className="max-w-full md:max-w-4xl w-full mx-auto pt-16 pb-20">
-                              <div className="bg-white rounded-xl md:rounded-3xl p-6 md:p-10 shadow-sm border border-slate-200/60">
-                                  <h1 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 pb-6 border-b-2 border-slate-100 leading-tight">{activeNoteContent.title}</h1>
-                                  <div className="prose prose-slate prose-base md:prose-lg max-w-none leading-loose text-[15px] md:text-[17px] text-slate-800 marker:text-blue-500 prose-headings:text-slate-900 prose-headings:font-bold prose-a:text-blue-600 prose-p:mb-6 prose-ul:mb-6 prose-li:my-2" dangerouslySetInnerHTML={{ __html: activeNoteContent.content }} />
+                              <div className="bg-white rounded-xl md:rounded-3xl p-5 md:p-10 shadow-sm border border-slate-200/60">
+                                  <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-8 pb-6 border-b-2 border-slate-100 leading-snug">{activeNoteContent.title}</h1>
+                                  <div className="prose prose-slate prose-lg md:prose-xl max-w-none leading-[1.9] text-[18px] md:text-[20px] text-slate-800 marker:text-blue-500 prose-headings:text-slate-900 prose-headings:font-extrabold prose-a:text-blue-600 prose-p:mb-8 prose-ul:mb-8 prose-li:my-3" dangerouslySetInnerHTML={{ __html: activeNoteContent.content }} />
                               </div>
                           </div>
                       </div>
@@ -932,7 +932,7 @@ export const PdfView: React.FC<Props> = ({
                                    <div className="absolute top-0 left-0 w-1 h-full bg-yellow-400"></div>
 
                                    <div className="flex justify-between items-start mb-4">
-                                       <h3 className="font-black text-slate-800 text-lg pr-8">{group.title}</h3>
+                                       <h3 className="font-black text-slate-900 text-[20px] md:text-[24px] leading-tight pr-8">{group.title}</h3>
                                        <button
                                            onClick={() => {
                                                stopAllSpeech();
@@ -947,9 +947,9 @@ export const PdfView: React.FC<Props> = ({
                                        </button>
                                    </div>
 
-                                   <div className="space-y-3 pl-2">
+                                   <div className="space-y-4 pl-0 md:pl-2">
                                        {group.points.map((point, idx) => (
-                                            <div key={idx} className={`prose prose-base text-slate-700 leading-loose bg-slate-50/50 p-4 md:p-5 rounded-2xl border border-slate-200/50 shadow-sm max-w-none ${isFullscreen ? 'text-[15px] md:text-[16px]' : 'text-[15px]'}`} dangerouslySetInnerHTML={{ __html: point }} />
+                                            <div key={idx} className={`prose prose-lg text-slate-800 leading-[1.8] bg-slate-50/50 p-5 md:p-6 rounded-2xl border border-slate-200/50 shadow-sm max-w-none ${isFullscreen ? 'text-[17px] md:text-[18px]' : 'text-[17px]'}`} dangerouslySetInnerHTML={{ __html: point }} />
                                        ))}
                                    </div>
                                </div>
@@ -1047,12 +1047,12 @@ export const PdfView: React.FC<Props> = ({
                                                       </span>
                                                   )}
                                                   <div className="flex items-center gap-2 mt-1">
-                                                      <h4 className="text-[16px] md:text-lg font-black text-slate-800 leading-tight">{topic.title}</h4>
+                                                      <h4 className="text-[18px] md:text-[22px] font-black text-slate-900 leading-snug">{topic.title}</h4>
                                                       <button
-                                                          className="text-slate-400 hover:text-slate-700 bg-slate-50 rounded-md p-0.5"
+                                                          className="text-slate-400 hover:text-slate-700 bg-slate-50 rounded-md p-1"
                                                           title="Toggle Content"
                                                       >
-                                                          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                                          {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                                                       </button>
                                                   </div>
                                               </div>
@@ -1075,9 +1075,9 @@ export const PdfView: React.FC<Props> = ({
 
                                           {/* ACCORDION CONTENT */}
                                           {isExpanded && (
-                                              <div className="p-4 md:p-8 bg-slate-50/50">
+                                              <div className="p-5 md:p-8 bg-slate-50/50">
                                                   <div
-                                                      className={`prose prose-base md:prose-lg max-w-none leading-loose text-slate-800 marker:text-teal-500 prose-headings:text-slate-900 prose-headings:font-extrabold prose-headings:text-lg prose-a:text-teal-600 prose-img:rounded-2xl prose-img:shadow-md prose-p:mb-6 prose-ul:mb-6 prose-li:my-2 ${isFullscreen ? 'text-[15px] md:text-[17px]' : 'text-[16px]'}`}
+                                                      className={`prose prose-lg md:prose-xl max-w-none leading-[1.8] text-slate-800 marker:text-teal-500 prose-headings:text-slate-900 prose-headings:font-extrabold prose-headings:text-xl prose-a:text-teal-600 prose-img:rounded-2xl prose-img:shadow-md prose-p:mb-8 prose-ul:mb-8 prose-li:my-3 ${isFullscreen ? 'text-[17px] md:text-[18px]' : 'text-[17px]'}`}
                                                       dangerouslySetInnerHTML={{ __html: topic.content }}
                                                   />
                                               </div>
