@@ -39,6 +39,7 @@ import { BrainCircuit, Globe, LogOut, LayoutDashboard, BookOpen, Headphones, Hel
 import { SUPPORT_EMAIL, APP_VERSION, ADMIN_EMAILS } from './constants';
 import { StudentTab, PendingReward, MCQResult, SubscriptionHistoryEntry } from './types';
 import { storage } from './utils/storage';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const TermsPopup: React.FC<{ onClose: () => void, text?: string }> = ({ onClose, text }) => (
     <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300">
@@ -2144,7 +2145,7 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-    <div className="min-h-screen flex flex-col font-sans relative pt-[env(safe-area-inset-top,24px)] pb-[env(safe-area-inset-bottom,32px)]">
+    <div className="min-h-screen flex flex-col bg-slate-50 font-sans relative pt-[env(safe-area-inset-top,24px)] pb-[env(safe-area-inset-bottom,32px)]">
       {/* STATUS BAR BACKGROUND */}
       <div className="fixed top-0 left-0 right-0 h-[env(safe-area-inset-top,24px)] bg-slate-900 z-[100]"></div>
       {/* BOTTOM SAFE AREA BACKGROUND */}
@@ -2250,7 +2251,16 @@ const App: React.FC = () => {
       </header>
       )}
 
-      <main className={`flex-1 w-full max-w-6xl mx-auto ${isFullScreen ? 'p-0' : 'p-4 mb-8'}`}>
+      <main className={`flex-1 w-full max-w-6xl mx-auto ${isFullScreen ? 'p-0' : 'p-4 mb-8'} flex flex-col`}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={state.view + (state.user ? 'logged_in' : 'logged_out')}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="flex-1 w-full flex flex-col relative"
+          >
         {!state.user ? (
             <Auth onLogin={handleLogin} logActivity={logActivity} />
         ) : (
@@ -2321,6 +2331,8 @@ const App: React.FC = () => {
             </>
             </ErrorBoundary>
         )}
+          </motion.div>
+        </AnimatePresence>
       </main>
       
       {/* PERSISTENT FOOTER - Hide in Student Dashboard as it has its own Bottom Nav */}
@@ -2372,6 +2384,8 @@ const App: React.FC = () => {
           />
       )}
       
+      {activeReward && <RewardPopup reward={activeReward} onClaim={handleClaimReward} onIgnore={handleIgnoreReward} />}
+
       {/* FLOATING DOCK */}
       {state.user && !activeWeeklyTest && !isFullScreen && (
           <FloatingDock 
@@ -2382,9 +2396,6 @@ const App: React.FC = () => {
             settings={state.settings}
           />
       )}
-
-      
-      {activeReward && <RewardPopup reward={activeReward} onClaim={handleClaimReward} onIgnore={handleIgnoreReward} />}
       
       {/* POPUP QUEUE MANAGER */}
       {/* {popupQueue.length > 0 && !showPremiumModal && !activeWeeklyTest && (
