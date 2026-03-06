@@ -4,7 +4,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { Chapter, User, Subject, SystemSettings, HtmlModule, PremiumNoteSlot, DeepDiveEntry, AdditionalNoteEntry } from '../types';
-import { FileText, Lock, ArrowLeft, Crown, Star, CheckCircle, AlertCircle, Globe, Maximize, Minimize, Layers, HelpCircle, Minus, Plus, Volume2, Square, Zap, Headphones, BookOpen, Music, Play, Pause, SkipForward, SkipBack, Book, List, Layout, ExternalLink } from 'lucide-react';
+import { FileText, Lock, ArrowLeft, Crown, Star, CheckCircle, AlertCircle, Globe, Maximize, Minimize, Layers, HelpCircle, Minus, Plus, Volume2, Square, Zap, Headphones, BookOpen, Music, Play, Pause, SkipForward, SkipBack, Book, List, Layout, ExternalLink, ChevronUp, ChevronDown, StopCircle } from 'lucide-react';
 import { CustomAlert } from './CustomDialogs';
 import { getChapterData, saveUserToLive } from '../firebase';
 import { CreditConfirmationModal } from './CreditConfirmationModal';
@@ -126,6 +126,7 @@ export const PdfView: React.FC<Props> = ({
   // DEEP DIVE STATE
   const [isDeepDiveMode, setIsDeepDiveMode] = useState(false);
   const [deepDiveTopics, setDeepDiveTopics] = useState<{ title: string, content: string }[]>([]);
+  const [expandedTopics, setExpandedTopics] = useState<Record<number, boolean>>({});
   const [activeTopicIndex, setActiveTopicIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [topicSpeakingState, setTopicSpeakingState] = useState<number | null>(null); // Index of topic currently speaking
@@ -854,10 +855,10 @@ export const PdfView: React.FC<Props> = ({
            {/* TABS */}
            <div className="flex overflow-x-auto border-t border-slate-100 scrollbar-hide">
                {[
-                   { id: 'QUICK', label: 'Quick', icon: Zap },
-                   { id: 'DEEP_DIVE', label: 'Concept', icon: BookOpen },
-                   { id: 'PREMIUM', label: 'Retention', icon: Crown },
-                   { id: 'RESOURCES', label: 'Extended', icon: Layers }
+                   { id: 'QUICK', label: 'Quick Notes', icon: Zap },
+                   { id: 'DEEP_DIVE', label: 'Detailed Concept', icon: BookOpen },
+                   { id: 'PREMIUM', label: 'Memory Mode', icon: Crown },
+                   { id: 'RESOURCES', label: 'Extra', icon: Layers }
                        ].map(tab => {
                            const { hasAccess, cost } = getTabAccess(tab.id);
                            const isLocked = !hasAccess;
@@ -1021,37 +1022,66 @@ export const PdfView: React.FC<Props> = ({
 
                                {deepDiveTopics.map((topic, idx) => {
                                   const isActive = topicSpeakingState === idx;
+                                  const isExpanded = expandedTopics[idx] ?? true; // Default open for now, or true for first, false for others
+
                                   return (
                                       <div
                                           id={`topic-card-${idx}`}
                                           key={idx}
-                                          className={`bg-white rounded-2xl p-6 shadow-sm border-2 transition-all ${isActive ? 'border-teal-400 ring-2 ring-teal-100 scale-[1.01]' : 'border-transparent'}`}
+                                          className={`bg-white rounded-xl shadow-sm border border-slate-200 transition-all overflow-hidden ${isActive ? 'border-teal-400 ring-2 ring-teal-100' : ''}`}
                                       >
-                                          <div className="flex justify-between items-start mb-4 border-b border-slate-100 pb-2">
-                                              <div>
+                                          {/* STICKY HEADER WITH ACCORDION */}
+                                          <div
+                                            className="sticky top-0 z-10 bg-white border-b border-slate-100 p-4 md:p-5 flex justify-between items-start cursor-pointer hover:bg-slate-50 transition-colors"
+                                            onClick={() => setExpandedTopics(prev => ({...prev, [idx]: !isExpanded}))}
+                                          >
+                                              <div className="flex-1 pr-4">
                                                   {idx === 0 && topic.title !== "Introduction" && (
-                                                      <span className="text-[10px] font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded mb-1 inline-block">
-                                                          CHAPTER DEEP DIVE
+                                                      <span className="text-[10px] font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded mb-1 inline-block uppercase">
+                                                          Deep Dive Concept
                                                       </span>
                                                   )}
                                                   {idx > 0 && (
-                                                      <span className="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded mb-1 inline-block">
-                                                          TOPIC {idx}
+                                                      <span className="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded mb-1 inline-block uppercase">
+                                                          Topic {idx}
                                                       </span>
                                                   )}
-                                                  <h4 className="text-lg font-black text-slate-800">{topic.title}</h4>
+                                                  <div className="flex items-center gap-2 mt-1">
+                                                      <h4 className="text-[16px] md:text-lg font-black text-slate-800 leading-tight">{topic.title}</h4>
+                                                      <button
+                                                          className="text-slate-400 hover:text-slate-700 bg-slate-50 rounded-md p-0.5"
+                                                          title="Toggle Content"
+                                                      >
+                                                          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                                      </button>
+                                                  </div>
                                               </div>
                                               <button
-                                                  onClick={() => handleTopicPlay(idx)}
-                                                  className={`p-2 rounded-full transition-colors ${isActive ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-600 hover:bg-teal-50 hover:text-teal-600'}`}
+                                                  onClick={(e) => {
+                                                      e.stopPropagation(); // Don't trigger accordion when clicking play
+                                                      handleTopicPlay(idx);
+                                                      // Auto-expand when playing if it's not already active
+                                                      if (!isActive) {
+                                                          setExpandedTopics(prev => ({...prev, [idx]: true}));
+                                                      }
+                                                  }}
+                                                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 flex-shrink-0 ${isActive ? 'bg-teal-500 text-white shadow-md animate-pulse' : 'bg-slate-100 text-slate-600 hover:bg-teal-50 hover:text-teal-700'}`}
+                                                  title={isActive ? "Stop Reading" : "Listen"}
                                               >
-                                                  {isActive ? <Pause size={20} /> : <Volume2 size={20} />}
+                                                  {isActive ? <Pause size={14} /> : <Play size={14} />}
+                                                  <span className="hidden sm:inline">{isActive ? 'Stop' : 'Listen'}</span>
                                               </button>
                                           </div>
-                                          <div
-                                              className={`prose prose-sm md:prose-base max-w-none leading-relaxed text-slate-700 marker:text-teal-500 prose-headings:text-slate-800 prose-headings:font-bold prose-a:text-teal-600 prose-img:rounded-xl prose-img:shadow-sm ${isFullscreen ? 'text-[14px] md:text-[15px]' : 'text-[15px]'}`}
-                                              dangerouslySetInnerHTML={{ __html: topic.content }}
-                                          />
+
+                                          {/* ACCORDION CONTENT */}
+                                          {isExpanded && (
+                                              <div className="p-4 md:p-6 bg-slate-50/50">
+                                                  <div
+                                                      className={`prose prose-sm md:prose-base max-w-none leading-[1.8] text-slate-700 marker:text-teal-500 prose-headings:text-slate-800 prose-headings:font-bold prose-headings:text-base prose-a:text-teal-600 prose-img:rounded-xl prose-img:shadow-sm ${isFullscreen ? 'text-[14px] md:text-[15px]' : 'text-[15px]'}`}
+                                                      dangerouslySetInnerHTML={{ __html: topic.content }}
+                                                  />
+                                              </div>
+                                          )}
                                       </div>
                                   );
                               })}
