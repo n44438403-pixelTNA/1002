@@ -81,7 +81,19 @@
 
 /* GLOBAL UI STABILITY FIXES */
 body {
-  background-color: #f8fafc; /* Unified light slate background */
+  background-color: #e2e8f0; /* Darker slate background for desktop to show app boundaries */
+  display: flex;
+  justify-content: center;
+}
+
+#root {
+  width: 100%;
+  max-width: 480px; /* Mobile app maximum width */
+  min-height: 100vh;
+  background-color: #f8fafc; /* App background */
+  box-shadow: 0 0 40px rgba(0,0,0,0.1); /* Shadow to separate from desktop background */
+  position: relative;
+  overflow-x: hidden;
 }
 
 button {
@@ -94,7 +106,7 @@ button {
 .min-h-screen {
   min-height: 100vh;
   overflow-x: hidden; /* Prevent horizontal scroll */
-  background-color: #f8fafc; /* Enforce unified background on root wrapper */
+  background-color: inherit;
 }
 
 .dark-mode .min-h-screen, .dark-mode body {
