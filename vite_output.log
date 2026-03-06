@@ -9,3 +9,6 @@ Port 5000 is in use, trying another one...
   ➜  Local:   http://localhost:5001/
   ➜  Network: http://192.168.0.2:5001/
 [BABEL] Note: The code generator has deoptimised the styling of /app/components/AdminDashboard.tsx as it exceeds the max of 500KB.
+7:20:14 PM [vite] (client) hmr update /index.css?direct, /index.css
+7:20:20 PM [vite] (client) page reload index.html
+7:21:13 PM [vite] (client) hmr update /components/StudentDashboard.tsx

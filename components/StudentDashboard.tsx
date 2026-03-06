@@ -147,7 +147,9 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
           const updatedUser = { ...user, photoURL: newUrl };
           localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
 
-          // Tell parent or state to re-render (since user is a prop, we rely on the listener in App.tsx to catch the Firestore change, which we did in firebase.ts)
+          // Tell parent or state to re-render
+          // Since user is a prop and the sync can take a second, force reload to immediately show the picture
+          window.location.reload();
       } catch (e) {
           console.error("Failed to upload profile picture:", e);
           alert("Failed to upload profile picture. Try again.");
