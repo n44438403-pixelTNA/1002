@@ -21,6 +21,8 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode, onOpenAiTut
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [speaking, setSpeaking] = useState<string | null>(null);
+  const [translatedTexts, setTranslatedTexts] = useState<Record<string, string>>({});
+  const [translating, setTranslating] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -54,16 +56,16 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode, onOpenAiTut
       }
 
       if (data.query?.search?.length > 0) {
-        // Fetch detailed extracts for top 3 results
+        // Fetch detailed extracts for top 3 results (removed exintro=1 to get full article)
         const pageIds = data.query.search.slice(0, 3).map((r: any) => r.pageid).join('|');
         const detailResponse = await fetch(
-          `https://${lang}.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages&exintro=1&explaintext=1&piprop=thumbnail&pithumbsize=200&pageids=${pageIds}&format=json&origin=*`
+          `https://${lang}.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages&explaintext=1&piprop=thumbnail&pithumbsize=200&pageids=${pageIds}&format=json&origin=*`
         );
         const detailData = await detailResponse.json();
 
         const detailedResults = Object.values(detailData.query.pages) as WikipediaResult[];
-        // Add lang to result if needed or just display
         setResults(detailedResults);
+        setTranslatedTexts({}); // Reset translations on new search
       } else {
         setResults([]);
         setError("No results found. Try a different topic.");
@@ -96,6 +98,30 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode, onOpenAiTut
 
     setSpeaking(id);
     window.speechSynthesis.speak(utterance);
+  };
+
+  const translateToHindi = async (text: string, id: string) => {
+    if (translatedTexts[id]) {
+      // Toggle back to English (or just remove translation state)
+      const newTranslations = { ...translatedTexts };
+      delete newTranslations[id];
+      setTranslatedTexts(newTranslations);
+      return;
+    }
+
+    setTranslating(id);
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=hi&dt=t&q=${encodeURIComponent(text)}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const translated = data[0].map((x: any) => x[0]).join('');
+      setTranslatedTexts(prev => ({ ...prev, [id]: translated }));
+    } catch (err) {
+      console.error("Translation error:", err);
+      // Optional: show a small error toast or ignore
+    } finally {
+      setTranslating(null);
+    }
   };
 
   useEffect(() => {
@@ -177,7 +203,7 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode, onOpenAiTut
                         <div className="flex-1">
                           <h3 className="text-xl font-bold text-slate-900 mb-2">{res.title}</h3>
                           <p className="text-slate-600 leading-relaxed text-sm whitespace-pre-wrap">
-                            {res.extract}
+                            {translatedTexts[res.pageid] || res.extract}
                           </p>
                         </div>
                         {res.thumbnail && (
@@ -189,9 +215,9 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode, onOpenAiTut
                         )}
                       </div>
 
-                      <div className="mt-4 pt-4 border-t border-slate-200 flex items-center gap-3">
+                      <div className="mt-4 pt-4 border-t border-slate-200 flex items-center gap-3 flex-wrap">
                         <button
-                          onClick={() => speakText(res.extract, res.pageid.toString())}
+                          onClick={() => speakText(translatedTexts[res.pageid] || res.extract, res.pageid.toString())}
                           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                             speaking === res.pageid.toString()
                               ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-300'
@@ -200,6 +226,24 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode, onOpenAiTut
                         >
                           <Volume2 size={16} className={speaking === res.pageid.toString() ? 'animate-pulse' : ''} />
                           {speaking === res.pageid.toString() ? 'Stop Listening' : 'Listen'}
+                        </button>
+
+                        <button
+                          onClick={() => translateToHindi(res.extract, res.pageid.toString())}
+                          disabled={translating === res.pageid.toString()}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                            translatedTexts[res.pageid]
+                              ? 'bg-emerald-100 text-emerald-700 ring-2 ring-emerald-300'
+                              : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                          } ${translating === res.pageid.toString() ? 'opacity-70 cursor-wait' : ''}`}
+                        >
+                          <span className="font-serif">अ</span>
+                          {translating === res.pageid.toString()
+                            ? 'Translating...'
+                            : translatedTexts[res.pageid]
+                              ? 'Show English'
+                              : 'Translate to Hindi'
+                          }
                         </button>
                       </div>
                     </motion.div>

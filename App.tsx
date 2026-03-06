@@ -26,6 +26,8 @@ import { RulesPage } from './components/RulesPage';
 import { IICPage } from './components/IICPage';
 import { WeeklyTestView } from './components/WeeklyTestView';
 import { FloatingDock } from './components/FloatingDock';
+import { FloatingSearchButton } from './components/FloatingSearchButton';
+import { GlobalSearch } from './components/GlobalSearch';
 import { FloatingActionMenu } from './components/FloatingActionMenu';
 import { RewardPopup } from './components/RewardPopup';
 import { CreditConfirmationModal } from './components/CreditConfirmationModal';
@@ -69,6 +71,7 @@ const App: React.FC = () => {
 
   // ABANDONMENT DISCOUNT STATE
   const [isFlashSaleActive, setIsFlashSaleActive] = useState(false);
+  const [showGlobalSearch, setShowGlobalSearch] = useState(false);
 
   useEffect(() => {
       // Check Discount Logic Periodically
@@ -2328,6 +2331,27 @@ const App: React.FC = () => {
                         onToggleAutoTts={handleToggleAutoTts}
                     />
                 )}
+
+        {/* Global Search Button & Modal */}
+        {state.user && !state.activeWeeklyTest && !isFullScreen && (
+          <>
+            <FloatingSearchButton
+              onClick={() => setShowGlobalSearch(true)}
+              isDarkMode={isDarkMode}
+            />
+            {showGlobalSearch && (
+              <GlobalSearch
+                onClose={() => setShowGlobalSearch(false)}
+                isDarkMode={isDarkMode}
+                onOpenAiTutor={() => {
+                   if (state.user?.role === 'STUDENT' || state.originalAdmin) {
+                     setState(s => ({...s, view: 'STUDENT_DASHBOARD'}));
+                   }
+                }}
+              />
+            )}
+          </>
+        )}
             </>
             </ErrorBoundary>
         )}
