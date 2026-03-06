@@ -176,8 +176,8 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode, onOpenAiTut
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <h3 className="text-xl font-bold text-slate-900 mb-2">{res.title}</h3>
-                          <p className="text-slate-600 leading-relaxed text-sm">
-                            {res.extract.length > 300 ? res.extract.substring(0, 300) + '...' : res.extract}
+                          <p className="text-slate-600 leading-relaxed text-sm whitespace-pre-wrap">
+                            {res.extract}
                           </p>
                         </div>
                         {res.thumbnail && (
@@ -201,15 +201,6 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode, onOpenAiTut
                           <Volume2 size={16} className={speaking === res.pageid.toString() ? 'animate-pulse' : ''} />
                           {speaking === res.pageid.toString() ? 'Stop Listening' : 'Listen'}
                         </button>
-
-                        <a
-                          href={`https://en.wikipedia.org/?curid=${res.pageid}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-sm font-bold text-blue-600 hover:text-blue-800 underline-offset-4 hover:underline"
-                        >
-                          Read Full Article →
-                        </a>
                       </div>
                     </motion.div>
                   ))}
