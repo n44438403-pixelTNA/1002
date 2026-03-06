@@ -40,3 +40,11 @@
 7:20:14 PM [vite] (client) hmr update /index.css?direct, /index.css
 7:20:20 PM [vite] (client) page reload index.html
 7:21:13 PM [vite] (client) hmr update /components/StudentDashboard.tsx
+11:41:25 PM [vite] (client) hmr update /index.css?direct, /index.css
+11:41:29 PM [vite] (client) page reload index.html
+11:41:58 PM [vite] (client) hmr update /index.css?direct, /index.css
+11:42:25 PM [vite] (client) hmr update /components/PdfView.tsx
+11:42:30 PM [vite] (client) hmr update /components/PdfView.tsx
+11:42:34 PM [vite] (client) hmr update /components/PdfView.tsx
+11:42:39 PM [vite] (client) hmr update /components/PdfView.tsx
+11:43:07 PM [vite] (client) hmr update /index.css?direct, /index.css

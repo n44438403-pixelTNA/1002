@@ -780,10 +780,10 @@ export const PdfView: React.FC<Props> = ({
                   ) : (
                       // TEXT ONLY VIEW (Light Mode Reader)
                       <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50">
-                          <div className="max-w-full md:max-w-4xl w-full mx-auto pt-16 pb-20">
-                              <div className="bg-white rounded-xl md:rounded-3xl p-6 md:p-10 shadow-sm border border-slate-200/60">
-                                  <h1 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 pb-6 border-b-2 border-slate-100 leading-tight">{activeNoteContent.title}</h1>
-                                  <div className="prose prose-slate prose-base md:prose-lg max-w-none leading-loose text-[15px] md:text-[17px] text-slate-800 marker:text-blue-500 prose-headings:text-slate-900 prose-headings:font-bold prose-a:text-blue-600 prose-p:mb-6 prose-ul:mb-6 prose-li:my-2" dangerouslySetInnerHTML={{ __html: activeNoteContent.content }} />
+                          <div className="max-w-full w-full mx-auto pt-16 pb-20 reading-mode">
+                              <div className="bg-white rounded-2xl md:rounded-[14px] p-6 md:p-[18px] shadow-[0_2px_8px_rgba(0,0,0,0.05)] border border-slate-200/60 mb-4 note-card">
+                                  <h1 className="font-semibold text-slate-900 mb-4 pb-4 border-b border-slate-100 leading-tight text-[22px]">{activeNoteContent.title}</h1>
+                                  <div className="prose prose-slate max-w-none note-text text-slate-800 marker:text-blue-500 prose-headings:text-slate-900 prose-headings:font-semibold prose-a:text-blue-600 prose-p:mb-4 prose-ul:mb-4 prose-li:my-2" dangerouslySetInnerHTML={{ __html: activeNoteContent.content }} />
                               </div>
                           </div>
                       </div>
@@ -947,9 +947,9 @@ export const PdfView: React.FC<Props> = ({
                                        </button>
                                    </div>
 
-                                   <div className="space-y-3 pl-2">
+                                   <div className="space-y-[12px] pl-2">
                                        {group.points.map((point, idx) => (
-                                            <div key={idx} className={`prose prose-base text-slate-700 leading-loose bg-slate-50/50 p-4 md:p-5 rounded-2xl border border-slate-200/50 shadow-sm max-w-none ${isFullscreen ? 'text-[15px] md:text-[16px]' : 'text-[15px]'}`} dangerouslySetInnerHTML={{ __html: point }} />
+                                            <div key={idx} className={`prose prose-base text-slate-700 bg-slate-50/50 p-[14px] rounded-[10px] border border-slate-200/50 max-w-none note-section note-text ${isFullscreen ? 'text-[16px]' : 'text-[16px]'}`} dangerouslySetInnerHTML={{ __html: point }} />
                                        ))}
                                    </div>
                                </div>
@@ -961,7 +961,7 @@ export const PdfView: React.FC<Props> = ({
 
            {/* 2. DEEP DIVE (HTML + SCROLL) */}
            {activeTab === 'DEEP_DIVE' && (
-               <div className={`p-4 md:p-6 space-y-6 mx-auto transition-all duration-300 ${isFullscreen ? 'max-w-full px-4 md:max-w-[95%] w-full' : 'max-w-4xl'}`}>
+               <div className={`p-[16px] space-y-[16px] mx-auto transition-all duration-300 ${isFullscreen ? 'max-w-full w-full reading-mode' : 'max-w-[600px] reading-mode'}`}>
                    {(() => {
                         const access = getTabAccess('DEEP_DIVE');
 
@@ -1075,9 +1075,9 @@ export const PdfView: React.FC<Props> = ({
 
                                           {/* ACCORDION CONTENT */}
                                           {isExpanded && (
-                                              <div className="p-4 md:p-6 bg-slate-50/50">
+                                              <div className="p-[18px] bg-slate-50/50 rounded-b-[14px]">
                                                   <div
-                                                      className={`prose prose-sm md:prose-base max-w-none leading-[1.8] text-slate-700 marker:text-teal-500 prose-headings:text-slate-800 prose-headings:font-bold prose-headings:text-base prose-a:text-teal-600 prose-img:rounded-xl prose-img:shadow-sm ${isFullscreen ? 'text-[14px] md:text-[15px]' : 'text-[15px]'}`}
+                                                      className={`prose prose-sm md:prose-base max-w-none note-text text-slate-700 marker:text-teal-500 prose-headings:text-slate-800 prose-headings:font-semibold prose-a:text-teal-600 prose-img:rounded-[12px] prose-img:shadow-sm ${isFullscreen ? 'text-[16px]' : 'text-[16px]'}`}
                                                       dangerouslySetInnerHTML={{ __html: topic.content }}
                                                   />
                                               </div>
