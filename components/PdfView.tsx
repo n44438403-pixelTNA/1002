@@ -780,10 +780,10 @@ export const PdfView: React.FC<Props> = ({
                       </>
                   ) : (
                       // TEXT ONLY VIEW (Dark Mode Reader)
-                      <div className="flex-1 overflow-y-auto p-6 bg-slate-900 text-slate-300">
+                      <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-900 text-slate-300">
                           <div className="max-w-4xl mx-auto pt-16">
-                              <h2 className="text-2xl font-black text-white mb-6">{activeNoteContent.title}</h2>
-                              <div className="prose prose-invert prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: activeNoteContent.content }} />
+                              <h1 className="text-xl md:text-2xl font-black text-white mb-6 pb-4 border-b border-slate-700">{activeNoteContent.title}</h1>
+                              <div className="prose prose-invert prose-sm md:prose-base max-w-none leading-relaxed text-[15px] marker:text-slate-500 prose-headings:text-white prose-a:text-teal-400" dangerouslySetInnerHTML={{ __html: activeNoteContent.content }} />
                           </div>
                       </div>
                   )}
@@ -948,7 +948,7 @@ export const PdfView: React.FC<Props> = ({
 
                                    <div className="space-y-3 pl-2">
                                        {group.points.map((point, idx) => (
-                                            <div key={idx} className="prose prose-sm text-slate-700 bg-slate-50/50 p-3 rounded-xl border border-slate-50" dangerouslySetInnerHTML={{ __html: point }} />
+                                            <div key={idx} className="prose prose-sm text-slate-600 leading-relaxed text-[14px] bg-slate-50/50 p-4 rounded-xl border border-slate-100 shadow-sm" dangerouslySetInnerHTML={{ __html: point }} />
                                        ))}
                                    </div>
                                </div>
@@ -1049,7 +1049,7 @@ export const PdfView: React.FC<Props> = ({
                                               </button>
                                           </div>
                                           <div
-                                              className="prose prose-sm text-slate-600 leading-relaxed"
+                                              className="prose prose-sm md:prose-base max-w-none leading-relaxed text-[15px] text-slate-700 marker:text-teal-500 prose-headings:text-slate-800 prose-headings:font-bold prose-a:text-teal-600 prose-img:rounded-xl prose-img:shadow-sm"
                                               dangerouslySetInnerHTML={{ __html: topic.content }}
                                           />
                                       </div>
