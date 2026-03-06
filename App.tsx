@@ -2087,7 +2087,7 @@ const App: React.FC = () => {
   const isMaintenanceBypassed = sessionStorage.getItem('nst_maintenance_bypassed') === 'true';
 
   if (showSplash && state.settings) {
-      return <SplashScreen settings={state.settings} onComplete={() => {
+      return <SplashScreen appName={state.settings.appName} appLogo={state.settings.appLogo} onComplete={() => {
           sessionStorage.setItem('app_session_splash', 'true');
           setShowSplash(false);
       }} />;
