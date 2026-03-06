@@ -598,6 +598,7 @@ export interface SystemSettings {
   // AI Config
   aiSafetyLock?: boolean; // NEW: Kill Switch
   isAiEnabled?: boolean;
+  isWikipediaSearchEnabled?: boolean; // Toggles Global Wikipedia Search
   aiLimits?: {
       free: number;
       basic: number;

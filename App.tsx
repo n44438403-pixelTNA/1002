@@ -2333,7 +2333,7 @@ const App: React.FC = () => {
                 )}
 
         {/* Global Search Button & Modal */}
-        {state.user && !state.activeWeeklyTest && !isFullScreen && (
+        {state.user && !state.activeWeeklyTest && !isFullScreen && state.settings?.isWikipediaSearchEnabled !== false && (
           <>
             <FloatingSearchButton
               onClick={() => setShowGlobalSearch(true)}

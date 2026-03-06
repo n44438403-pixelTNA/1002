@@ -6607,6 +6607,22 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                                   </div>
                               </div>
 
+                              <div className="flex items-center justify-between bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+                                  <div>
+                                      <p className="font-bold text-emerald-900 flex items-center gap-2"><Search size={16}/> Wikipedia Search</p>
+                                      <p className="text-xs text-emerald-700">Global floating search button</p>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                      <span className="text-[10px] font-bold text-emerald-400 uppercase">{localSettings.isWikipediaSearchEnabled !== false ? 'Active' : 'Off'}</span>
+                                      <input
+                                          type="checkbox"
+                                          checked={localSettings.isWikipediaSearchEnabled !== false}
+                                          onChange={() => toggleSetting('isWikipediaSearchEnabled')}
+                                          className="w-5 h-5 accent-emerald-600"
+                                      />
+                                  </div>
+                              </div>
+
                               <div className="flex items-center justify-between bg-blue-50 p-4 rounded-xl border border-blue-100">
                                   <div>
                                       <p className="font-bold text-blue-900 flex items-center gap-2"><Trophy size={16}/> Competition Mode</p>
