@@ -14,3 +14,9 @@
 12:27:30 PM [vite] (client) hmr update /App.tsx
 12:27:40 PM [vite] (client) page reload test_pdf_view.html
 12:27:40 PM [vite] (client) page reload test_pdf_view.html
+1:49:30 PM [vite] (client) hmr update /components/PdfView.tsx
+1:49:47 PM [vite] (client) hmr update /components/PdfView.tsx
+1:50:09 PM [vite] (client) hmr update /components/PdfView.tsx
+1:50:23 PM [vite] (client) hmr update /components/PdfView.tsx
+1:50:55 PM [vite] (client) hmr update /components/PdfView.tsx
+1:52:27 PM [vite] (client) page reload test_pdf_view.html

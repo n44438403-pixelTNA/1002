@@ -779,11 +779,11 @@ export const PdfView: React.FC<Props> = ({
                       </div>
                   ) : (
                       // TEXT ONLY VIEW (Light Mode Reader)
-                      <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50">
-                          <div className="max-w-[95%] w-full mx-auto pt-16 md:max-w-4xl">
-                              <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                                  <h1 className="text-xl md:text-2xl font-black text-slate-900 mb-6 pb-4 border-b border-slate-100">{activeNoteContent.title}</h1>
-                                  <div className="prose prose-slate prose-sm md:prose-base max-w-none leading-relaxed text-[13px] md:text-[14px] text-slate-700 marker:text-slate-400 prose-headings:text-slate-900 prose-a:text-blue-600" dangerouslySetInnerHTML={{ __html: activeNoteContent.content }} />
+                      <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50">
+                          <div className="max-w-full md:max-w-4xl w-full mx-auto pt-16 pb-20">
+                              <div className="bg-white rounded-xl md:rounded-3xl p-6 md:p-10 shadow-sm border border-slate-200/60">
+                                  <h1 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 pb-6 border-b-2 border-slate-100 leading-tight">{activeNoteContent.title}</h1>
+                                  <div className="prose prose-slate prose-base md:prose-lg max-w-none leading-loose text-[15px] md:text-[17px] text-slate-800 marker:text-blue-500 prose-headings:text-slate-900 prose-headings:font-bold prose-a:text-blue-600 prose-p:mb-6 prose-ul:mb-6 prose-li:my-2" dangerouslySetInnerHTML={{ __html: activeNoteContent.content }} />
                               </div>
                           </div>
                       </div>
@@ -897,7 +897,7 @@ export const PdfView: React.FC<Props> = ({
 
            {/* 1. QUICK REVISION */}
            {activeTab === 'QUICK' && (
-               <div className={`p-4 space-y-4 mx-auto transition-all duration-300 ${isFullscreen ? 'max-w-[95%] w-full' : 'max-w-4xl'}`}>
+               <div className={`p-4 md:p-6 space-y-6 mx-auto transition-all duration-300 ${isFullscreen ? 'max-w-full px-4 md:max-w-[95%] w-full' : 'max-w-4xl'}`}>
                    <div className="flex justify-end mb-2">
                        {quickRevisionPoints.length > 0 && (
                            <button
@@ -949,7 +949,7 @@ export const PdfView: React.FC<Props> = ({
 
                                    <div className="space-y-3 pl-2">
                                        {group.points.map((point, idx) => (
-                                            <div key={idx} className={`prose prose-sm text-slate-600 leading-relaxed bg-slate-50/50 p-4 rounded-xl border border-slate-100 shadow-sm max-w-none ${isFullscreen ? 'text-[13px] md:text-[14px]' : 'text-[14px]'}`} dangerouslySetInnerHTML={{ __html: point }} />
+                                            <div key={idx} className={`prose prose-base text-slate-700 leading-loose bg-slate-50/50 p-4 md:p-5 rounded-2xl border border-slate-200/50 shadow-sm max-w-none ${isFullscreen ? 'text-[15px] md:text-[16px]' : 'text-[15px]'}`} dangerouslySetInnerHTML={{ __html: point }} />
                                        ))}
                                    </div>
                                </div>
@@ -961,7 +961,7 @@ export const PdfView: React.FC<Props> = ({
 
            {/* 2. DEEP DIVE (HTML + SCROLL) */}
            {activeTab === 'DEEP_DIVE' && (
-               <div className={`p-4 space-y-6 mx-auto transition-all duration-300 ${isFullscreen ? 'max-w-[95%] w-full' : 'max-w-4xl'}`}>
+               <div className={`p-4 md:p-6 space-y-6 mx-auto transition-all duration-300 ${isFullscreen ? 'max-w-full px-4 md:max-w-[95%] w-full' : 'max-w-4xl'}`}>
                    {(() => {
                         const access = getTabAccess('DEEP_DIVE');
 
@@ -1075,9 +1075,9 @@ export const PdfView: React.FC<Props> = ({
 
                                           {/* ACCORDION CONTENT */}
                                           {isExpanded && (
-                                              <div className="p-4 md:p-6 bg-slate-50/50">
+                                              <div className="p-4 md:p-8 bg-slate-50/50">
                                                   <div
-                                                      className={`prose prose-sm md:prose-base max-w-none leading-[1.8] text-slate-700 marker:text-teal-500 prose-headings:text-slate-800 prose-headings:font-bold prose-headings:text-base prose-a:text-teal-600 prose-img:rounded-xl prose-img:shadow-sm ${isFullscreen ? 'text-[14px] md:text-[15px]' : 'text-[15px]'}`}
+                                                      className={`prose prose-base md:prose-lg max-w-none leading-loose text-slate-800 marker:text-teal-500 prose-headings:text-slate-900 prose-headings:font-extrabold prose-headings:text-lg prose-a:text-teal-600 prose-img:rounded-2xl prose-img:shadow-md prose-p:mb-6 prose-ul:mb-6 prose-li:my-2 ${isFullscreen ? 'text-[15px] md:text-[17px]' : 'text-[16px]'}`}
                                                       dangerouslySetInnerHTML={{ __html: topic.content }}
                                                   />
                                               </div>
