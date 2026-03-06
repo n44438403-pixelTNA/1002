@@ -121,6 +121,26 @@ export const resetAllContent = async () => {
   }
 };
 
+// --- PROFILE PICTURE UPLOAD ---
+export const uploadProfilePicture = async (uid: string, file: File): Promise<string> => {
+    try {
+        const fileRef = storageRef(fStorage, `profile_pics/${uid}_${Date.now()}`);
+        const snapshot = await uploadBytes(fileRef, file);
+        const downloadUrl = await getDownloadURL(snapshot.ref);
+
+        // Update Firestore & RTDB immediately
+        await Promise.all([
+            setDoc(doc(db, "users", uid), { photoURL: downloadUrl }, { merge: true }),
+            update(ref(rtdb, `users/${uid}`), { photoURL: downloadUrl })
+        ]);
+
+        return downloadUrl;
+    } catch (e) {
+        console.error("Profile picture upload failed:", e);
+        throw e;
+    }
+}
+
 // --- DUAL WRITE / SMART READ LOGIC ---
 
 // 1. User Data Sync
