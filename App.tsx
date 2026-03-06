@@ -2337,12 +2337,12 @@ const App: React.FC = () => {
           <>
             <FloatingSearchButton
               onClick={() => setShowGlobalSearch(true)}
-              isDarkMode={isDarkMode}
+              isDarkMode={darkMode}
             />
             {showGlobalSearch && (
               <GlobalSearch
                 onClose={() => setShowGlobalSearch(false)}
-                isDarkMode={isDarkMode}
+                isDarkMode={darkMode}
                 onOpenAiTutor={() => {
                    if (state.user?.role === 'STUDENT' || state.originalAdmin) {
                      setState(s => ({...s, view: 'STUDENT_DASHBOARD'}));
