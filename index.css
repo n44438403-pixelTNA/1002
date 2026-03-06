@@ -98,6 +98,7 @@ body {
   overflow-x: hidden;
   /* Prevent any absolute children from escaping the 480px box */
   margin: 0 auto;
+  transform: translate(0, 0);
 }
 
 /* Override body classes from index.html if necessary to stop background bleed */
