@@ -740,10 +740,10 @@ export const PdfView: React.FC<Props> = ({
       const formattedLink = hasPdf ? formatDriveLink(activeNoteContent.pdfUrl!) : '';
 
       return (
-          <div className="fixed inset-0 z-[9999] bg-black flex flex-col animate-in fade-in zoom-in-95 h-screen w-screen overflow-hidden">
+          <div className="fixed inset-0 z-[9999] bg-slate-50 flex flex-col animate-in fade-in zoom-in-95 h-screen w-screen overflow-hidden">
               {/* Minimal Floating Controls */}
               <div className="absolute top-4 left-4 z-50 flex gap-4">
-                  <button onClick={() => { setActiveNoteContent(null); stopAllSpeech(); }} className="bg-black/50 backdrop-blur-md text-white p-3 rounded-full hover:bg-black/70 border border-white/20 shadow-lg">
+                  <button onClick={() => { setActiveNoteContent(null); stopAllSpeech(); }} className="bg-white/80 backdrop-blur-md text-slate-800 p-3 rounded-full hover:bg-white shadow-lg border border-slate-200">
                       <ArrowLeft size={24} />
                   </button>
 
@@ -758,7 +758,7 @@ export const PdfView: React.FC<Props> = ({
                               speakText(plainText, null, speechRate, 'hi-IN', undefined, () => setIsAutoPlaying(false));
                           }
                       }}
-                      className={`bg-black/50 backdrop-blur-md text-white p-3 rounded-full hover:bg-black/70 border border-white/20 shadow-lg ${isAutoPlaying ? 'text-red-400 border-red-400 animate-pulse' : ''}`}
+                      className={`bg-white/80 backdrop-blur-md p-3 rounded-full hover:bg-white border border-slate-200 shadow-lg ${isAutoPlaying ? 'text-blue-600 border-blue-400 animate-pulse bg-blue-50' : 'text-slate-800'}`}
                   >
                       {isAutoPlaying ? <Pause size={24} /> : <Headphones size={24} />}
                   </button>
@@ -767,24 +767,24 @@ export const PdfView: React.FC<Props> = ({
               <div className="flex-1 relative flex flex-col w-full h-full">
                   {hasPdf ? (
                       // PDF VIEW (Full Screen)
-                      <>
-                          <div className="flex-1 relative w-full h-full">
-                              <iframe
-                                  src={formattedLink}
-                                  className="w-full h-full border-none"
-                                  title="PDF Viewer"
-                                  allow="autoplay"
-                                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups-to-escape-sandbox"
-                              />
-                              <div className="absolute top-0 left-0 w-full h-16 bg-transparent pointer-events-auto" onClick={(e) => e.stopPropagation()} />
-                          </div>
-                      </>
+                      <div className="flex-1 relative w-full h-full bg-black">
+                          <iframe
+                              src={formattedLink}
+                              className="w-full h-full border-none"
+                              title="PDF Viewer"
+                              allow="autoplay"
+                              sandbox="allow-scripts allow-same-origin allow-forms allow-popups-to-escape-sandbox"
+                          />
+                          <div className="absolute top-0 left-0 w-full h-16 bg-transparent pointer-events-auto" onClick={(e) => e.stopPropagation()} />
+                      </div>
                   ) : (
-                      // TEXT ONLY VIEW (Dark Mode Reader)
-                      <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-900 text-slate-300">
-                          <div className="max-w-4xl mx-auto pt-16">
-                              <h1 className="text-xl md:text-2xl font-black text-white mb-6 pb-4 border-b border-slate-700">{activeNoteContent.title}</h1>
-                              <div className="prose prose-invert prose-sm md:prose-base max-w-none leading-relaxed text-[15px] marker:text-slate-500 prose-headings:text-white prose-a:text-teal-400" dangerouslySetInnerHTML={{ __html: activeNoteContent.content }} />
+                      // TEXT ONLY VIEW (Light Mode Reader)
+                      <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50">
+                          <div className="max-w-[95%] w-full mx-auto pt-16 md:max-w-4xl">
+                              <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                                  <h1 className="text-xl md:text-2xl font-black text-slate-900 mb-6 pb-4 border-b border-slate-100">{activeNoteContent.title}</h1>
+                                  <div className="prose prose-slate prose-sm md:prose-base max-w-none leading-relaxed text-[13px] md:text-[14px] text-slate-700 marker:text-slate-400 prose-headings:text-slate-900 prose-a:text-blue-600" dangerouslySetInnerHTML={{ __html: activeNoteContent.content }} />
+                              </div>
                           </div>
                       </div>
                   )}

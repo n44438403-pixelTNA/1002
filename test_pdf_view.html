@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Notes View</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50">
+    <div class="fixed inset-0 z-[9999] bg-slate-50 flex flex-col animate-in fade-in zoom-in-95 h-screen w-screen overflow-hidden">
+        <!-- Minimal Floating Controls -->
+        <div class="absolute top-4 left-4 z-50 flex gap-4">
+            <button class="bg-white/80 backdrop-blur-md text-slate-800 p-3 rounded-full hover:bg-white shadow-lg border border-slate-200">
+                &lt;
+            </button>
+            <button class="bg-white/80 backdrop-blur-md p-3 rounded-full hover:bg-white border border-slate-200 shadow-lg text-slate-800">
+                O
+            </button>
+        </div>
+
+        <div class="flex-1 relative flex flex-col w-full h-full">
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50">
+                <div class="max-w-[95%] w-full mx-auto pt-16 md:max-w-4xl">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <h1 class="text-xl md:text-2xl font-black text-slate-900 mb-6 pb-4 border-b border-slate-100">Cell Structure and Functions</h1>
+                        <div class="prose prose-slate prose-sm md:prose-base max-w-none leading-relaxed text-[13px] md:text-[14px] text-slate-700 marker:text-slate-400 prose-headings:text-slate-900 prose-a:text-blue-600">
+                            <p>Cells are the basic structural, functional, and biological units of all known organisms.</p>
+                            <h3>Key Points</h3>
+                            <ul>
+                                <li>Nucleus</li>
+                                <li>Mitochondria</li>
+                                <li>Ribosomes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
