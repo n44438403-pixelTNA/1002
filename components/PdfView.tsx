@@ -283,22 +283,8 @@ export const PdfView: React.FC<Props> = ({
   const pdfContainerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  useEffect(() => {
-      const handleFullscreenChange = () => {
-          setIsFullscreen(!!document.fullscreenElement);
-      };
-      document.addEventListener('fullscreenchange', handleFullscreenChange);
-      return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
-  }, []);
-
   const toggleFullScreen = () => {
-      if (!document.fullscreenElement) {
-          pdfContainerRef.current?.requestFullscreen().catch(err => console.error("Error attempting to enable full-screen mode:", err));
-      } else {
-          if (document.exitFullscreen) {
-              document.exitFullscreen();
-          }
-      }
+      setIsFullscreen(prev => !prev);
   };
 
   // Interstitial State
@@ -824,7 +810,14 @@ export const PdfView: React.FC<Props> = ({
 
   // --- NEW TABBED VIEW ---
   return (
-    <div ref={pdfContainerRef} className={`bg-slate-50 min-h-screen pb-20 animate-in fade-in slide-in-from-right-8 ${isFullscreen ? 'overflow-y-auto' : ''}`}>
+    <div
+        ref={pdfContainerRef}
+        className={`bg-slate-50 min-h-screen pb-20 animate-in fade-in slide-in-from-right-8 ${
+            isFullscreen
+                ? 'fixed inset-0 z-[9999] overflow-y-auto w-full h-full overscroll-none'
+                : 'relative'
+        }`}
+    >
        <CustomAlert
            isOpen={alertConfig.isOpen}
            message={alertConfig.message}
