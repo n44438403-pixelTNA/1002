@@ -66,7 +66,16 @@ export const FloatingDock: React.FC<Props> = ({ onTabSelect, onGoHome, onGoBack,
                     <Menu size={24} />
                 </button>
             </div>
-            {showSearch && <GlobalSearch onClose={() => setShowSearch(false)} isDarkMode={false} />}
+            {showSearch && (
+                <GlobalSearch
+                    onClose={() => setShowSearch(false)}
+                    isDarkMode={false}
+                    onOpenAiTutor={() => {
+                        onTabSelect('AI_CHAT');
+                        onGoHome();
+                    }}
+                />
+            )}
             </>
         );
     }

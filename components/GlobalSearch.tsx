@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface Props {
   onClose: () => void;
   isDarkMode: boolean;
+  onOpenAiTutor?: () => void;
 }
 
 interface WikipediaResult {
@@ -14,7 +15,7 @@ interface WikipediaResult {
   pageid: number;
 }
 
-export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode }) => {
+export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode, onOpenAiTutor }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<WikipediaResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -32,24 +33,36 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode }) => {
     setError('');
 
     try {
-      // Use Wikipedia API for robust general knowledge
-      const response = await fetch(
+      // Use Wikipedia API for robust general knowledge (English)
+      let response = await fetch(
         `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
           query
         )}&utf8=&format=json&origin=*`
       );
+      let data = await response.json();
+      let lang = 'en';
 
-      const data = await response.json();
+      // Fallback to Hindi Wikipedia
+      if (!data.query?.search?.length) {
+        response = await fetch(
+          `https://hi.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
+            query
+          )}&utf8=&format=json&origin=*`
+        );
+        data = await response.json();
+        lang = 'hi';
+      }
 
       if (data.query?.search?.length > 0) {
         // Fetch detailed extracts for top 3 results
         const pageIds = data.query.search.slice(0, 3).map((r: any) => r.pageid).join('|');
         const detailResponse = await fetch(
-          `https://en.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages&exintro=1&explaintext=1&piprop=thumbnail&pithumbsize=200&pageids=${pageIds}&format=json&origin=*`
+          `https://${lang}.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages&exintro=1&explaintext=1&piprop=thumbnail&pithumbsize=200&pageids=${pageIds}&format=json&origin=*`
         );
         const detailData = await detailResponse.json();
 
         const detailedResults = Object.values(detailData.query.pages) as WikipediaResult[];
+        // Add lang to result if needed or just display
         setResults(detailedResults);
       } else {
         setResults([]);
@@ -204,6 +217,30 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode }) => {
                <div className="p-8 text-center text-slate-500 font-medium">
                   Press Enter or Search to find information.
                </div>
+            )}
+
+            {/* AI Doubt Solver Banner */}
+            {!loading && query && (
+              <div className="p-4 bg-indigo-50 border-t border-indigo-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
+                    <BrainCircuit size={20} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-800">Didn't find what you're looking for?</h4>
+                    <p className="text-xs text-slate-600">Ask the Smart Doubt Solver (AI)</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                     onClose();
+                     if (onOpenAiTutor) onOpenAiTutor();
+                  }}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-sm"
+                >
+                  Ask AI
+                </button>
+              </div>
             )}
           </div>
         </motion.div>
