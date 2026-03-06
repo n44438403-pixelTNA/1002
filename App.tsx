@@ -886,7 +886,31 @@ const App: React.FC = () => {
   }, [state.user?.id, state.view]); 
 
   useEffect(() => {
-      document.title = `${state.settings.appName}`;
+      const appName = state.settings.appName || 'IDEAL INSPIRATION CLASSES';
+      document.title = appName;
+
+      // Dynamically update OS/Browser notification meta tags
+      const updateMetaTag = (nameAttr: string, value: string) => {
+          let tag = document.querySelector(`meta[name="${nameAttr}"]`);
+          if (!tag) {
+              tag = document.createElement('meta');
+              tag.setAttribute('name', nameAttr);
+              document.head.appendChild(tag);
+          }
+          tag.setAttribute('content', value);
+      };
+
+      updateMetaTag('application-name', appName);
+      updateMetaTag('apple-mobile-web-app-title', appName);
+
+      // Update og:title
+      let ogTitle = document.querySelector(`meta[property="og:title"]`);
+      if (!ogTitle) {
+          ogTitle = document.createElement('meta');
+          ogTitle.setAttribute('property', 'og:title');
+          document.head.appendChild(ogTitle);
+      }
+      ogTitle.setAttribute('content', appName);
 
       // Dynamic Theme Logic
       let activeThemeColor = state.settings.themeColor || '#3b82f6';
