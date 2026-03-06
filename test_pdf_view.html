@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <title>Test Notes View</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {}
+      },
+      plugins: [
+        require('@tailwindcss/typography'),
+      ],
+    }
+  </script>
 </head>
 <body class="bg-slate-50">
     <div class="fixed inset-0 z-[9999] bg-slate-50 flex flex-col animate-in fade-in zoom-in-95 h-screen w-screen overflow-hidden">
@@ -18,17 +28,17 @@
         </div>
 
         <div class="flex-1 relative flex flex-col w-full h-full">
-            <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50">
-                <div class="max-w-[95%] w-full mx-auto pt-16 md:max-w-4xl">
-                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                        <h1 class="text-xl md:text-2xl font-black text-slate-900 mb-6 pb-4 border-b border-slate-100">Cell Structure and Functions</h1>
-                        <div class="prose prose-slate prose-sm md:prose-base max-w-none leading-relaxed text-[13px] md:text-[14px] text-slate-700 marker:text-slate-400 prose-headings:text-slate-900 prose-a:text-blue-600">
-                            <p>Cells are the basic structural, functional, and biological units of all known organisms.</p>
+            <div class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50">
+                <div class="max-w-full md:max-w-4xl w-full mx-auto pt-16 pb-20">
+                    <div class="bg-white rounded-xl md:rounded-3xl p-6 md:p-10 shadow-sm border border-slate-200/60">
+                        <h1 class="text-2xl md:text-3xl font-black text-slate-900 mb-6 pb-6 border-b-2 border-slate-100 leading-tight">Cell Structure and Functions</h1>
+                        <div class="prose prose-slate prose-base md:prose-lg max-w-none leading-loose text-[15px] md:text-[17px] text-slate-800 marker:text-blue-500 prose-headings:text-slate-900 prose-headings:font-bold prose-a:text-blue-600 prose-p:mb-6 prose-ul:mb-6 prose-li:my-2">
+                            <p>Cells are the basic structural, functional, and biological units of all known organisms. This is a longer paragraph to demonstrate the leading-loose typography adjustments that were made to ensure the document looks very professional.</p>
                             <h3>Key Points</h3>
                             <ul>
-                                <li>Nucleus</li>
-                                <li>Mitochondria</li>
-                                <li>Ribosomes</li>
+                                <li>Nucleus - The control center of the cell</li>
+                                <li>Mitochondria - The powerhouse of the cell</li>
+                                <li>Ribosomes - The protein factories</li>
                             </ul>
                         </div>
                     </div>
