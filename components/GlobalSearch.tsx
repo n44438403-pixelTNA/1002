@@ -63,7 +63,25 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode, onOpenAiTut
         );
         const detailData = await detailResponse.json();
 
-        const detailedResults = Object.values(detailData.query.pages) as WikipediaResult[];
+        let detailedResults = Object.values(detailData.query.pages) as WikipediaResult[];
+
+        // Clean up Wikipedia's formatting artifacts (e.g. == Heading ==)
+        detailedResults = detailedResults.map(res => {
+            let cleanText = res.extract || '';
+            // Remove == and === headings, converting them to normal newlines or just bold-like text if we could,
+            // but for simple text, let's just strip the '=' signs and add spacing
+            cleanText = cleanText.replace(/={2,}([^=]+)={2,}/g, '\n\n$1\n');
+            // Remove excessive newlines (more than 2)
+            cleanText = cleanText.replace(/\n{3,}/g, '\n\n');
+            // Trim
+            cleanText = cleanText.trim();
+
+            return {
+                ...res,
+                extract: cleanText
+            };
+        });
+
         setResults(detailedResults);
         setTranslatedTexts({}); // Reset translations on new search
       } else {
