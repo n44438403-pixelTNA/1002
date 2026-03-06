@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, Subject, StudentTab, SystemSettings, CreditPackage, WeeklyTest, Chapter, MCQItem, Challenge20 } from '../types';
-import { updateUserStatus, db, saveUserToLive, getChapterData, rtdb, saveAiInteraction, saveDemandRequest } from '../firebase';
+import { updateUserStatus, db, saveUserToLive, getChapterData, rtdb, saveAiInteraction, saveDemandRequest, uploadProfilePicture } from '../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { ref, query, limitToLast, onValue } from 'firebase/database';
 import { getSubjectsList, DEFAULT_APP_FEATURES, ALL_APP_FEATURES, LEVEL_UNLOCKABLE_FEATURES, LEVEL_UP_CONFIG } from '../constants';
@@ -131,6 +131,27 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       if (!settings) return true; // Default allow if settings missing (fallback to static)
       const { hasAccess } = checkFeatureAccess(featureId, user, settings);
       return hasAccess;
+  };
+
+  const handleProfilePictureUpload = async (file: File) => {
+      try {
+          // Simple validation (e.g., < 5MB)
+          if (file.size > 5 * 1024 * 1024) {
+              alert("File is too large. Please select an image under 5MB.");
+              return;
+          }
+
+          const newUrl = await uploadProfilePicture(user.id, file);
+
+          // Optimistically update local UI
+          const updatedUser = { ...user, photoURL: newUrl };
+          localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+
+          // Tell parent or state to re-render (since user is a prop, we rely on the listener in App.tsx to catch the Firestore change, which we did in firebase.ts)
+      } catch (e) {
+          console.error("Failed to upload profile picture:", e);
+          alert("Failed to upload profile picture. Try again.");
+      }
   };
 
   // --- EXPIRY CHECK & AUTO DOWNGRADE ---
@@ -1150,13 +1171,26 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                             </div>
                         )}
 
-                        <div className={`w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-4xl font-black shadow-2xl relative z-10 ${
-                            user.subscriptionLevel === 'ULTRA' && user.isPremium ? 'text-amber-600 ring-4 ring-amber-300 animate-bounce-slow' :
+                        <div className={`w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-4xl font-black shadow-2xl relative z-10 group overflow-hidden ${
+                            user.subscriptionLevel === 'ULTRA' && user.isPremium ? 'text-blue-700 ring-4 ring-blue-400 animate-bounce-slow' :
                             user.subscriptionLevel === 'BASIC' && user.isPremium ? 'text-blue-600 ring-4 ring-cyan-300' :
                             'text-slate-800'
                         }`}>
-                            {user.name.charAt(0)}
+                            {user.photoURL ? (
+                                <img src={user.photoURL} alt="Profile" className="w-full h-full object-cover" />
+                            ) : (
+                                user.name.charAt(0)
+                            )}
                             {user.subscriptionLevel === 'ULTRA' && user.isPremium && <div className="absolute -top-2 -right-2 text-2xl drop-shadow-lg">👑</div>}
+
+                            {/* Hidden File Input & Overlay */}
+                            <label className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer transition-opacity text-white text-xs text-center font-bold">
+                                <input type="file" className="hidden" accept="image/*" onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) handleProfilePictureUpload(file);
+                                }} />
+                                Change<br/>Photo
+                            </label>
                         </div>
 
                         <div className="flex items-center justify-center gap-2 relative z-10">
