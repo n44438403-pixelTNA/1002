@@ -812,6 +812,24 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
           case 'BAD': tagColor = "bg-orange-100 text-orange-700"; break;
           case 'VERY_BAD': tagColor = "bg-red-100 text-red-700"; break;
       }
+
+      // Prepare Topic Lists for Top 5
+      let analysisSource: any = Object.keys(topicStats).length > 0 ? { ...topicStats } : {};
+      if (Object.keys(analysisSource).length === 0 && result.topicAnalysis) {
+          Object.keys(result.topicAnalysis).forEach(t => {
+              analysisSource[t] = { correct: result.topicAnalysis![t].correct, total: result.topicAnalysis![t].total, percent: result.topicAnalysis![t].percentage };
+          });
+      }
+      const topicsList = Object.keys(analysisSource).map(t => ({
+          name: t,
+          percent: analysisSource[t].percent,
+          correct: analysisSource[t].correct,
+          total: analysisSource[t].total
+      }));
+
+      const top5High = [...topicsList].sort((a, b) => b.percent - a.percent).slice(0, 5);
+      const top5Low = [...topicsList].sort((a, b) => a.percent - b.percent).slice(0, 5);
+
       return (
       <div id="marksheet-style-1" className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 relative overflow-hidden break-inside-avoid">
           {/* App Logo & Name Header */}
@@ -834,6 +852,9 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
               <div>
                   <h2 className="text-2xl font-black text-slate-800 tracking-tight">{result.chapterTitle}</h2>
                   <p className="text-slate-500 font-medium mt-1">{result.subjectName}</p>
+                  <p className="text-[10px] font-bold text-slate-400 mt-2 flex items-center gap-1">
+                      <Clock size={12} /> {new Date(result.date).toLocaleDateString()} {new Date(result.date).toLocaleTimeString()}
+                  </p>
               </div>
               <div className="text-right">
                   <div className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Score</div>
@@ -899,6 +920,47 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                   <span className="text-slate-600 flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-slate-300"></div> {skipped} Skipped</span>
               </div>
           </div>
+
+          {/* Top 5 Topics Performance */}
+          {topicsList.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 break-inside-avoid">
+                  {/* Top 5 Strong Topics */}
+                  <div className="bg-green-50/50 rounded-2xl p-5 border border-green-100 shadow-sm">
+                      <h4 className="text-sm font-black text-green-800 mb-4 flex items-center gap-2">
+                          <TrendingUp size={16} className="text-green-600" /> Top 5 High Score
+                      </h4>
+                      <div className="space-y-3">
+                          {top5High.map((t, i) => (
+                              <div key={i} className="flex justify-between items-center bg-white p-2.5 rounded-xl border border-green-100 shadow-sm">
+                                  <span className="text-xs font-bold text-slate-700 truncate pr-2 flex-1">{t.name}</span>
+                                  <div className="flex items-center gap-2">
+                                      <span className="text-[10px] text-slate-500 font-bold">{t.correct}/{t.total}</span>
+                                      <span className="text-xs font-black text-green-600 bg-green-100 px-2 py-0.5 rounded">{t.percent}%</span>
+                                  </div>
+                              </div>
+                          ))}
+                      </div>
+                  </div>
+
+                  {/* Top 5 Weak Topics */}
+                  <div className="bg-red-50/50 rounded-2xl p-5 border border-red-100 shadow-sm">
+                      <h4 className="text-sm font-black text-red-800 mb-4 flex items-center gap-2">
+                          <TrendingDown size={16} className="text-red-600" /> Top 5 Low Score
+                      </h4>
+                      <div className="space-y-3">
+                          {top5Low.map((t, i) => (
+                              <div key={i} className="flex justify-between items-center bg-white p-2.5 rounded-xl border border-red-100 shadow-sm">
+                                  <span className="text-xs font-bold text-slate-700 truncate pr-2 flex-1">{t.name}</span>
+                                  <div className="flex items-center gap-2">
+                                      <span className="text-[10px] text-slate-500 font-bold">{t.correct}/{t.total}</span>
+                                      <span className="text-xs font-black text-red-600 bg-red-100 px-2 py-0.5 rounded">{t.percent}%</span>
+                                  </div>
+                              </div>
+                          ))}
+                      </div>
+                  </div>
+              </div>
+          )}
       </div>
   );
   };
