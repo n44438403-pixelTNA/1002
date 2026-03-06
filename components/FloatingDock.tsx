@@ -13,32 +13,10 @@ interface Props {
 
 export const FloatingDock: React.FC<Props> = ({ onTabSelect, onGoHome, onGoBack, isStudent, settings }) => {
     const [isMaximized, setIsMaximized] = useState(false);
-    const [showSearch, setShowSearch] = useState(false);
 
-    // If not a student, we ONLY show the search button, not the quick navigation menu
+    // If not a student, we don't show the quick navigation menu (GlobalSearch is in App.tsx now)
     if (!isStudent) {
-        return (
-            <>
-                <div className="fixed bottom-32 right-4 z-[9999] flex flex-col gap-3 animate-in fade-in slide-in-from-right">
-                    <button
-                        onClick={() => setShowSearch(true)}
-                        className="w-12 h-12 bg-white rounded-full shadow-lg border border-slate-200 flex items-center justify-center text-blue-600 hover:bg-slate-50 active:scale-90 transition-all"
-                    >
-                        <Search size={24} />
-                    </button>
-                </div>
-                {showSearch && (
-                    <GlobalSearch
-                        onClose={() => setShowSearch(false)}
-                        isDarkMode={false}
-                        onOpenAiTutor={() => {
-                            onTabSelect('AI_CHAT');
-                            onGoHome();
-                        }}
-                    />
-                )}
-            </>
-        );
+        return null;
     }
 
     const menuItems: { id: StudentTab, icon: any, label: string, color: string }[] = [
