@@ -76,31 +76,15 @@ export const FloatingDock: React.FC<Props> = ({ onTabSelect, onGoHome, onGoBack,
     if (!isMaximized) {
         return (
             <>
-            {/* Adjusted position higher (bottom-32 instead of bottom-24) to avoid overlapping with FloatingActionMenu */}
-            <div className="fixed bottom-32 right-4 z-[9999] flex flex-col gap-3 animate-in fade-in slide-in-from-right">
-                <button
-                    onClick={() => setShowSearch(true)}
-                    className="w-12 h-12 bg-white rounded-full shadow-lg border border-slate-200 flex items-center justify-center text-blue-600 hover:bg-slate-50 active:scale-90 transition-all"
-                >
-                    <Search size={24} />
-                </button>
+            {/* Note: The global search button is now handled by FloatingSearchButton in App.tsx */}
+            <div className="fixed bottom-32 right-4 z-[9999] flex flex-col gap-3 animate-in fade-in slide-in-from-right pointer-events-none">
                 <button 
                     onClick={() => setIsMaximized(true)} 
-                    className="w-12 h-12 bg-blue-600 rounded-full shadow-xl shadow-blue-600/30 flex items-center justify-center text-white hover:bg-blue-700 active:scale-90 transition-all"
+                    className="w-12 h-12 bg-blue-600 rounded-full shadow-xl shadow-blue-600/30 flex items-center justify-center text-white hover:bg-blue-700 active:scale-90 transition-all pointer-events-auto"
                 >
                     <Menu size={24} />
                 </button>
             </div>
-            {showSearch && (
-                <GlobalSearch
-                    onClose={() => setShowSearch(false)}
-                    isDarkMode={false}
-                    onOpenAiTutor={() => {
-                        onTabSelect('AI_CHAT');
-                        onGoHome();
-                    }}
-                />
-            )}
             </>
         );
     }
