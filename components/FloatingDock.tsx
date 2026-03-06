@@ -52,7 +52,8 @@ export const FloatingDock: React.FC<Props> = ({ onTabSelect, onGoHome, onGoBack,
     if (!isMaximized) {
         return (
             <>
-            <div className="fixed bottom-24 right-4 z-[9999] flex flex-col gap-3 animate-in fade-in slide-in-from-right">
+            {/* Adjusted position higher (bottom-32 instead of bottom-24) to avoid overlapping with FloatingActionMenu */}
+            <div className="fixed bottom-32 right-4 z-[9999] flex flex-col gap-3 animate-in fade-in slide-in-from-right">
                 <button
                     onClick={() => setShowSearch(true)}
                     className="w-12 h-12 bg-white rounded-full shadow-lg border border-slate-200 flex items-center justify-center text-blue-600 hover:bg-slate-50 active:scale-90 transition-all"

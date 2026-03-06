@@ -106,34 +106,38 @@ export const GlobalSearch: React.FC<Props> = ({ onClose, isDarkMode, onOpenAiTut
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100000] bg-slate-900/40 backdrop-blur-md flex flex-col p-4 sm:p-6 animate-in fade-in duration-200">
+      <div
+        className="fixed inset-0 z-[100000] bg-slate-900/40 backdrop-blur-md flex flex-col p-4 sm:p-6 animate-in fade-in duration-200"
+        onClick={onClose}
+      >
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -20, opacity: 0 }}
           className="w-full max-w-2xl mx-auto flex flex-col gap-4"
+          onClick={(e) => e.stopPropagation()}
         >
           {/* Search Bar Container */}
-          <div className="bg-white rounded-3xl p-2 shadow-2xl flex items-center gap-2 relative z-10 border border-slate-100">
-            <Search className="text-slate-400 ml-4" size={24} />
+          <div className="bg-white rounded-3xl p-2 shadow-2xl flex items-center gap-1 sm:gap-2 relative z-10 border border-slate-100 overflow-hidden">
+            <Search className="text-slate-400 ml-2 sm:ml-4 shrink-0" size={20} />
             <input
               ref={inputRef}
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              placeholder="Search concepts, definitions, formulas..."
-              className="flex-1 bg-transparent border-none focus:ring-0 text-lg sm:text-xl font-medium text-slate-800 p-2 placeholder-slate-400 outline-none"
+              placeholder="Search concepts, formulas..."
+              className="flex-1 min-w-0 bg-transparent border-none focus:ring-0 text-base sm:text-xl font-medium text-slate-800 p-2 placeholder-slate-400 outline-none"
             />
             <button
               onClick={handleSearch}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-bold shadow-md transition-all active:scale-95"
+              className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-6 py-2 sm:py-3 rounded-2xl font-bold shadow-md transition-all active:scale-95 text-sm sm:text-base"
             >
               Search
             </button>
             <button
               onClick={onClose}
-              className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 ml-2"
+              className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 ml-1 sm:ml-2"
             >
               <X size={20} />
             </button>
