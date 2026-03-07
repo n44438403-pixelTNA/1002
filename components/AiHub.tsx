@@ -191,44 +191,26 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
                 </div>
             )}
 
-            {/* DISCOUNT BANNER REDESIGNED */}
+            {/* DISCOUNT BANNER */}
             {showDiscountBanner && discountTimer && (
                 <button
                     onClick={() => onTabChange('STORE')}
-                    className={`relative w-full overflow-hidden rounded-2xl shadow-xl transition-transform active:scale-95 border-2 ${discountStatus === 'ACTIVE' ? 'bg-gradient-to-r from-red-600 via-rose-600 to-orange-500 border-red-400/50' : 'bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-700 border-blue-400/50'}`}
+                    className={`w-full bg-gradient-to-r ${discountStatus === 'ACTIVE' ? 'from-red-600 to-pink-600' : 'from-blue-600 to-indigo-600'} p-4 rounded-xl text-white shadow-lg flex items-center justify-between animate-pulse`}
                 >
-                    {/* Animated background elements */}
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 blur-3xl rounded-full"></div>
-                    <div className="absolute top-1/2 -left-10 w-20 h-20 bg-yellow-400/20 blur-2xl rounded-full"></div>
-
-                    <div className="relative z-10 p-4 flex items-center justify-between">
-                        <div className="flex items-start gap-4">
-                            <div className={`p-3 rounded-xl bg-white/10 backdrop-blur-md shadow-inner border border-white/20 flex flex-col items-center justify-center min-w-[60px] ${discountStatus === 'ACTIVE' ? 'text-yellow-300' : 'text-cyan-300'}`}>
-                                <Zap size={24} className={discountStatus === 'ACTIVE' ? 'fill-yellow-300 animate-pulse' : 'fill-cyan-300'} />
-                                {settings?.specialDiscountEvent?.discountPercent && (
-                                    <span className="text-[10px] font-black mt-1 uppercase leading-none">{settings.specialDiscountEvent.discountPercent}% OFF</span>
-                                )}
-                            </div>
-
-                            <div className="text-left text-white">
-                                <p className="font-black text-base uppercase tracking-wider drop-shadow-md">
-                                    {settings?.specialDiscountEvent?.eventName || 'Special Offer'}
-                                </p>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-[10px] uppercase font-bold text-white/80 bg-black/20 px-2 py-0.5 rounded-full border border-white/10">
-                                        {discountStatus === 'ACTIVE' ? 'Ends In' : 'Starts In'}
-                                    </span>
-                                    <span className="text-sm font-mono font-bold tracking-tight text-yellow-100 drop-shadow-sm">
-                                        {discountTimer}
-                                    </span>
-                                </div>
-                            </div>
+                    <div className="flex items-center gap-3">
+                        <span className="text-2xl">{discountStatus === 'ACTIVE' ? '🎉' : '⏳'}</span>
+                        <div className="text-left">
+                            <p className="font-black text-sm uppercase">
+                                {discountStatus === 'ACTIVE'
+                                    ? `${settings?.specialDiscountEvent?.eventName || 'Special Offer'} Ends In:`
+                                    : `${settings?.specialDiscountEvent?.eventName || 'Special Offer'} Starts In:`
+                                }
+                            </p>
+                            <p className="text-lg font-mono font-bold">{discountTimer}</p>
                         </div>
-
-                        <div className={`shrink-0 flex items-center justify-center p-2 rounded-full backdrop-blur-sm bg-white border border-white/50 shadow-lg group-hover:scale-110 transition-transform ${discountStatus === 'ACTIVE' ? 'text-red-600 shadow-red-900/30' : 'text-blue-600 shadow-blue-900/30'}`}>
-                             {discountStatus === 'ACTIVE' ? <Sparkles size={18} className="fill-current" /> : <Calendar size={18} />}
-                        </div>
+                    </div>
+                    <div className="bg-white text-red-600 px-3 py-1 rounded-lg text-xs font-bold shadow-sm">
+                        {discountStatus === 'ACTIVE' ? 'CLAIM NOW' : 'WAIT FOR IT'}
                     </div>
                 </button>
             )}
@@ -239,37 +221,47 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
                     <h2 className="text-2xl font-black mb-1 flex items-center gap-2">
                         <Sparkles className="text-yellow-400" /> AI Center
                     </h2>
+                    <p className="text-indigo-200 text-sm">Your personal learning assistant powered by advanced AI.</p>
                 </div>
                 <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
             </div>
 
             {/* AI TOOLS COMPRESSED VIEW */}
-            <div className="grid grid-cols-2 gap-4">
-                {/* 1. AI STUDY PLANNER */}
+            <div className="grid grid-cols-1 gap-4">
+                {/* 1. CHAT TUTOR */}
                 <button
-                    onClick={() => setShowPlannerModal(true)}
-                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-2 hover:shadow-md transition-all active:scale-[0.98] text-center"
+                    onClick={() => onTabChange('AI_CHAT')}
+                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all active:scale-[0.98]"
                 >
-                    <div className="bg-pink-100 text-pink-600 p-3 rounded-xl mb-1">
-                        <Calendar size={24} />
+                    <div className="bg-indigo-100 text-indigo-600 p-3 rounded-xl">
+                        <Bot size={24} />
                     </div>
-                    <div>
-                        <h3 className="font-bold text-slate-800 text-sm leading-tight">AI Personalized<br/>Plans</h3>
+                    <div className="flex-1 text-left">
+                        <h3 className="font-bold text-slate-800">Chat with AI Tutor</h3>
+                        <p className="text-xs text-slate-500">Instant answers to any question.</p>
+                    </div>
+                    <div className="text-slate-300">
+                        <Zap size={16} />
                     </div>
                 </button>
 
-                {/* 2. CHAT TUTOR */}
+                {/* 2. REPLACED: NOTES GENERATOR -> AI STUDY PLANNER */}
                 <button
-                    onClick={() => onTabChange('AI_CHAT')}
-                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-2 hover:shadow-md transition-all active:scale-[0.98] text-center"
+                    onClick={() => setShowPlannerModal(true)}
+                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all active:scale-[0.98]"
                 >
-                    <div className="bg-indigo-100 text-indigo-600 p-3 rounded-xl mb-1">
-                        <Bot size={24} />
+                    <div className="bg-pink-100 text-pink-600 p-3 rounded-xl">
+                        <Calendar size={24} />
                     </div>
-                    <div>
-                        <h3 className="font-bold text-slate-800 text-sm leading-tight">Chat with<br/>AI Tutor</h3>
+                    <div className="flex-1 text-left">
+                        <h3 className="font-bold text-slate-800">AI Personalized Plans</h3>
+                        <p className="text-xs text-slate-500">Get a study routine based on your history.</p>
+                    </div>
+                    <div className="text-slate-300">
+                        <Zap size={16} />
                     </div>
                 </button>
+
             </div>
 
             {/* AI PLANNER MODAL */}

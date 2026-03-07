@@ -224,7 +224,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                       // Show every 2 hours if not specified differently, just to ensure they know about the sale
                       const interval = 2 * 60 * 60 * 1000;
                       if (now - lastShown > interval) {
-                          showAlert(`🔥 ${event.eventName} IS LIVE! \n\nGrab a massive ${event.discountPercent}% OFF on all premium subscriptions. Tap to view the Store and upgrade instantly!`, "SUCCESS", "🔥 Mega Discount Offer!");
+                          showAlert(`🎉 ${event.eventName} is LIVE! Get ${event.discountPercent}% OFF on subscriptions right now!`, "SUCCESS", "Special Event");
                           localStorage.setItem(`last_event_promo_${user.id}_${event.eventName}`, now.toString());
                           return;
                       }
@@ -889,10 +889,6 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       if (activeTab === 'HOME') {
           return (
               <div className="space-y-4 pb-24">
-
-
-
-
                 {/* PERFORMANCE GRAPH */}
                 <DashboardSectionWrapper id="section_performance" label="Performance" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
                     <PerformanceGraph
@@ -1435,82 +1431,8 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       return null;
   };
 
-  const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || (activeTab as any) === 'AUDIO';
-
   return (
-    <div className={`min-h-screen bg-slate-50 pb-[100px] ${!isStudyMode ? 'pt-[80px]' : ''}`}>
-
-        {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
-        {!isStudyMode && (
-            <div className="bg-white p-4 rounded-b-3xl shadow-sm border-b border-slate-200 mb-2 flex items-center justify-between fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1080px] z-50">
-                <div className="flex items-center gap-3">
-                    {/* Menu Button Restored */}
-                    <button
-                        onClick={() => setShowSidebar(true)}
-                        className="bg-white border border-slate-200 shadow-sm px-3 py-2 rounded-xl hover:bg-slate-50 transition-all flex items-center gap-2 group active:scale-95"
-                    >
-                        <div className="space-y-1">
-                            <span className="block w-5 h-0.5 bg-slate-600 group-hover:bg-blue-600 transition-colors rounded-full"></span>
-                            <span className="block w-3 h-0.5 bg-slate-600 group-hover:bg-blue-600 transition-colors rounded-full"></span>
-                            <span className="block w-5 h-0.5 bg-slate-600 group-hover:bg-blue-600 transition-colors rounded-full"></span>
-                        </div>
-                    </button>
-                    <div>
-                        <div className="flex flex-col justify-center">
-                            <h2 className="text-lg font-black text-slate-800 leading-none">
-                                {settings?.appName || 'Student App'}
-                            </h2>
-                            <div className="flex items-center gap-2 mt-1">
-                                <span className="text-[10px] font-black text-blue-600 truncate max-w-[100px]">{user.name}</span>
-                                {user.role === 'ADMIN' && <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[9px] font-bold">ADMIN</span>}
-
-                                {/* SUBSCRIPTION DETAILS TEXT */}
-                                {user.subscriptionTier && user.subscriptionTier !== 'FREE' && user.subscriptionEndDate && (
-                                    (() => {
-                                        const daysLeft = Math.max(0, Math.ceil((new Date(user.subscriptionEndDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
-                                        return (
-                                            <span className="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded-full text-[8px] font-bold tracking-wider">
-                                                {user.subscriptionLevel === 'ULTRA' ? 'ULTRA' : user.subscriptionTier} - {daysLeft} Days
-                                            </span>
-                                        );
-                                    })()
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
-                    {/* Language Toggle moved to corner */}
-                    <button
-                        onClick={() => {
-                            const newBoard = user.board === 'CBSE' ? 'BSEB' : 'CBSE';
-                            handleUserUpdate({ ...user, board: newBoard });
-                            showAlert(`Language switched to ${newBoard === 'CBSE' ? 'English' : 'Hindi'}`, 'SUCCESS');
-                        }}
-                        className="flex items-center gap-1 bg-indigo-50 text-indigo-600 px-2 py-1.5 rounded-lg text-[9px] font-black border border-indigo-100 hover:bg-indigo-100 transition-colors"
-                    >
-                        <Globe size={12} /> {user.board === 'CBSE' ? 'EN' : 'HI'}
-                    </button>
-
-                    {settings?.specialDiscountEvent?.enabled && (
-                        <button
-                            onClick={() => onTabChange('STORE')}
-                            className="bg-gradient-to-r from-red-600 to-rose-500 border border-red-400 text-white px-2 py-1.5 rounded-lg flex items-center gap-1 text-[10px] font-black shadow-sm animate-pulse shadow-red-500/30"
-                        >
-                            <Zap size={12} className="fill-yellow-400 text-yellow-400"/>
-                            {settings.specialDiscountEvent.discountPercent ? `${settings.specialDiscountEvent.discountPercent}% OFF` : 'SALE'}
-                        </button>
-                    )}
-                    <button
-                        onClick={() => onTabChange('STORE')}
-                        className="bg-blue-50 border border-blue-200 text-blue-600 px-3 py-1.5 rounded-xl flex items-center gap-2 font-black text-xs hover:bg-blue-100 transition-colors"
-                    >
-                        <Crown size={14} className="fill-blue-600"/> {user.credits}
-                    </button>
-                </div>
-            </div>
-        )}
-
+    <div className="min-h-screen bg-slate-50 pb-[100px] pt-[80px]">
         {/* ADMIN SWITCH BUTTON */}
         {(user.role === 'ADMIN' || isImpersonating) && (
              <div className="fixed bottom-36 right-4 z-50 flex flex-col gap-3 items-end">
@@ -1900,7 +1822,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         )}
 
         {/* FIXED BOTTOM NAVIGATION */}
-        {!(activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO') && (
+        {!(activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || contentViewStep === 'PLAYER' || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20') && (
         <div className="fixed bottom-0 left-0 right-0 max-w-[1080px] mx-auto bg-white border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[9990] pb-[env(safe-area-inset-bottom,0px)]">
             <div className="flex justify-around items-center h-[70px]">
                 <button onClick={() => { onTabChange('HOME'); setContentViewStep('SUBJECTS'); }} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'HOME' ? 'text-blue-600' : 'text-slate-400'}`}>
