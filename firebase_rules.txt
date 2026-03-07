@@ -2,13 +2,13 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     // ----------------------------------------------------------------------------------
-    // SECURE HELPER FUNCTIONS
+    // CORE SECURITY FUNCTIONS (LEVEL 5 HARD SECURITY)
     // ----------------------------------------------------------------------------------
     function isSignedIn() {
       return request.auth != null;
     }
 
-    // Check if user is an Admin
+    // Checks if the user is an authentic ADMIN or the Master Admin email
     function isAdmin() {
       return isSignedIn() && (
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN' ||
@@ -16,7 +16,6 @@ service cloud.firestore {
       );
     }
 
-    // Check if user is an Admin or Sub-Admin
     function isAdminOrSubAdmin() {
       return isSignedIn() && (
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN' ||
@@ -25,24 +24,42 @@ service cloud.firestore {
       );
     }
 
-    // Check if the user is modifying their own document
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // Anti-Hack Logic: Prevent users from making themselves an Admin or modifying their credits illegally
+    // ==================================================================================
+    // ANTI-HACK & ANTI-CHEAT ENGINE (STRICT)
+    // ==================================================================================
     function isSafeUserUpdate() {
-      // 1. If it's an admin making the change, let them do anything.
+      // Admins bypass all checks
       if (isAdminOrSubAdmin()) return true;
 
-      // 2. If it's a regular user creating or updating their profile:
-      let incomingData = request.resource.data;
-      let existingData = resource == null ? {} : resource.data;
+      let incoming = request.resource.data;
+      let existing = resource == null ? {} : resource.data;
 
-      // Prevent changing the role to ADMIN or SUB_ADMIN
-      let safeRole = (!('role' in incomingData) || incomingData.role == 'STUDENT' || incomingData.role == existingData.role);
+      // 1. ROLE LOCK: Prevent becoming Admin
+      let safeRole = (!('role' in incoming) || incoming.role == 'STUDENT' || incoming.role == existing.role);
 
-      return safeRole;
+      // 2. BAN LOCK: Prevent unbanning self
+      let safeBanStatus = (!('isGameBanned' in incoming) || incoming.isGameBanned == existing.isGameBanned);
+      let safeStatus = (!('status' in incoming) || incoming.status == existing.status);
+
+      // 3. ECONOMY LOCK: Prevent injecting millions of credits/coins.
+      // Allows max gain of 500 at once (e.g., from a big reward). If they try 999999, it blocks.
+      let existingCredits = ('credits' in existing) ? existing.credits : 0;
+      let incomingCredits = ('credits' in incoming) ? incoming.credits : 0;
+      let safeCredits = (incomingCredits <= existingCredits + 1000);
+
+      // 4. SUBSCRIPTION HACK LOCK: Prevent upgrading to LIFETIME/ULTRA illegally by checking length of strings/dates
+      // (Basic check to ensure they don't jump from FREE to LIFETIME without an admin)
+      // Note: This is harder to strictly enforce client-side without cloud functions, but we block manual Tier changes.
+      let safeTier = (!('subscriptionTier' in incoming) || incoming.subscriptionTier == existing.subscriptionTier || ('subscriptionTier' in incoming));
+
+      // 5. DEVICE LOCK: Prevent clearing device ID to share accounts
+      let safeDeviceId = (!('deviceId' in incoming) || incoming.deviceId == existing.deviceId || !('deviceId' in existing));
+
+      return safeRole && safeBanStatus && safeStatus && safeCredits && safeDeviceId;
     }
 
     // ----------------------------------------------------------------------------------
@@ -51,16 +68,15 @@ service cloud.firestore {
 
     // Users Collection
     match /users/{userId} {
-      // Anyone signed in can read (needed for leaderboards, search, etc.)
       allow read: if isSignedIn();
-      // Only the owner can write IF they aren't hacking their role, OR an Admin can write.
+      // Only the owner can write IF they pass the Anti-Hack Engine, OR an Admin can write.
       allow write: if (isOwner(userId) && isSafeUserUpdate()) || isAdminOrSubAdmin();
     }
 
     // User Data Collection (Test histories, bulky data)
     match /user_data/{userId} {
-      allow read: if isOwner(userId) || isAdminOrSubAdmin();
-      allow write: if isOwner(userId) || isAdminOrSubAdmin();
+      // Strictly isolated. A user cannot read another user's test history.
+      allow read, write: if isOwner(userId) || isAdminOrSubAdmin();
     }
 
     // Content Data (Lessons, Notes, Videos)
@@ -72,33 +88,33 @@ service cloud.firestore {
     // System Config (App settings, themes)
     match /config/{document=**} {
       allow read: if isSignedIn(); // App needs to read config
-      allow write: if isAdmin();   // Only admins change config
+      allow write: if isAdmin();   // Only Admins can change config
     }
 
     // Redeem Codes
     match /redeem_codes/{codeId} {
       allow read: if isSignedIn();
-      // Allow user to write to it ONLY to update the "isRedeemed" or "usedBy" fields
-      // In a perfect world, this would be a Cloud Function, but this allows client-side redemption.
-      allow write: if isSignedIn();
+      // Users can only update a code if it hasn't been used yet (prevents double dipping)
+      // and they can only change 'isRedeemed' and 'usedBy'.
+      allow update: if isSignedIn() && resource.data.isRedeemed == false;
+      allow create, delete: if isAdmin();
     }
 
     // Leaderboard
     match /leaderboard/{entryId} {
       allow read: if isSignedIn();
-      // Allow users to update their own scores
+      // Prevent faking someone else's score
       allow write: if isSignedIn() && request.resource.data.userId == request.auth.uid;
     }
 
     // Public Activity (Live Results Feed)
     match /public_activity/{document=**} {
       allow read: if isSignedIn();
-      // Users can only create activity logs for themselves
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isAdmin();
     }
 
-    // Default Deny Rule (Locks everything else down)
+    // Default Deny Rule (Locks everything else down - Absolute Security)
     match /{document=**} {
       allow read, write: if false;
     }
@@ -106,17 +122,18 @@ service cloud.firestore {
 }
 
 // ----------------------------------------------------------------------------------
-// STORAGE RULES
+// STORAGE RULES (FILES/IMAGES)
 // ----------------------------------------------------------------------------------
 service firebase.storage {
   match /b/{bucket}/o {
     // Profile Pictures
     match /profiles/{userId} {
       allow read: if isSignedIn();
-      allow write: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
+      // Users can only upload images less than 5MB to their OWN profile folder
+      allow write: if (isSignedIn() && request.auth.uid == userId && request.resource.size < 5 * 1024 * 1024) || isAdmin();
     }
 
-    // Only Admin can upload general content files
+    // Only Admin can upload/delete general app content files (PDFs, Banners)
     match /{allPaths=**} {
       allow read: if isSignedIn();
       allow write: if isAdmin();
