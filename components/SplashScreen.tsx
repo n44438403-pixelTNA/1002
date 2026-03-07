@@ -6,32 +6,43 @@ interface Props {
   appLogo?: string;
 }
 
+import { useRef } from 'react';
+
 export const SplashScreen: React.FC<Props> = ({ onComplete, appName = "NSTA", appLogo }) => {
   const [progress, setProgress] = useState(0);
+  const progressRef = useRef(0);
+  const onCompleteRef = useRef(onComplete);
 
   useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  useEffect(() => {
+    if (progressRef.current >= 100) return; // Prevent restart if already complete
+
     // Always show splash on first load
     const duration = 2500; // 2.5 seconds total
     const intervalTime = 25; // Update every 25ms
     const steps = duration / intervalTime;
-    let currentStep = 0;
 
     const interval = setInterval(() => {
-        currentStep++;
-        const newProgress = Math.min(100, Math.round((currentStep / steps) * 100));
+        // We use the same speed but track the step linearly
+        // to avoid restarting if the component re-renders
+        progressRef.current += (100 / steps);
+        const newProgress = Math.min(100, Math.round(progressRef.current));
         setProgress(newProgress);
 
-        if (currentStep >= steps) {
+        if (newProgress >= 100) {
             clearInterval(interval);
-            setTimeout(onComplete, 200); // small delay after reaching 100%
+            setTimeout(() => onCompleteRef.current(), 200); // small delay after reaching 100%
         }
     }, intervalTime);
 
     return () => clearInterval(interval);
-  }, [onComplete]);
+  }, []); // Empty dependency array ensures interval only starts once
 
   return (
-    <div className="fixed inset-0 z-[99999] bg-[#0f172a] flex flex-col items-center justify-center p-6" style={{ backgroundImage: 'linear-gradient(to bottom, #0f172a, #1e293b)' }}>
+    <div className="fixed top-0 left-0 w-screen h-[100dvh] z-[99999] bg-[#0f172a] flex flex-col items-center justify-center p-6 m-0" style={{ backgroundImage: 'linear-gradient(to bottom, #0f172a, #1e293b)' }}>
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
            <div className="absolute top-[20%] left-[50%] -translate-x-1/2 w-[80%] h-[50%] bg-blue-500/10 blur-[120px] rounded-full"></div>

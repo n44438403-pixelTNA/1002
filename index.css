@@ -90,15 +90,14 @@ body {
 
 #root {
   width: 100%;
-  max-width: 720px; /* Enhanced Mobile/Tablet maximum width for better readability */
+  max-width: 1080px; /* Enhanced Mobile/Tablet maximum width for better readability */
   min-height: 100vh;
   background-color: #f8fafc; /* Keep the app's actual light background isolated */
   box-shadow: 0 0 50px rgba(0,0,0,0.5); /* Strong shadow for separation */
   position: relative;
   overflow-x: hidden;
-  /* Prevent any absolute children from escaping the 720px box */
+  /* Prevent any absolute children from escaping the box */
   margin: 0 auto;
-  transform: translate(0, 0);
 }
 
 /* Override body classes from index.html if necessary to stop background bleed */

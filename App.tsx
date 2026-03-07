@@ -2242,7 +2242,7 @@ const App: React.FC = () => {
       {showTerms && <TermsPopup onClose={handleAcceptTerms} text={state.settings.termsText} />}
 
       {!isFullScreen && (
-      <header className="bg-slate-100/50 sticky top-0 z-30 border-b border-slate-200">
+      <header className="bg-slate-100/90 backdrop-blur-md fixed top-0 left-0 right-0 z-50 border-b border-slate-200 shadow-sm max-w-[1080px] mx-auto">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
            <div onClick={() => setState(prev => ({ ...prev, view: (state.user?.role === 'ADMIN' || state.user?.role === 'SUB_ADMIN') ? 'ADMIN_DASHBOARD' : 'STUDENT_DASHBOARD' as any }))} className="flex items-center gap-2 cursor-pointer">
                <div className="flex items-center gap-3">
@@ -2275,7 +2275,7 @@ const App: React.FC = () => {
       </header>
       )}
 
-      <main className={`flex-1 w-full max-w-6xl mx-auto ${isFullScreen ? 'p-0' : 'p-4 pb-0'} flex flex-col`}>
+      <main className={`flex-1 w-full max-w-6xl mx-auto ${isFullScreen ? 'p-0' : 'pt-20 px-4 pb-20'} flex flex-col`}>
         <AnimatePresence mode="wait">
           <motion.div
             key={state.view + (state.user ? 'logged_in' : 'logged_out')}

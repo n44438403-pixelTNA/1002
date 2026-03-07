@@ -1489,7 +1489,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-[80px]">
+    <div className="min-h-screen bg-slate-50 pb-[100px] pt-[80px]">
         {/* ADMIN SWITCH BUTTON */}
         {(user.role === 'ADMIN' || isImpersonating) && (
              <div className="fixed bottom-36 right-4 z-50 flex flex-col gap-3 items-end">
@@ -1848,7 +1848,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         )}
 
         {/* MAIN CONTENT AREA */}
-        <div className="p-4 relative pb-20">
+        <div className="p-4 relative pb-24">
             {renderMainContent()}
 
             {settings?.showFooter !== false && activeTab !== 'REVISION' && (
@@ -1879,7 +1879,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         )}
 
         {/* FIXED BOTTOM NAVIGATION */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[9999] pb-[env(safe-area-inset-bottom,0px)]">
+        <div className="fixed bottom-0 left-0 right-0 max-w-[1080px] mx-auto bg-white border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[9999] pb-[env(safe-area-inset-bottom,0px)]">
             <div className="flex justify-around items-center h-[70px]">
                 <button onClick={() => { onTabChange('HOME'); setContentViewStep('SUBJECTS'); }} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'HOME' ? 'text-blue-600' : 'text-slate-400'}`}>
                     <Home size={24} fill={activeTab === 'HOME' ? "currentColor" : "none"} />
