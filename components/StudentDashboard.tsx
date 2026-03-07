@@ -889,9 +889,9 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       // 1. HOME TAB
       if (activeTab === 'HOME') {
           return (
-              <div className="space-y-4 pb-24">
+              <div className="space-y-4 pb-24 pt-[80px]">
                 {/* NEW HEADER DESIGN */}
-                <div className="bg-white p-4 rounded-b-3xl shadow-sm border-b border-slate-200 mb-2 flex items-center justify-between sticky top-0 z-40">
+                <div className="bg-white p-4 rounded-b-3xl shadow-sm border-b border-slate-200 flex items-center justify-between fixed top-0 left-0 right-0 z-50">
                     <div className="flex items-center gap-3">
                         {/* Menu Button Restored */}
                         <button
