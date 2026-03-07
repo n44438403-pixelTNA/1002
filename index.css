@@ -1,4 +1,10 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
 /* Vercel Toast Hide */
 .vercel-toast {
     display: none !important;
@@ -148,18 +154,30 @@ button {
 
 /* Base Typography overrides to prevent cramped text */
 .markdown-body h1, .prose h1 {
-  font-size: 22px !important;
-  font-weight: 600 !important;
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  margin-bottom: 16px !important;
+  color: #0f172a;
 }
 
 .markdown-body h2, .prose h2 {
-  font-size: 18px !important;
-  font-weight: 600 !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  margin-top: 24px !important;
+  margin-bottom: 12px !important;
+  color: #1e293b;
 }
 
 .markdown-body p, .prose p, .note-text p {
   font-size: 16px !important;
-  line-height: 1.6 !important;
+  line-height: 1.7 !important;
+  margin-bottom: 16px !important;
+  color: #334155;
+}
+
+.markdown-body strong, .prose strong {
+  font-weight: 700 !important;
+  color: #0f172a;
 }
 
 .small-text {
@@ -169,19 +187,19 @@ button {
 /* Quick Revision Custom Styles */
 .topic-card {
   background: white;
-  padding: 18px;
-  border-radius: 14px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 24px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
 }
 
 .note-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 14px;
-  border-radius: 10px;
-  margin-bottom: 12px;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
 }
 
 /* Base style for specific note types so they inherit the note-section styling */
