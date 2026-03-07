@@ -538,10 +538,8 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 font-sans py-10 relative">
+    <div className="min-h-screen flex items-start md:items-center justify-center bg-slate-50 px-0 md:px-4 font-sans py-0 md:py-10 relative">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-           <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-600/10 blur-[100px] rounded-full animate-pulse"></div>
-           <div className="absolute top-[50%] -right-[10%] w-[50%] h-[50%] bg-purple-600/10 blur-[120px] rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
       </div>
 
       <CustomAlert 
@@ -554,24 +552,22 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
       />
       {showGuide && <LoginGuide onClose={() => setShowGuide(false)} />}
 
-        <div className="bg-white/80 backdrop-blur-2xl p-10 rounded-[2.5rem] shadow-2xl w-full max-w-[440px] border border-slate-200/50 relative overflow-hidden z-10">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 opacity-50"></div>
+        <div className="bg-slate-50 w-full max-w-[400px] relative z-10 min-h-screen md:min-h-0 flex flex-col pt-16 md:pt-8 md:p-8 md:rounded-3xl">
 
-          <div className="text-center mb-8 pt-2">
-            <div className="w-24 h-24 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-5 shadow-inner border border-slate-200/50 p-2 relative">
-              <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-3xl"></div>
+          <div className="text-center mb-12 md:mb-8 flex-shrink-0">
+            <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 relative shadow-lg shadow-blue-500/20">
               {settings?.appLogo ? (
-                  <img src={settings.appLogo} alt="App Logo" className="w-full h-full object-cover rounded-2xl relative z-10" />
+                  <img src={settings.appLogo} alt="App Logo" className="w-full h-full object-contain rounded-2xl relative z-10" />
               ) : (
-                  <div className="w-full h-full bg-white rounded-2xl flex items-center justify-center relative z-10">
-                      <h1 className="text-3xl font-black text-slate-800">{settings?.appShortName?.[0] || 'N'}</h1>
+                  <div className="w-full h-full rounded-2xl flex items-center justify-center relative z-10">
+                      <h1 className="text-4xl font-black text-white">{settings?.appShortName?.[0] || 'N'}</h1>
                   </div>
               )}
             </div>
-            <h1 className="text-3xl font-black text-slate-800 mb-1 tracking-tight">
+            <h1 className="text-3xl font-black text-slate-800 tracking-tight mb-2">
                 {settings?.appShortName || 'NSTA'}
             </h1>
-            <p className="text-blue-400 font-bold text-[11px] uppercase tracking-[0.3em] opacity-80">Premium Education</p>
+            <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mt-3">IDEAL INSPIRATION CLASSES</p>
           </div>
 
         {view !== 'HOME' && (
@@ -606,13 +602,13 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
         )}
 
         {view === 'HOME' && (
-            <div className="space-y-4 relative z-10 animate-in fade-in zoom-in-95 duration-500 mt-10">
-                 <button type="button" onClick={() => setView('LOGIN')} className="w-full bg-blue-600 hover:bg-blue-500 text-slate-800 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/50">
+            <div className="space-y-4 relative z-10 animate-in fade-in zoom-in-95 duration-500 mt-10 px-6 md:px-0">
+                 <button type="button" onClick={() => setView('LOGIN')} className="w-full bg-[#1e293b] hover:bg-slate-800 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] text-[15px]">
                      <LogIn size={20} />
                      Login to Dashboard
                  </button>
 
-                 <button type="button" onClick={() => { setView('SIGNUP'); setSignupStep(1); }} className="w-full bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] mt-6">
+                 <button type="button" onClick={() => { setView('SIGNUP'); setSignupStep(1); }} className="w-full bg-transparent hover:bg-slate-100 text-slate-600 border border-slate-300 font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] mt-4 text-[15px]">
                      <UserPlus size={20} />
                      Create Student Account
                  </button>
@@ -620,7 +616,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
         )}
 
         {view !== 'HOME' && (
-            <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
+            <form onSubmit={handleSubmit} className="space-y-5 relative z-10 px-6 md:px-0 flex-1">
               {view === 'SIGNUP' && signupStep === 1 && (
                   <div className="animate-in slide-in-from-right-4 fade-in duration-300 space-y-5">
                     <div className="space-y-1.5">

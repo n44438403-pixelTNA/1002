@@ -44,19 +44,19 @@ import { storage } from './utils/storage';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const TermsPopup: React.FC<{ onClose: () => void, text?: string }> = ({ onClose, text }) => (
-    <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300">
-        <div className="bg-white w-full max-w-lg md:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="bg-white p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 z-10">
-                <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                    <FileText className="text-[var(--primary)]" /> Terms & Conditions
+    <div className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300">
+        <div className="bg-white w-full max-w-lg rounded-t-3xl md:rounded-3xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="bg-white p-5 md:p-6 pb-4 border-b border-slate-100 flex justify-between items-center z-10">
+                <h3 className="text-[18px] font-bold text-slate-900 flex items-center gap-2">
+                    <FileText size={20} className="text-[#3b82f6]" strokeWidth={2.5} /> Terms & Conditions
                 </h3>
             </div>
-            <div className="p-6 overflow-y-auto space-y-4 text-sm text-slate-600 leading-relaxed custom-scrollbar whitespace-pre-wrap">
-                <p className="text-slate-900 font-medium">Please read carefully before using NST AI Assistant.</p>
-                <p>{text || "By continuing, you agree to abide by these rules and the standard terms of service."}</p>
+            <div className="p-5 md:p-6 overflow-y-auto space-y-4 text-sm text-slate-600 leading-relaxed custom-scrollbar whitespace-pre-wrap">
+                <p className="text-slate-800 text-[15px]">Please read carefully before using NST AI Assistant.</p>
+                <p className="text-slate-600 text-[15px] mt-2">{text || "By continuing, you agree to abide by these rules and the standard terms of service."}</p>
             </div>
-            <div className="p-4 border-t border-slate-100 bg-white sticky bottom-0 z-10">
-                <button onClick={onClose} className="w-full bg-[var(--primary)] hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all active:scale-95">I Agree & Continue</button>
+            <div className="p-5 md:p-6 pt-2 bg-white z-10">
+                <button onClick={onClose} className="w-full bg-[#3b82f6] hover:bg-blue-600 text-white font-bold py-3.5 rounded-xl transition-all active:scale-95">I Agree & Continue</button>
             </div>
         </div>
     </div>
@@ -2178,9 +2178,7 @@ const App: React.FC = () => {
       {/* BOTTOM SAFE AREA BACKGROUND */}
       <div className="fixed bottom-0 left-0 right-0 h-[env(safe-area-inset-bottom,32px)] bg-slate-900 z-[100]"></div>
 
-      {/* GLOBAL WATERMARK LAYER (FIXED: Single Logo, Configurable Position, Z-Index Low) */}
-      {/* User Requirement: "app ka logo full screen pe dikhega nahi chhota sa... background me hi logo hoga" */}
-      {/* Admin Toggle: state.settings.isWatermarkEnabled */}
+      {/* WATERMARK LAYER */}
       {state.settings.isWatermarkEnabled !== false && (
       <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden select-none">
           {state.settings.appLogo && (
@@ -2200,7 +2198,6 @@ const App: React.FC = () => {
               />
           )}
 
-          {/* OPTION 2: FLOATING USER NAME (If Enabled) */}
           {(state.user && state.settings.showUserWatermark !== false) && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div
@@ -2245,7 +2242,7 @@ const App: React.FC = () => {
       {showTerms && <TermsPopup onClose={handleAcceptTerms} text={state.settings.termsText} />}
 
       {!isFullScreen && (
-      <header className="bg-white sticky top-0 z-30 shadow-sm border-b border-slate-100">
+      <header className="bg-slate-100/50 sticky top-0 z-30 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
            <div onClick={() => setState(prev => ({ ...prev, view: (state.user?.role === 'ADMIN' || state.user?.role === 'SUB_ADMIN') ? 'ADMIN_DASHBOARD' : 'STUDENT_DASHBOARD' as any }))} className="flex items-center gap-2 cursor-pointer">
                <div className="flex items-center gap-3">
@@ -2253,7 +2250,7 @@ const App: React.FC = () => {
                    <img
                      src={state.settings.appLogo}
                      alt="Logo"
-                     className="w-8 h-8 rounded-lg object-contain"
+                     className="w-8 h-8 rounded-lg object-contain bg-blue-600"
                      onError={(e) => {
                        (e.target as HTMLImageElement).style.display = 'none';
                      }}
@@ -2263,7 +2260,7 @@ const App: React.FC = () => {
                      <BrainCircuit size={20} />
                    </div>
                  )}
-                 <h1 className="text-xl font-black text-slate-800">{state.settings.appName}</h1>
+                 <h1 className="text-[17px] font-black text-slate-800 max-w-[180px] leading-tight whitespace-normal">{state.settings.appName}</h1>
                </div>
            </div>
            {state.user && (
