@@ -1822,7 +1822,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         )}
 
         {/* FIXED BOTTOM NAVIGATION */}
-        {!(activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || contentViewStep === 'PLAYER' || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20') && (
+        {!(activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && (activeTab as any) !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20') && (
         <div className="fixed bottom-0 left-0 right-0 max-w-[1080px] mx-auto bg-white border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[9990] pb-[env(safe-area-inset-bottom,0px)]">
             <div className="flex justify-around items-center h-[70px]">
                 <button onClick={() => { onTabChange('HOME'); setContentViewStep('SUBJECTS'); }} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'HOME' ? 'text-blue-600' : 'text-slate-400'}`}>
