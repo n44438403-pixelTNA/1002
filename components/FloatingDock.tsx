@@ -80,7 +80,11 @@ export const FloatingDock: React.FC<Props> = ({ onTabSelect, onGoHome, onGoBack,
                      <X size={20} />
                  </button>
                  
-                 <div className="grid grid-cols-4 gap-3 mt-4">
+                 <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                     <Menu size={18} className="text-blue-600" /> Quick Navigation
+                 </h3>
+
+                 <div className="grid grid-cols-4 gap-3">
                      {menuItems.map(item => (
                          <button 
                              key={item.id}

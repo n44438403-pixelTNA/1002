@@ -224,7 +224,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                       // Show every 2 hours if not specified differently, just to ensure they know about the sale
                       const interval = 2 * 60 * 60 * 1000;
                       if (now - lastShown > interval) {
-                          showAlert(`🔥 ${event.eventName} IS LIVE! \n\nGrab a massive ${event.discountPercent}% OFF on all premium subscriptions. Tap to view the Store and upgrade instantly!`, "SUCCESS", "🔥 Mega Discount Offer!");
+                          showAlert(`🎉 ${event.eventName} is LIVE! Get ${event.discountPercent}% OFF on subscriptions right now!`, "SUCCESS", "Special Event");
                           localStorage.setItem(`last_event_promo_${user.id}_${event.eventName}`, now.toString());
                           return;
                       }
@@ -367,12 +367,11 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
   const [showFeatureMatrix, setShowFeatureMatrix] = useState(false);
 
   useEffect(() => {
-    if (activeTab === 'HOME' || activeTab === 'EXPLORE' || activeTab === 'PROFILE' || (activeTab as any) === 'AI_STUDIO' || activeTab === 'REVISION') {
+    // Only set full screen for immersive content views
+    if (activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || (activeTab as any) === 'AUDIO') {
         setFullScreen(true);
     } else {
-        if (activeTab !== 'VIDEO' && activeTab !== 'PDF' && activeTab !== 'MCQ' && (activeTab as any) !== 'AUDIO') {
-             setFullScreen(false);
-        }
+        setFullScreen(false);
     }
   }, [activeTab]);
 
@@ -890,7 +889,6 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       if (activeTab === 'HOME') {
           return (
               <div className="space-y-4 pb-24">
-
                 {/* PERFORMANCE GRAPH */}
                 <DashboardSectionWrapper id="section_performance" label="Performance" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
                     <PerformanceGraph
@@ -1433,9 +1431,8 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       return null;
   };
 
-  const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || (activeTab as any) === 'AUDIO';
-
   return (
+
     <div className={`min-h-screen bg-slate-50 pb-[100px] ${!isStudyMode ? 'pt-[105px] px-4' : ''}`}>
 
         {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
@@ -1508,6 +1505,9 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                 </div>
             </div>
         )}
+
+
+    <div className="min-h-screen bg-slate-50 pb-[100px] pt-[80px]">
 
         {/* ADMIN SWITCH BUTTON */}
         {(user.role === 'ADMIN' || isImpersonating) && (
@@ -1898,9 +1898,16 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         )}
 
         {/* FIXED BOTTOM NAVIGATION */}
+
         <div className="fixed bottom-0 left-0 right-0 max-w-[1080px] mx-auto bg-white border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[9999] pb-[env(safe-area-inset-bottom,0px)]">
             <div className="flex justify-around items-center h-[65px] py-[6px]">
                 <button onClick={() => { onTabChange('HOME'); setContentViewStep('SUBJECTS'); }} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'HOME' ? 'text-blue-600' : 'text-slate-400'}`}>
+
+        {!(activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && (activeTab as any) !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20') && (
+        <div className="fixed bottom-0 left-0 right-0 max-w-[1080px] mx-auto bg-white border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[9990] pb-[env(safe-area-inset-bottom,0px)]">
+            <div className="flex justify-around items-center h-[70px]">
+                <button onClick={() => { onTabChange('HOME'); setContentViewStep('SUBJECTS'); }} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'HOME' ? 'text-blue-600' : 'text-slate-400'}`}>
+
                     <Home size={24} fill={activeTab === 'HOME' ? "currentColor" : "none"} />
                     <span className="text-[12px] font-bold">Home</span>
                 </button>
@@ -1940,7 +1947,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                 </button>
             </div>
         </div>
-
+        )}
 
         {/* SIDEBAR OVERLAY (INLINE) */}
         {showSidebar && (
