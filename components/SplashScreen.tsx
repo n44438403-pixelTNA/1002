@@ -1,6 +1,4 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { BrainCircuit } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 interface Props {
   onComplete: () => void;
@@ -9,77 +7,69 @@ interface Props {
 }
 
 export const SplashScreen: React.FC<Props> = ({ onComplete, appName = "NSTA", appLogo }) => {
-  useEffect(() => {
-    // Only show once per session to avoid annoying users on reload
-    if (sessionStorage.getItem('nst_splash_shown')) {
-      onComplete();
-      return;
-    }
+  const [progress, setProgress] = useState(0);
 
-    sessionStorage.setItem('nst_splash_shown', 'true');
-    const timer = setTimeout(onComplete, 2500); // 2.5s duration
-    return () => clearTimeout(timer);
+  useEffect(() => {
+    // Always show splash on first load
+    const duration = 2500; // 2.5 seconds total
+    const intervalTime = 25; // Update every 25ms
+    const steps = duration / intervalTime;
+    let currentStep = 0;
+
+    const interval = setInterval(() => {
+        currentStep++;
+        const newProgress = Math.min(100, Math.round((currentStep / steps) * 100));
+        setProgress(newProgress);
+
+        if (currentStep >= steps) {
+            clearInterval(interval);
+            setTimeout(onComplete, 200); // small delay after reaching 100%
+        }
+    }, intervalTime);
+
+    return () => clearInterval(interval);
   }, [onComplete]);
 
   return (
-    <div className="fixed inset-0 z-[99999] bg-slate-50 flex flex-col items-center justify-center p-6">
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="flex flex-col items-center justify-center space-y-8"
-      >
-        <div className="relative">
-          {/* Logo container with pulse ring */}
-          <motion.div
-            animate={{ boxShadow: ['0 0 0 0 rgba(59, 130, 246, 0.4)', '0 0 0 40px rgba(59, 130, 246, 0)'] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="w-32 h-32 bg-white rounded-3xl shadow-2xl flex items-center justify-center p-4 z-10 relative border border-slate-100"
-          >
+    <div className="fixed inset-0 z-[99999] bg-[#0f172a] flex flex-col items-center justify-center p-6" style={{ backgroundImage: 'linear-gradient(to bottom, #0f172a, #1e293b)' }}>
+
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+           <div className="absolute top-[20%] left-[50%] -translate-x-1/2 w-[80%] h-[50%] bg-blue-500/10 blur-[120px] rounded-full"></div>
+      </div>
+
+      <div className="flex flex-col items-center justify-center space-y-6 relative z-10 w-full">
+        <div className="w-24 h-24 bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl flex items-center justify-center p-4 relative border border-white/20">
             {appLogo ? (
-              <img src={appLogo} alt="Logo" className="w-full h-full object-contain" />
+                <img src={appLogo} alt="Logo" className="w-full h-full object-contain rounded-2xl" />
             ) : (
-              <BrainCircuit className="w-16 h-16 text-blue-600" />
+                <div className="w-full h-full rounded-2xl flex items-center justify-center bg-blue-600">
+                    <span className="text-4xl font-black text-white">{appName?.[0] || 'N'}</span>
+                </div>
             )}
-          </motion.div>
         </div>
 
-        <div className="text-center space-y-2">
-          <motion.h1
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-4xl font-black text-slate-900 tracking-tight uppercase"
-          >
+        <div className="text-center space-y-1">
+          <h1 className="text-2xl font-black text-white tracking-tight uppercase">
             {appName}
-          </motion.h1>
-          <motion.p
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            className="text-sm font-bold text-blue-600 tracking-widest uppercase"
-          >
-            Premium Education
-          </motion.p>
+          </h1>
+          <p className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+            Ideal Inspiration Classes
+          </p>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Loading Bar at bottom */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="absolute bottom-12 left-0 right-0 px-12"
-      >
-        <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden max-w-xs mx-auto">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: '100%' }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="h-full bg-blue-600 rounded-full"
-          />
+      <div className="absolute bottom-16 left-0 right-0 px-12 flex flex-col items-center gap-3">
+        <div className="w-full max-w-[200px] h-1.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+           <div
+             className="h-full bg-gradient-to-r from-blue-600 to-indigo-400 rounded-full transition-all duration-100 ease-linear shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+             style={{ width: `${progress}%` }}
+           />
         </div>
-      </motion.div>
+        <div className="text-slate-400 text-xs font-mono font-bold tracking-wider">
+            {progress}%
+        </div>
+      </div>
+
     </div>
   );
 };
