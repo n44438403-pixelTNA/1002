@@ -1082,7 +1082,7 @@ export const LessonView: React.FC<Props> = ({
                    </div>
                </div>
                
-               <div className="flex-1 overflow-y-auto p-4 space-y-6 max-w-3xl mx-auto w-full pb-32 mcq-container">
+               <div className="flex-1 overflow-y-auto p-4 space-y-6 max-w-3xl mx-auto w-full pb-44 mcq-container">
                    {/* 1. TOPIC HEADER (ANALYSIS ONLY) */}
                    {showResults && content.type === 'MCQ_ANALYSIS' && (
                        <div className="mb-4">
