@@ -919,13 +919,13 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
                 {/* MAIN ACTION BUTTONS (RESTORED OLD LAYOUT) */}
                 <DashboardSectionWrapper id="section_main_actions" label="Main Actions" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-[14px]">
                         {/* STUDY SECTION (REPLACED MY COURSES) */}
-                        <div className="col-span-2 bg-white rounded-3xl p-5 border border-slate-100 shadow-sm">
+                        <div className="col-span-2 bg-white rounded-[16px] p-4 border border-slate-100 shadow-[0_4px_10px_rgba(0,0,0,0.04)] mb-[14px]">
                             <h3 className="font-black text-slate-800 text-lg mb-4 flex items-center gap-2">
                                 <BookOpen className="text-blue-600" size={24} /> Study
                             </h3>
-                            <div className="grid grid-cols-3 gap-3">
+                            <div className="grid grid-cols-2 gap-[14px]">
                                 {getSubjectsList(user.classLevel || '10', user.stream || 'Science', user.board).map((subject) => {
                                     if ((settings?.hiddenSubjects || []).includes(subject.id)) return null;
                                     return (
@@ -1436,11 +1436,11 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
   const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || (activeTab as any) === 'AUDIO';
 
   return (
-    <div className={`min-h-screen bg-slate-50 pb-[100px] ${!isStudyMode ? 'pt-[80px]' : ''}`}>
+    <div className={`min-h-screen bg-slate-50 pb-[100px] ${!isStudyMode ? 'pt-[105px] px-4' : ''}`}>
 
         {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
         {!isStudyMode && (
-            <div className="bg-white p-4 rounded-b-3xl shadow-sm border-b border-slate-200 mb-2 flex items-center justify-between fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1080px] z-50">
+            <div className="bg-white p-4 rounded-b-3xl shadow-[0_4px_10px_rgba(0,0,0,0.04)] border-b border-slate-200 flex items-center justify-between fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1080px] z-50">
                 <div className="flex items-center gap-3">
                     {/* Menu Button Restored */}
                     <button
@@ -1458,17 +1458,17 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                             <h2 className="text-lg font-black text-slate-800 leading-none">
                                 {settings?.appName || 'Student App'}
                             </h2>
-                            <div className="flex items-center gap-2 mt-1">
-                                <span className="text-[10px] font-black text-blue-600 truncate max-w-[100px]">{user.name}</span>
-                                {user.role === 'ADMIN' && <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[9px] font-bold">ADMIN</span>}
+                            <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                                <span className="text-[10px] font-black text-blue-600 truncate max-w-[80px]">{user.name}</span>
+                                {user.role === 'ADMIN' && <span className="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[8px] font-bold">ADMIN</span>}
 
                                 {/* SUBSCRIPTION DETAILS TEXT */}
                                 {user.subscriptionTier && user.subscriptionTier !== 'FREE' && user.subscriptionEndDate && (
                                     (() => {
                                         const daysLeft = Math.max(0, Math.ceil((new Date(user.subscriptionEndDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
                                         return (
-                                            <span className="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded-full text-[8px] font-bold tracking-wider">
-                                                {user.subscriptionLevel === 'ULTRA' ? 'ULTRA' : user.subscriptionTier} - {daysLeft} Days
+                                            <span className="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded-full text-[8px] font-bold tracking-wider whitespace-nowrap">
+                                                {user.subscriptionLevel === 'ULTRA' ? 'ULTRA' : user.subscriptionTier} - {daysLeft}d
                                             </span>
                                         );
                                     })()
@@ -1477,7 +1477,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                     {/* Language Toggle moved to corner */}
                     <button
                         onClick={() => {
@@ -1485,25 +1485,25 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                             handleUserUpdate({ ...user, board: newBoard });
                             showAlert(`Language switched to ${newBoard === 'CBSE' ? 'English' : 'Hindi'}`, 'SUCCESS');
                         }}
-                        className="flex items-center gap-1 bg-indigo-50 text-indigo-600 px-2 py-1.5 rounded-lg text-[9px] font-black border border-indigo-100 hover:bg-indigo-100 transition-colors"
+                        className="flex items-center gap-0.5 bg-indigo-50 text-indigo-600 px-1.5 py-1 rounded-lg text-[9px] font-black border border-indigo-100 hover:bg-indigo-100 transition-colors"
                     >
-                        <Globe size={12} /> {user.board === 'CBSE' ? 'EN' : 'HI'}
+                        <Globe size={10} /> {user.board === 'CBSE' ? 'EN' : 'HI'}
                     </button>
 
                     {settings?.specialDiscountEvent?.enabled && (
                         <button
                             onClick={() => onTabChange('STORE')}
-                            className="bg-gradient-to-r from-red-600 to-rose-500 border border-red-400 text-white px-2 py-1.5 rounded-lg flex items-center gap-1 text-[10px] font-black shadow-sm animate-pulse shadow-red-500/30"
+                            className="bg-gradient-to-r from-red-600 to-rose-500 border border-red-400 text-white px-1.5 py-1 rounded-lg flex items-center gap-0.5 text-[9px] font-black shadow-sm animate-pulse shadow-red-500/30 whitespace-nowrap"
                         >
-                            <Zap size={12} className="fill-yellow-400 text-yellow-400"/>
+                            <Zap size={10} className="fill-yellow-400 text-yellow-400"/>
                             {settings.specialDiscountEvent.discountPercent ? `${settings.specialDiscountEvent.discountPercent}% OFF` : 'SALE'}
                         </button>
                     )}
                     <button
                         onClick={() => onTabChange('STORE')}
-                        className="bg-blue-50 border border-blue-200 text-blue-600 px-3 py-1.5 rounded-xl flex items-center gap-2 font-black text-xs hover:bg-blue-100 transition-colors"
+                        className="bg-blue-50 border border-blue-200 text-blue-600 px-2 py-1 rounded-xl flex items-center gap-1 font-black text-[10px] hover:bg-blue-100 transition-colors whitespace-nowrap"
                     >
-                        <Crown size={14} className="fill-blue-600"/> {user.credits}
+                        <Crown size={12} className="fill-blue-600"/> {user.credits}
                     </button>
                 </div>
             </div>
@@ -1899,44 +1899,44 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
         {/* FIXED BOTTOM NAVIGATION */}
         <div className="fixed bottom-0 left-0 right-0 max-w-[1080px] mx-auto bg-white border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[9999] pb-[env(safe-area-inset-bottom,0px)]">
-            <div className="flex justify-around items-center h-[70px]">
-                <button onClick={() => { onTabChange('HOME'); setContentViewStep('SUBJECTS'); }} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'HOME' ? 'text-blue-600' : 'text-slate-400'}`}>
+            <div className="flex justify-around items-center h-[65px] py-[6px]">
+                <button onClick={() => { onTabChange('HOME'); setContentViewStep('SUBJECTS'); }} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'HOME' ? 'text-blue-600' : 'text-slate-400'}`}>
                     <Home size={24} fill={activeTab === 'HOME' ? "currentColor" : "none"} />
-                    <span className="text-[10px] font-bold mt-1">Home</span>
+                    <span className="text-[12px] font-bold">Home</span>
                 </button>
 
                 <button
                     onClick={() => {
                         onTabChange('REVISION' as any);
                     }}
-                    className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'REVISION' ? 'text-blue-600' : 'text-slate-400'}`}
+                    className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'REVISION' ? 'text-blue-600' : 'text-slate-400'}`}
                 >
                     <div className="relative">
                         <BrainCircuit size={24} fill={activeTab === 'REVISION' ? "currentColor" : "none"} />
                     </div>
-                    <span className="text-[10px] font-bold mt-1">Revision</span>
+                    <span className="text-[12px] font-bold">Revision</span>
                 </button>
 
                 <button
                     onClick={() => {
                         onTabChange('AI_HUB');
                     }}
-                    className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'AI_HUB' ? 'text-blue-600' : 'text-slate-400'}`}
+                    className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'AI_HUB' ? 'text-blue-600' : 'text-slate-400'}`}
                 >
                     <div className="relative">
                         <Sparkles size={24} fill={activeTab === 'AI_HUB' ? "currentColor" : "none"} />
                     </div>
-                    <span className="text-[10px] font-bold mt-1">AI Hub</span>
+                    <span className="text-[12px] font-bold">AI Hub</span>
                 </button>
 
-                <button onClick={() => onTabChange('HISTORY')} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'HISTORY' ? 'text-blue-600' : 'text-slate-400'}`}>
+                <button onClick={() => onTabChange('HISTORY')} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'HISTORY' ? 'text-blue-600' : 'text-slate-400'}`}>
                     <History size={24} />
-                    <span className="text-[10px] font-bold mt-1">History</span>
+                    <span className="text-[12px] font-bold">History</span>
                 </button>
 
-                <button onClick={() => onTabChange('PROFILE')} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'PROFILE' ? 'text-blue-600' : 'text-slate-400'}`}>
+                <button onClick={() => onTabChange('PROFILE')} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'PROFILE' ? 'text-blue-600' : 'text-slate-400'}`}>
                     <UserIconOutline size={24} fill={activeTab === 'PROFILE' ? "currentColor" : "none"} />
-                    <span className="text-[10px] font-bold mt-1">Profile</span>
+                    <span className="text-[12px] font-bold">Profile</span>
                 </button>
             </div>
         </div>

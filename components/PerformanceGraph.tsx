@@ -26,7 +26,7 @@ export const PerformanceGraph: React.FC<Props> = ({ history, user, onViewNotes }
   const strokeDashoffset = circumference - (avgScore / 100) * circumference;
 
   return (
-    <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
+    <div className="bg-white rounded-[18px] p-[18px] shadow-[0_4px_10px_rgba(0,0,0,0.08)] border border-slate-100 mb-[14px]">
       <div className="flex justify-between items-center mb-4">
         <div>
           <h3 className="font-black text-slate-800 text-lg">Performance</h3>
