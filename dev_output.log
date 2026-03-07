@@ -12,3 +12,5 @@ Port 5000 is in use, trying another one...
 8:14:39 AM [vite] (client) hmr update /components/AiHub.tsx
 8:15:31 AM [vite] (client) hmr update /components/StudentDashboard.tsx
 8:16:54 AM [vite] (client) hmr update /components/StudentDashboard.tsx
+8:30:23 AM [vite] (client) hmr update /components/FloatingDock.tsx
+8:30:44 AM [vite] (client) hmr update /components/AiHub.tsx
