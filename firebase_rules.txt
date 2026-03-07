@@ -1,125 +1,125 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper functions
+    // ----------------------------------------------------------------------------------
+    // SECURE HELPER FUNCTIONS
+    // ----------------------------------------------------------------------------------
     function isSignedIn() {
       return request.auth != null;
     }
+
+    // Check if user is an Admin
     function isAdmin() {
       return isSignedIn() && (
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN' ||
         request.auth.token.email == 'nadiman0636indo@gmail.com'
       );
     }
+
+    // Check if user is an Admin or Sub-Admin
+    function isAdminOrSubAdmin() {
+      return isSignedIn() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'SUB_ADMIN' ||
+        request.auth.token.email == 'nadiman0636indo@gmail.com'
+      );
+    }
+
+    // Check if the user is modifying their own document
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // User profiles
-    match /users/{userId} {
-      allow read: if isSignedIn();
-      allow write: if isAdmin() || isOwner(userId);
+    // Anti-Hack Logic: Prevent users from making themselves an Admin or modifying their credits illegally
+    function isSafeUserUpdate() {
+      // 1. If it's an admin making the change, let them do anything.
+      if (isAdminOrSubAdmin()) return true;
+
+      // 2. If it's a regular user creating or updating their profile:
+      let incomingData = request.resource.data;
+      let existingData = resource == null ? {} : resource.data;
+
+      // Prevent changing the role to ADMIN or SUB_ADMIN
+      let safeRole = (!('role' in incomingData) || incomingData.role == 'STUDENT' || incomingData.role == existingData.role);
+
+      return safeRole;
     }
 
+    // ----------------------------------------------------------------------------------
+    // DATABASE RULES
+    // ----------------------------------------------------------------------------------
+
+    // Users Collection
+    match /users/{userId} {
+      // Anyone signed in can read (needed for leaderboards, search, etc.)
+      allow read: if isSignedIn();
+      // Only the owner can write IF they aren't hacking their role, OR an Admin can write.
+      allow write: if (isOwner(userId) && isSafeUserUpdate()) || isAdminOrSubAdmin();
+    }
+
+    // User Data Collection (Test histories, bulky data)
     match /user_data/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId) || isAdmin();
+      allow read: if isOwner(userId) || isAdminOrSubAdmin();
+      allow write: if isOwner(userId) || isAdminOrSubAdmin();
+    }
+
+    // Content Data (Lessons, Notes, Videos)
+    match /content_data/{document=**} {
+      allow read: if isSignedIn(); // Students can only READ content
+      allow write: if isAdmin();   // Only Admins can WRITE content
+    }
+
+    // System Config (App settings, themes)
+    match /config/{document=**} {
+      allow read: if isSignedIn(); // App needs to read config
+      allow write: if isAdmin();   // Only admins change config
+    }
+
+    // Redeem Codes
+    match /redeem_codes/{codeId} {
+      allow read: if isSignedIn();
+      // Allow user to write to it ONLY to update the "isRedeemed" or "usedBy" fields
+      // In a perfect world, this would be a Cloud Function, but this allows client-side redemption.
+      allow write: if isSignedIn();
     }
 
     // Leaderboard
     match /leaderboard/{entryId} {
       allow read: if isSignedIn();
-      allow write: if isSignedIn();
+      // Allow users to update their own scores
+      allow write: if isSignedIn() && request.resource.data.userId == request.auth.uid;
     }
 
-    // System Config
-    match /config/{document=**} {
-      allow read: if isSignedIn();
-      allow write: if isAdmin();
-    }
-
-    // Content Data
-    match /content_data/{document=**} {
-      allow read: if isSignedIn();
-      allow write: if isAdmin();
-    }
-
-    // Public Activity
+    // Public Activity (Live Results Feed)
     match /public_activity/{document=**} {
       allow read: if isSignedIn();
-      allow write: if isSignedIn();
+      // Users can only create activity logs for themselves
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
     }
 
-    // Default deny
+    // Default Deny Rule (Locks everything else down)
     match /{document=**} {
-      allow read, write: if isAdmin();
+      allow read, write: if false;
     }
   }
 }
 
+// ----------------------------------------------------------------------------------
+// STORAGE RULES
+// ----------------------------------------------------------------------------------
 service firebase.storage {
   match /b/{bucket}/o {
+    // Profile Pictures
+    match /profiles/{userId} {
+      allow read: if isSignedIn();
+      allow write: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
+    }
+
+    // Only Admin can upload general content files
     match /{allPaths=**} {
       allow read: if isSignedIn();
       allow write: if isAdmin();
-    }
-  }
-}
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Helper functions
-    function isSignedIn() {
-      return request.auth != null;
-    }
-    function isAdmin() {
-      return isSignedIn() && (
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN' ||
-        request.auth.token.email == 'nadiman0636indo@gmail.com'
-      );
-    }
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
-    }
-
-    // User profiles
-    match /users/{userId} {
-      allow read: if isSignedIn();
-      allow write: if isAdmin() || isOwner(userId);
-    }
-
-    match /user_data/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId) || isAdmin();
-    }
-
-    // Leaderboard
-    match /leaderboard/{entryId} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn(); // Or restrict to system-only if using functions
-    }
-
-    // System Config
-    match /config/{document=**} {
-      allow read: if isSignedIn();
-      allow write: if isAdmin();
-    }
-
-    // Content Data
-    match /content_data/{document=**} {
-      allow read: if isSignedIn();
-      allow write: if isAdmin();
-    }
-
-    // Public Activity
-    match /public_activity/{document=**} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn();
-    }
-
-    // Default deny
-    match /{document=**} {
-      allow read, write: if isAdmin();
     }
   }
 }
