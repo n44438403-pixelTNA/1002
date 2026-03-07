@@ -224,7 +224,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                       // Show every 2 hours if not specified differently, just to ensure they know about the sale
                       const interval = 2 * 60 * 60 * 1000;
                       if (now - lastShown > interval) {
-                          showAlert(`🎉 ${event.eventName} is LIVE! Get ${event.discountPercent}% OFF on subscriptions right now!`, "SUCCESS", "Special Event");
+                          showAlert(`🔥 ${event.eventName} IS LIVE! \n\nGrab a massive ${event.discountPercent}% OFF on all premium subscriptions. Tap to view the Store and upgrade instantly!`, "SUCCESS", "🔥 Mega Discount Offer!");
                           localStorage.setItem(`last_event_promo_${user.id}_${event.eventName}`, now.toString());
                           return;
                       }
@@ -1440,7 +1440,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
         {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
         {!isStudyMode && (
-            <div className="bg-white p-4 rounded-b-3xl shadow-sm border-b border-slate-200 mb-2 flex items-center justify-between fixed top-0 w-full max-w-[720px] md:max-w-[1080px] z-50">
+            <div className="bg-white p-4 rounded-b-3xl shadow-sm border-b border-slate-200 mb-2 flex items-center justify-between fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1080px] z-50">
                 <div className="flex items-center gap-3">
                     {/* Menu Button Restored */}
                     <button
@@ -1493,9 +1493,10 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                     {settings?.specialDiscountEvent?.enabled && (
                         <button
                             onClick={() => onTabChange('STORE')}
-                            className="bg-red-50 border border-red-200 text-red-600 px-2 py-1.5 rounded-lg flex items-center gap-1 text-[10px] font-black animate-pulse"
+                            className="bg-gradient-to-r from-red-600 to-rose-500 border border-red-400 text-white px-2 py-1.5 rounded-lg flex items-center gap-1 text-[10px] font-black shadow-sm animate-pulse shadow-red-500/30"
                         >
-                            <Zap size={12} className="fill-red-600"/> SALE
+                            <Zap size={12} className="fill-yellow-400 text-yellow-400"/>
+                            {settings.specialDiscountEvent.discountPercent ? `${settings.specialDiscountEvent.discountPercent}% OFF` : 'SALE'}
                         </button>
                     )}
                     <button
