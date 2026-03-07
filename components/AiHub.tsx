@@ -191,26 +191,44 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
                 </div>
             )}
 
-            {/* DISCOUNT BANNER */}
+            {/* DISCOUNT BANNER REDESIGNED */}
             {showDiscountBanner && discountTimer && (
                 <button
                     onClick={() => onTabChange('STORE')}
-                    className={`w-full bg-gradient-to-r ${discountStatus === 'ACTIVE' ? 'from-red-600 to-pink-600' : 'from-blue-600 to-indigo-600'} p-4 rounded-xl text-white shadow-lg flex items-center justify-between animate-pulse`}
+                    className={`relative w-full overflow-hidden rounded-2xl shadow-xl transition-transform active:scale-95 border-2 ${discountStatus === 'ACTIVE' ? 'bg-gradient-to-r from-red-600 via-rose-600 to-orange-500 border-red-400/50' : 'bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-700 border-blue-400/50'}`}
                 >
-                    <div className="flex items-center gap-3">
-                        <span className="text-2xl">{discountStatus === 'ACTIVE' ? '🎉' : '⏳'}</span>
-                        <div className="text-left">
-                            <p className="font-black text-sm uppercase">
-                                {discountStatus === 'ACTIVE'
-                                    ? `${settings?.specialDiscountEvent?.eventName || 'Special Offer'} Ends In:`
-                                    : `${settings?.specialDiscountEvent?.eventName || 'Special Offer'} Starts In:`
-                                }
-                            </p>
-                            <p className="text-lg font-mono font-bold">{discountTimer}</p>
+                    {/* Animated background elements */}
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 blur-3xl rounded-full"></div>
+                    <div className="absolute top-1/2 -left-10 w-20 h-20 bg-yellow-400/20 blur-2xl rounded-full"></div>
+
+                    <div className="relative z-10 p-4 flex items-center justify-between">
+                        <div className="flex items-start gap-4">
+                            <div className={`p-3 rounded-xl bg-white/10 backdrop-blur-md shadow-inner border border-white/20 flex flex-col items-center justify-center min-w-[60px] ${discountStatus === 'ACTIVE' ? 'text-yellow-300' : 'text-cyan-300'}`}>
+                                <Zap size={24} className={discountStatus === 'ACTIVE' ? 'fill-yellow-300 animate-pulse' : 'fill-cyan-300'} />
+                                {settings?.specialDiscountEvent?.discountPercent && (
+                                    <span className="text-[10px] font-black mt-1 uppercase leading-none">{settings.specialDiscountEvent.discountPercent}% OFF</span>
+                                )}
+                            </div>
+
+                            <div className="text-left text-white">
+                                <p className="font-black text-base uppercase tracking-wider drop-shadow-md">
+                                    {settings?.specialDiscountEvent?.eventName || 'Special Offer'}
+                                </p>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <span className="text-[10px] uppercase font-bold text-white/80 bg-black/20 px-2 py-0.5 rounded-full border border-white/10">
+                                        {discountStatus === 'ACTIVE' ? 'Ends In' : 'Starts In'}
+                                    </span>
+                                    <span className="text-sm font-mono font-bold tracking-tight text-yellow-100 drop-shadow-sm">
+                                        {discountTimer}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="bg-white text-red-600 px-3 py-1 rounded-lg text-xs font-bold shadow-sm">
-                        {discountStatus === 'ACTIVE' ? 'CLAIM NOW' : 'WAIT FOR IT'}
+
+                        <div className={`shrink-0 flex items-center justify-center p-2 rounded-full backdrop-blur-sm bg-white border border-white/50 shadow-lg group-hover:scale-110 transition-transform ${discountStatus === 'ACTIVE' ? 'text-red-600 shadow-red-900/30' : 'text-blue-600 shadow-blue-900/30'}`}>
+                             {discountStatus === 'ACTIVE' ? <Sparkles size={18} className="fill-current" /> : <Calendar size={18} />}
+                        </div>
                     </div>
                 </button>
             )}
