@@ -51,15 +51,14 @@ service cloud.firestore {
       let incomingCredits = ('credits' in incoming) ? incoming.credits : 0;
       let safeCredits = (incomingCredits <= existingCredits + 1000);
 
-      // 4. SUBSCRIPTION HACK LOCK: Prevent upgrading to LIFETIME/ULTRA illegally by checking length of strings/dates
-      // (Basic check to ensure they don't jump from FREE to LIFETIME without an admin)
-      // Note: This is harder to strictly enforce client-side without cloud functions, but we block manual Tier changes.
-      let safeTier = (!('subscriptionTier' in incoming) || incoming.subscriptionTier == existing.subscriptionTier || ('subscriptionTier' in incoming));
+      // 4. SUBSCRIPTION HACK LOCK: Prevent upgrading to LIFETIME/ULTRA illegally
+      // Blocks manual Tier changes from the client side.
+      let safeTier = (!('subscriptionTier' in incoming) || incoming.subscriptionTier == existing.subscriptionTier);
 
       // 5. DEVICE LOCK: Prevent clearing device ID to share accounts
       let safeDeviceId = (!('deviceId' in incoming) || incoming.deviceId == existing.deviceId || !('deviceId' in existing));
 
-      return safeRole && safeBanStatus && safeStatus && safeCredits && safeDeviceId;
+      return safeRole && safeBanStatus && safeStatus && safeCredits && safeTier && safeDeviceId;
     }
 
     // ----------------------------------------------------------------------------------
@@ -95,8 +94,10 @@ service cloud.firestore {
     match /redeem_codes/{codeId} {
       allow read: if isSignedIn();
       // Users can only update a code if it hasn't been used yet (prevents double dipping)
-      // and they can only change 'isRedeemed' and 'usedBy'.
-      allow update: if isSignedIn() && resource.data.isRedeemed == false;
+      // and they can ONLY modify the 'isRedeemed' and 'usedBy' fields (prevents value tampering).
+      allow update: if isSignedIn()
+                    && resource.data.isRedeemed == false
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRedeemed', 'usedBy']);
       allow create, delete: if isAdmin();
     }
 
