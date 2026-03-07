@@ -2275,7 +2275,7 @@ const App: React.FC = () => {
       </header>
       )}
 
-      <main className={`flex-1 w-full max-w-6xl mx-auto ${isFullScreen ? 'p-0' : 'p-4 mb-8'} flex flex-col`}>
+      <main className={`flex-1 w-full max-w-6xl mx-auto ${isFullScreen ? 'p-0' : 'p-4 pb-0'} flex flex-col`}>
         <AnimatePresence mode="wait">
           <motion.div
             key={state.view + (state.user ? 'logged_in' : 'logged_out')}
