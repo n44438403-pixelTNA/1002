@@ -221,47 +221,37 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
                     <h2 className="text-2xl font-black mb-1 flex items-center gap-2">
                         <Sparkles className="text-yellow-400" /> AI Center
                     </h2>
-                    <p className="text-indigo-200 text-sm">Your personal learning assistant powered by advanced AI.</p>
                 </div>
                 <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
             </div>
 
             {/* AI TOOLS COMPRESSED VIEW */}
-            <div className="grid grid-cols-1 gap-4">
-                {/* 1. CHAT TUTOR */}
-                <button
-                    onClick={() => onTabChange('AI_CHAT')}
-                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all active:scale-[0.98]"
-                >
-                    <div className="bg-indigo-100 text-indigo-600 p-3 rounded-xl">
-                        <Bot size={24} />
-                    </div>
-                    <div className="flex-1 text-left">
-                        <h3 className="font-bold text-slate-800">Chat with AI Tutor</h3>
-                        <p className="text-xs text-slate-500">Instant answers to any question.</p>
-                    </div>
-                    <div className="text-slate-300">
-                        <Zap size={16} />
-                    </div>
-                </button>
-
-                {/* 2. REPLACED: NOTES GENERATOR -> AI STUDY PLANNER */}
+            <div className="grid grid-cols-2 gap-4">
+                {/* 1. AI STUDY PLANNER */}
                 <button
                     onClick={() => setShowPlannerModal(true)}
-                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all active:scale-[0.98]"
+                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-2 hover:shadow-md transition-all active:scale-[0.98] text-center"
                 >
-                    <div className="bg-pink-100 text-pink-600 p-3 rounded-xl">
+                    <div className="bg-pink-100 text-pink-600 p-3 rounded-xl mb-1">
                         <Calendar size={24} />
                     </div>
-                    <div className="flex-1 text-left">
-                        <h3 className="font-bold text-slate-800">AI Personalized Plans</h3>
-                        <p className="text-xs text-slate-500">Get a study routine based on your history.</p>
-                    </div>
-                    <div className="text-slate-300">
-                        <Zap size={16} />
+                    <div>
+                        <h3 className="font-bold text-slate-800 text-sm leading-tight">AI Personalized<br/>Plans</h3>
                     </div>
                 </button>
 
+                {/* 2. CHAT TUTOR */}
+                <button
+                    onClick={() => onTabChange('AI_CHAT')}
+                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-2 hover:shadow-md transition-all active:scale-[0.98] text-center"
+                >
+                    <div className="bg-indigo-100 text-indigo-600 p-3 rounded-xl mb-1">
+                        <Bot size={24} />
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-slate-800 text-sm leading-tight">Chat with<br/>AI Tutor</h3>
+                    </div>
+                </button>
             </div>
 
             {/* AI PLANNER MODAL */}
