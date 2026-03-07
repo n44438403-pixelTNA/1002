@@ -513,8 +513,7 @@ export const LessonView: React.FC<Props> = ({
       const currentCorrect = score;
       const currentWrong = Object.keys(mcqState).length - currentCorrect;
       const attemptedCount = Object.keys(mcqState).length;
-      const minRequired = Math.min(30, displayData.length);
-      const canSubmit = attemptedCount >= minRequired;
+      const canSubmit = true; // Always allow submit
 
       const currentBatchAttemptedCount = currentBatchData.reduce((acc, _, localIdx) => {
           const idx = (batchIndex * BATCH_SIZE) + localIdx;
@@ -1083,7 +1082,7 @@ export const LessonView: React.FC<Props> = ({
                    </div>
                </div>
                
-               <div className="flex-1 overflow-y-auto p-4 space-y-6 max-w-3xl mx-auto w-full pb-32 mcq-container">
+               <div className="flex-1 overflow-y-auto p-4 space-y-6 max-w-3xl mx-auto w-full pb-44 mcq-container">
                    {/* 1. TOPIC HEADER (ANALYSIS ONLY) */}
                    {showResults && content.type === 'MCQ_ANALYSIS' && (
                        <div className="mb-4">
@@ -1661,31 +1660,26 @@ export const LessonView: React.FC<Props> = ({
                    {/* Logic for Single Question Navigation */}
                    {!showResults && (
                        <>
-                           {hasMore ? (
+                           {hasMore && (
                                 <button
                                    onClick={handleNextPage}
                                    className="flex-[2] py-3 bg-blue-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-100"
                                >
-                                   Next <ChevronRight size={20} />
+                                   {(currentBatchData.length > 0 && mcqState[(batchIndex * BATCH_SIZE)] !== undefined) ? 'Save & Next' : 'Next'} <ChevronRight size={20} />
                                </button>
-                           ) : (
-                               <div className="flex-[2]"></div> // Spacer if no next button on last page
                            )}
 
-                           {/* Submit Button - Always visible if condition met, or on last page */}
-                           {(canSubmit || !hasMore) && (
-                               <button
-                                   onClick={handleSubmitRequest}
-                                   disabled={!canSubmit}
-                                   className={`flex-[2] py-3 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg ${canSubmit ? 'bg-green-600 text-white shadow-green-100' : 'bg-slate-200 text-slate-400'}`}
-                               >
-                                   Submit <Trophy size={20} />
-                               </button>
-                           )}
+                           {/* Submit Button */}
+                           <button
+                               onClick={handleSubmitRequest}
+                               className={`flex-[2] py-3 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg bg-green-600 text-white shadow-green-100`}
+                           >
+                               Submit <Trophy size={20} />
+                           </button>
                        </>
                    )}
 
-                   {showResults && !hasMore && (
+                   {showResults && (
                        <button 
                            onClick={onBack}
                            className="flex-[2] py-3 bg-slate-800 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg"
