@@ -367,12 +367,11 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
   const [showFeatureMatrix, setShowFeatureMatrix] = useState(false);
 
   useEffect(() => {
-    if (activeTab === 'HOME' || activeTab === 'EXPLORE' || activeTab === 'PROFILE' || (activeTab as any) === 'AI_STUDIO' || activeTab === 'REVISION') {
+    // Only set full screen for immersive content views
+    if (activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || (activeTab as any) === 'AUDIO') {
         setFullScreen(true);
     } else {
-        if (activeTab !== 'VIDEO' && activeTab !== 'PDF' && activeTab !== 'MCQ' && (activeTab as any) !== 'AUDIO') {
-             setFullScreen(false);
-        }
+        setFullScreen(false);
     }
   }, [activeTab]);
 
@@ -890,6 +889,9 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       if (activeTab === 'HOME') {
           return (
               <div className="space-y-4 pb-24">
+
+
+
 
                 {/* PERFORMANCE GRAPH */}
                 <DashboardSectionWrapper id="section_performance" label="Performance" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
@@ -1898,7 +1900,8 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         )}
 
         {/* FIXED BOTTOM NAVIGATION */}
-        <div className="fixed bottom-0 left-0 right-0 max-w-[1080px] mx-auto bg-white border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[9999] pb-[env(safe-area-inset-bottom,0px)]">
+        {!(activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO') && (
+        <div className="fixed bottom-0 left-0 right-0 max-w-[1080px] mx-auto bg-white border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[9990] pb-[env(safe-area-inset-bottom,0px)]">
             <div className="flex justify-around items-center h-[70px]">
                 <button onClick={() => { onTabChange('HOME'); setContentViewStep('SUBJECTS'); }} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'HOME' ? 'text-blue-600' : 'text-slate-400'}`}>
                     <Home size={24} fill={activeTab === 'HOME' ? "currentColor" : "none"} />
@@ -1940,6 +1943,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                 </button>
             </div>
         </div>
+        )}
 
 
         {/* SIDEBAR OVERLAY (INLINE) */}

@@ -6036,29 +6036,28 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                                   </div>
                               </div>
 
-                              <div className="flex justify-between items-center mb-2">
-                                  <span className="font-bold text-slate-700">Total Questions: {(activeTab === 'CONTENT_TEST' ? editingTestMcqs : editingMcqs).length}</span>
-                                  <div className="flex gap-2">
-                                      <button onClick={() => deleteAllMcqs(activeTab === 'CONTENT_TEST')} className="bg-red-50 text-red-600 border border-red-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition-colors">Delete All</button>
-                                      <button onClick={() => addMcq(activeTab === 'CONTENT_TEST')} className="bg-white border border-blue-200 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-50">+ Add Question</button>
-                                  <button 
-                                      onClick={() => {
-                                          const list = activeTab === 'CONTENT_TEST' ? editingTestMcqs : editingMcqs;
-                                          if (list.length === 0) { alert("No questions to copy!"); return; }
-                                          
-                                          // Format: Question \t OptA \t OptB \t OptC \t OptD \t AnswerIndex(1-4) \t Explanation
-                                          const text = list.map(q => {
-                                              return `${q.question}\t${q.options[0]}\t${q.options[1]}\t${q.options[2]}\t${q.options[3]}\t${q.correctAnswer + 1}\t${q.explanation || ''}`;
-                                          }).join('\n');
-                                          
-                                          navigator.clipboard.writeText(text);
-                                          alert(`✅ Copied ${list.length} questions to clipboard!\n\nPaste directly into Google Sheets or Excel.`);
-                                      }}
-                                      className="bg-indigo-100 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-200 flex items-center gap-1"
-                                  >
-                                      <Copy size={14} /> Copy for Sheets
-                                  </button>
-                                  <button onClick={() => addMcq(activeTab === 'CONTENT_TEST')} className="bg-white border border-blue-200 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-50">+ Add Question</button>
+                              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                                  <span className="font-bold text-slate-700 whitespace-nowrap">Total Questions: {(activeTab === 'CONTENT_TEST' ? editingTestMcqs : editingMcqs).length}</span>
+                                  <div className="flex flex-wrap items-center gap-2">
+                                      <button onClick={() => deleteAllMcqs(activeTab === 'CONTENT_TEST')} className="bg-red-50 text-red-600 border border-red-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition-colors whitespace-nowrap">Delete All</button>
+                                      <button onClick={() => addMcq(activeTab === 'CONTENT_TEST')} className="bg-white border border-blue-200 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-50 whitespace-nowrap">+ Add Question</button>
+                                      <button
+                                          onClick={() => {
+                                              const list = activeTab === 'CONTENT_TEST' ? editingTestMcqs : editingMcqs;
+                                              if (list.length === 0) { alert("No questions to copy!"); return; }
+
+                                              // Format: Question \t OptA \t OptB \t OptC \t OptD \t AnswerIndex(1-4) \t Explanation
+                                              const text = list.map(q => {
+                                                  return `${q.question}\t${q.options[0]}\t${q.options[1]}\t${q.options[2]}\t${q.options[3]}\t${q.correctAnswer + 1}\t${q.explanation || ''}`;
+                                              }).join('\n');
+
+                                              navigator.clipboard.writeText(text);
+                                              alert(`✅ Copied ${list.length} questions to clipboard!\n\nPaste directly into Google Sheets or Excel.`);
+                                          }}
+                                          className="bg-indigo-100 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-200 flex items-center gap-1 whitespace-nowrap"
+                                      >
+                                          <Copy size={14} /> Copy for Sheets
+                                      </button>
                                       <label className="flex items-center gap-2 cursor-pointer bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
                                           <input 
                                               type="checkbox" 
