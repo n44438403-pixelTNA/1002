@@ -2583,7 +2583,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
           return (
               <div className="mb-4 animate-in fade-in slide-in-from-left-4">
                   <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Select Stream</p>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                       {['Science', 'Commerce', 'Arts'].map(s => (
                           <button 
                               key={s}
@@ -3016,16 +3016,16 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                                       </div>
                                   </div>
 
-                                  <div className="grid grid-cols-2 gap-4">
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                       {/* BASIC TIER CONFIG */}
                                       <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100">
                                           <h5 className="text-xs font-black text-blue-800 mb-2 flex items-center justify-between">BASIC (PRO) TIER</h5>
-                                          <div className="flex gap-2">
-                                              <div className="flex-1">
+                                          <div className="flex gap-2 flex-wrap sm:flex-nowrap">
+                                              <div className="flex-1 min-w-[100px]">
                                                   <label className="text-[9px] font-bold text-slate-500 block">Dummy Price (₹)</label>
                                                   <input type="number" value={plan.basicOriginalPrice} onChange={e => updatePlan('basicOriginalPrice', Number(e.target.value))} className="w-full p-1.5 border rounded text-xs line-through text-slate-400" />
                                               </div>
-                                              <div className="flex-1">
+                                              <div className="flex-1 min-w-[100px]">
                                                   <label className="text-[9px] font-bold text-blue-600 block">Selling Price (₹)</label>
                                                   <input type="number" value={plan.basicPrice} onChange={e => updatePlan('basicPrice', Number(e.target.value))} className="w-full p-1.5 border border-blue-300 rounded text-xs font-bold text-blue-700 bg-blue-50" />
                                               </div>
@@ -3035,12 +3035,12 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                                       {/* ULTRA TIER CONFIG */}
                                       <div className="bg-purple-50/50 p-3 rounded-xl border border-purple-100">
                                           <h5 className="text-xs font-black text-purple-800 mb-2 flex items-center justify-between">ULTRA (MAX) TIER</h5>
-                                          <div className="flex gap-2">
-                                              <div className="flex-1">
+                                          <div className="flex gap-2 flex-wrap sm:flex-nowrap">
+                                              <div className="flex-1 min-w-[100px]">
                                                   <label className="text-[9px] font-bold text-slate-500 block">Dummy Price (₹)</label>
                                                   <input type="number" value={plan.ultraOriginalPrice} onChange={e => updatePlan('ultraOriginalPrice', Number(e.target.value))} className="w-full p-1.5 border rounded text-xs line-through text-slate-400" />
                                               </div>
-                                              <div className="flex-1">
+                                              <div className="flex-1 min-w-[100px]">
                                                   <label className="text-[9px] font-bold text-purple-600 block">Selling Price (₹)</label>
                                                   <input type="number" value={plan.ultraPrice} onChange={e => updatePlan('ultraPrice', Number(e.target.value))} className="w-full p-1.5 border border-purple-300 rounded text-xs font-bold text-purple-700 bg-purple-50" />
                                               </div>
@@ -6036,28 +6036,29 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                                   </div>
                               </div>
 
-                              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                                  <span className="font-bold text-slate-700 whitespace-nowrap">Total Questions: {(activeTab === 'CONTENT_TEST' ? editingTestMcqs : editingMcqs).length}</span>
-                                  <div className="flex flex-wrap items-center gap-2">
-                                      <button onClick={() => deleteAllMcqs(activeTab === 'CONTENT_TEST')} className="bg-red-50 text-red-600 border border-red-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition-colors whitespace-nowrap">Delete All</button>
-                                      <button onClick={() => addMcq(activeTab === 'CONTENT_TEST')} className="bg-white border border-blue-200 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-50 whitespace-nowrap">+ Add Question</button>
-                                      <button
-                                          onClick={() => {
-                                              const list = activeTab === 'CONTENT_TEST' ? editingTestMcqs : editingMcqs;
-                                              if (list.length === 0) { alert("No questions to copy!"); return; }
+                              <div className="flex justify-between items-center mb-2">
+                                  <span className="font-bold text-slate-700">Total Questions: {(activeTab === 'CONTENT_TEST' ? editingTestMcqs : editingMcqs).length}</span>
+                                  <div className="flex gap-2">
+                                      <button onClick={() => deleteAllMcqs(activeTab === 'CONTENT_TEST')} className="bg-red-50 text-red-600 border border-red-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition-colors">Delete All</button>
+                                      <button onClick={() => addMcq(activeTab === 'CONTENT_TEST')} className="bg-white border border-blue-200 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-50">+ Add Question</button>
+                                  <button
+                                      onClick={() => {
+                                          const list = activeTab === 'CONTENT_TEST' ? editingTestMcqs : editingMcqs;
+                                          if (list.length === 0) { alert("No questions to copy!"); return; }
 
-                                              // Format: Question \t OptA \t OptB \t OptC \t OptD \t AnswerIndex(1-4) \t Explanation
-                                              const text = list.map(q => {
-                                                  return `${q.question}\t${q.options[0]}\t${q.options[1]}\t${q.options[2]}\t${q.options[3]}\t${q.correctAnswer + 1}\t${q.explanation || ''}`;
-                                              }).join('\n');
+                                          // Format: Question \t OptA \t OptB \t OptC \t OptD \t AnswerIndex(1-4) \t Explanation
+                                          const text = list.map(q => {
+                                              return `${q.question}\t${q.options[0]}\t${q.options[1]}\t${q.options[2]}\t${q.options[3]}\t${q.correctAnswer + 1}\t${q.explanation || ''}`;
+                                          }).join('\n');
 
-                                              navigator.clipboard.writeText(text);
-                                              alert(`✅ Copied ${list.length} questions to clipboard!\n\nPaste directly into Google Sheets or Excel.`);
-                                          }}
-                                          className="bg-indigo-100 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-200 flex items-center gap-1 whitespace-nowrap"
-                                      >
-                                          <Copy size={14} /> Copy for Sheets
-                                      </button>
+                                          navigator.clipboard.writeText(text);
+                                          alert(`✅ Copied ${list.length} questions to clipboard!\n\nPaste directly into Google Sheets or Excel.`);
+                                      }}
+                                      className="bg-indigo-100 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-200 flex items-center gap-1"
+                                  >
+                                      <Copy size={14} /> Copy for Sheets
+                                  </button>
+                                  <button onClick={() => addMcq(activeTab === 'CONTENT_TEST')} className="bg-white border border-blue-200 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-50">+ Add Question</button>
                                       <label className="flex items-center gap-2 cursor-pointer bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
                                           <input 
                                               type="checkbox" 
@@ -8918,8 +8919,8 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                       {/* 1. MCQ RESULTS */}
                       <div>
                           <h4 className="font-bold text-slate-700 mb-3 flex items-center gap-2"><CheckCircle size={18}/> Test Performance</h4>
-                          <div className="max-h-60 overflow-y-auto border rounded-xl">
-                              <table className="w-full text-left text-xs">
+                          <div className="max-h-60 overflow-y-auto overflow-x-auto border rounded-xl">
+                              <table className="w-full text-left text-xs min-w-[500px]">
                                   <thead className="bg-slate-50 font-bold text-slate-500 uppercase sticky top-0">
                                       <tr>
                                           <th className="p-3">Date</th>
@@ -8978,8 +8979,8 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                       {/* 3. USAGE LOGS */}
                       <div>
                           <h4 className="font-bold text-slate-700 mb-3 flex items-center gap-2"><ListChecks size={18}/> Activity Log</h4>
-                          <div className="max-h-60 overflow-y-auto border rounded-xl">
-                              <table className="w-full text-left text-xs">
+                          <div className="max-h-60 overflow-y-auto overflow-x-auto border rounded-xl">
+                              <table className="w-full text-left text-xs min-w-[400px]">
                                   <thead className="bg-slate-50 font-bold text-slate-500 uppercase sticky top-0">
                                       <tr>
                                           <th className="p-3">Time</th>
@@ -9960,8 +9961,8 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
 
                               <div>
                                   <h4 className="font-bold text-slate-800 mb-3">Transaction History</h4>
-                                  <div className="max-h-60 overflow-y-auto border rounded-xl">
-                                      <table className="w-full text-left text-xs">
+                                  <div className="max-h-60 overflow-y-auto overflow-x-auto border rounded-xl">
+                                      <table className="w-full text-left text-xs min-w-[400px]">
                                           <thead className="bg-slate-50 font-bold text-slate-500 uppercase">
                                               <tr>
                                                   <th className="p-3">Date</th>

@@ -17,19 +17,20 @@ export const SplashScreen: React.FC<Props> = ({ onComplete, appName = "NSTA", ap
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
+  const startTimeRef = useRef(Date.now());
+
   useEffect(() => {
     if (progressRef.current >= 100) return; // Prevent restart if already complete
 
-    // Always show splash on first load
     const duration = 2500; // 2.5 seconds total
     const intervalTime = 25; // Update every 25ms
-    const steps = duration / intervalTime;
 
     const interval = setInterval(() => {
-        // We use the same speed but track the step linearly
-        // to avoid restarting if the component re-renders
-        progressRef.current += (100 / steps);
-        const newProgress = Math.min(100, Math.round(progressRef.current));
+        // Calculate progress based on actual time elapsed to immune against re-renders
+        const elapsed = Date.now() - startTimeRef.current;
+        const newProgress = Math.min(100, Math.round((elapsed / duration) * 100));
+
+        progressRef.current = newProgress;
         setProgress(newProgress);
 
         if (newProgress >= 100) {

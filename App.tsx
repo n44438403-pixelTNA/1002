@@ -37,7 +37,7 @@ import { MarksheetCard } from './components/MarksheetCard';
 import { UpdatePopup } from './components/UpdatePopup'; // NEW
 import { ErrorBoundary } from './components/ErrorBoundary'; // NEW
 import { generateDailyChallengeQuestions } from './utils/challengeGenerator';
-import { BrainCircuit, Globe, LogOut, LayoutDashboard, BookOpen, Headphones, HelpCircle, Newspaper, KeyRound, Lock, X, ShieldCheck, FileText, UserPlus, EyeOff, WifiOff, Crown, Zap } from 'lucide-react';
+import { BrainCircuit, Globe, LogOut, LayoutDashboard, BookOpen, Headphones, HelpCircle, Newspaper, KeyRound, Lock, X, ShieldCheck, FileText, UserPlus, EyeOff, WifiOff } from 'lucide-react';
 import { SUPPORT_EMAIL, APP_VERSION, ADMIN_EMAILS } from './constants';
 import { StudentTab, PendingReward, MCQResult, SubscriptionHistoryEntry } from './types';
 import { storage } from './utils/storage';
@@ -2265,58 +2265,6 @@ const App: React.FC = () => {
            </div>
            {state.user && (
                <div className="flex items-center gap-2">
-                    {/* Add language toggle and credits specifically for students */}
-                    {state.user.role === 'STUDENT' && (
-                        <div className="flex items-center gap-2">
-                            {/* Subscription Pill */}
-                            {state.user.isPremium && state.user.subscriptionEndDate && (
-                                <button
-                                    onClick={() => setState(prev => ({...prev, view: 'STUDENT_DASHBOARD', activeTab: 'PROFILE'}))}
-                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[10px] font-black uppercase tracking-wider transition-colors shadow-sm ${
-                                        state.user.subscriptionLevel === 'ULTRA'
-                                            ? 'bg-gradient-to-r from-amber-100 to-yellow-100 border-yellow-300 text-yellow-800 hover:from-amber-200 hover:to-yellow-200'
-                                            : 'bg-gradient-to-r from-cyan-50 to-blue-50 border-blue-200 text-blue-700 hover:from-cyan-100 hover:to-blue-100'
-                                    }`}
-                                >
-                                    {state.user.subscriptionLevel === 'ULTRA' ? <Crown size={12} className="fill-yellow-600 text-yellow-600" /> : <Zap size={12} className="fill-blue-500 text-blue-500" />}
-                                    {state.user.subscriptionLevel || 'PRO'} • {Math.max(0, Math.ceil((new Date(state.user.subscriptionEndDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))}D
-                                </button>
-                            )}
-                            {/* Language Toggle moved to corner */}
-                            <button
-                                onClick={() => {
-                                    const newBoard = state.user?.board === 'CBSE' ? 'BSEB' : 'CBSE';
-                                    if(state.user) {
-                                       const updated = { ...state.user, board: newBoard };
-                                       if (!state.originalAdmin) {
-                                           localStorage.setItem('nst_current_user', JSON.stringify(updated));
-                                           saveUserToLive(updated);
-                                       }
-                                       setState(prev => ({...prev, user: updated}));
-                                       setAlertConfig({isOpen: true, message: `Language switched to ${newBoard === 'CBSE' ? 'English' : 'Hindi'}`});
-                                    }
-                                }}
-                                className="flex items-center gap-1 bg-indigo-50 text-indigo-600 px-2 py-1.5 rounded-lg text-[9px] font-black border border-indigo-100 hover:bg-indigo-100 transition-colors"
-                            >
-                                <Globe size={12} /> {state.user.board === 'CBSE' ? 'EN' : 'HI'}
-                            </button>
-
-                            {state.settings?.specialDiscountEvent?.enabled && (
-                                <button
-                                    onClick={() => setState(prev => ({...prev, view: 'STUDENT_DASHBOARD', activeTab: 'STORE'}))}
-                                    className="bg-red-50 border border-red-200 text-red-600 px-2 py-1.5 rounded-lg flex items-center gap-1 text-[10px] font-black animate-pulse"
-                                >
-                                    <Zap size={12} className="fill-red-600"/> SALE
-                                </button>
-                            )}
-                            <button
-                                onClick={() => setState(prev => ({...prev, view: 'STUDENT_DASHBOARD', activeTab: 'STORE'}))}
-                                className="bg-blue-50 border border-blue-200 text-blue-600 px-3 py-1.5 rounded-xl flex items-center gap-2 font-black text-xs hover:bg-blue-100 transition-colors"
-                            >
-                                <Crown size={14} className="fill-blue-600"/> {state.user.credits || 0}
-                            </button>
-                        </div>
-                    )}
                    <div className="text-right hidden md:block">
                        <div className="text-xs font-bold text-slate-800">{state.user.name}</div>
                    </div>
