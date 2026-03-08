@@ -14,10 +14,9 @@ interface Props {
 export const FloatingDock: React.FC<Props> = ({ onTabSelect, onGoHome, onGoBack, isStudent, settings }) => {
     const [isMaximized, setIsMaximized] = useState(false);
 
-    // If not a student, we don't show the quick navigation menu (GlobalSearch is in App.tsx now)
-    if (!isStudent) {
-        return null;
-    }
+    // Quick Navigation is now handled by FloatingActionMenu.
+    // This component is globally hidden for all users as per the recent update.
+    return null;
 
     const menuItems: { id: StudentTab, icon: any, label: string, color: string }[] = [
         { id: 'AI_CHAT', icon: Bot, label: 'AI Tutor', color: 'text-indigo-600' },
