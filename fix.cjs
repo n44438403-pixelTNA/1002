@@ -2,14 +2,16 @@ const fs = require('fs');
 
 let file = fs.readFileSync('components/StudentDashboard.tsx', 'utf8');
 
-// We need to add the definition for isStudyMode just before return (
-let target = "  return (";
-let replacement = `  const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && activeTab !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20';
+// I need to make sure to remove the incorrect definition first at line 104
+let target1 = `    const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && activeTab !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20';`;
+file = file.replace(target1, '');
 
-  return (`;
+// Then add it to the main StudentDashboard component scope
+let target2 = `  const checkCreditBalance = (amount: number) => {`;
+let replacement2 = `  const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && activeTab !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20';
 
-let newFile = file.replace(target, replacement);
+  const checkCreditBalance = (amount: number) => {`;
 
-fs.writeFileSync('components/StudentDashboard.tsx', newFile);
+file = file.replace(target2, replacement2);
 
-console.log(newFile.indexOf(replacement) !== -1 ? "Replaced successfully" : "Replacement failed");
+fs.writeFileSync('components/StudentDashboard.tsx', file);

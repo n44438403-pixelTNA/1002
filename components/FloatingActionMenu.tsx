@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { SystemSettings, User } from '../types';
 import { ALL_FEATURES, Feature } from '../utils/featureRegistry';
 import { checkFeatureAccess } from '../utils/permissionUtils';
-import { Crown, User as UserIcon, ShoppingBag, X, Zap, Menu, ChevronUp, Book, CheckSquare, BrainCircuit, BarChart3, AlertCircle, PlayCircle, Sparkles, Wrench, Gamepad2, Trophy, Shield, Gift, Terminal, MessageSquare, FileText, Video, Headphones, Lock, Bot, Youtube, History, Settings } from 'lucide-react';
+import { Crown, User as UserIcon, ShoppingBag, X, Zap, Menu, ChevronUp, Book, CheckSquare, BrainCircuit, BarChart3, AlertCircle, PlayCircle, Sparkles, Wrench, Gamepad2, Trophy, Shield, Gift, Terminal, MessageSquare, FileText, Video, Headphones, Lock } from 'lucide-react';
 
 interface Props {
     activeTab?: string;
@@ -271,6 +271,7 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
                             </button>
                         </div>
 
+
                         {/* QUICK NAVIGATION GRID AND PLAN MATRIX STYLE LAYOUT */}
                         <div className="flex flex-col max-h-[70vh] overflow-y-auto pr-1 pb-4">
 
@@ -334,6 +335,10 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
                             <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wider shrink-0">
                                 <Zap size={16} className="text-orange-500 fill-orange-500" /> Plan Features Matrix
                             </h3>
+
+                        {/* PLAN MATRIX STYLE LAYOUT */}
+                        <div className="flex flex-col max-h-[60vh] overflow-y-auto">
+
 
                             {/* FIXED ACTIONS ROW */}
                             <div className="grid grid-cols-2 gap-3 mb-4 shrink-0">
