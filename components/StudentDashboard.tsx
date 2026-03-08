@@ -101,6 +101,7 @@ const DashboardSectionWrapper = ({
 
     if (!isVisible && !isLayoutEditing) return null;
 
+
   return (
         <div className={`relative ${isLayoutEditing ? 'border-2 border-dashed border-yellow-400 p-2 rounded-xl mb-4 bg-yellow-50/10' : ''}`}>
             {isLayoutEditing && (
@@ -1431,10 +1432,15 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       return null;
   };
 
+
+  const isStudyMode = ['PDF', 'VIDEO', 'MCQ', 'AUDIO', 'WEEKLY_TEST', 'CHALLENGE_20', 'PLAYER'].includes(activeTab) || contentViewStep === 'PLAYER';
+
   const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && activeTab !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20';
 
   return (
 
+
+  return (
     <div className={`min-h-screen bg-slate-50 pb-[100px] ${!isStudyMode ? 'pt-[105px] px-4' : ''}`}>
 
         {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
