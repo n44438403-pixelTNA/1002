@@ -1902,6 +1902,8 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                 isFlashSaleActive={settings?.specialDiscountEvent?.enabled}
                 onOpenProfile={() => onTabChange('PROFILE')}
                 onOpenStore={() => onTabChange('STORE')}
+                onTabSelect={onTabChange}
+                onGoHome={() => { onTabChange('HOME'); setContentViewStep('SUBJECTS'); }}
             />
         )}
 

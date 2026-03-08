@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { SystemSettings, User } from '../types';
+import { SystemSettings, User, StudentTab } from '../types';
 import { ALL_FEATURES, Feature } from '../utils/featureRegistry';
 import { checkFeatureAccess } from '../utils/permissionUtils';
-import { Crown, User as UserIcon, ShoppingBag, X, Zap, Menu, ChevronUp, Book, CheckSquare, BrainCircuit, BarChart3, AlertCircle, PlayCircle, Sparkles, Wrench, Gamepad2, Trophy, Shield, Gift, Terminal, MessageSquare, FileText, Video, Headphones, Lock } from 'lucide-react';
+import { FeatureMatrixModal } from './FeatureMatrixModal';
+import { Youtube, CheckSquare, Trophy, History, Settings, Bot, Crown, User as UserIcon, ShoppingBag, X, Zap, Menu, ChevronUp, Book, BrainCircuit, BarChart3, AlertCircle, PlayCircle, Sparkles, Wrench, Gamepad2, Shield, Gift, Terminal, MessageSquare, FileText, Video, Headphones, Lock } from 'lucide-react';
 
 interface Props {
     activeTab?: string;
@@ -12,6 +13,8 @@ interface Props {
     onOpenProfile: () => void;
     onOpenStore: () => void;
     onNavigate?: (path: string) => void;
+    onTabSelect?: (tab: StudentTab) => void;
+    onGoHome?: () => void;
 }
 
 // Icon Mapper
@@ -39,8 +42,9 @@ const getIconComponent = (iconName?: string) => {
     }
 };
 
-export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSaleActive, onOpenProfile, onOpenStore, onNavigate, activeTab }) => {
+export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSaleActive, onOpenProfile, onOpenStore, onNavigate, activeTab, onTabSelect, onGoHome }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [showMatrixModal, setShowMatrixModal] = useState(false);
     // const [showPlanModal, setShowPlanModal] = useState(false); // Unused
     const [position, setPosition] = useState({ x: window.innerWidth - 80, y: window.innerHeight - 200 });
 
@@ -70,6 +74,35 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
     const isDraggingRef = useRef(false);
     const dragStartRef = useRef({ x: 0, y: 0 });
     const buttonRef = useRef<HTMLDivElement>(null);
+
+
+    const quickNavItems = useMemo(() => {
+        return [
+            { id: 'AI_CHAT' as StudentTab, icon: Bot, label: 'AI Tutor', color: 'text-indigo-600' },
+            { id: 'VIDEO' as StudentTab, icon: Youtube, label: 'Video', color: 'text-red-600' },
+            { id: 'PDF' as StudentTab, icon: FileText, label: 'Notes', color: 'text-blue-600' },
+            { id: 'MCQ' as StudentTab, icon: CheckSquare, label: 'MCQ', color: 'text-purple-600' },
+            { id: 'LEADERBOARD' as StudentTab, icon: Trophy, label: 'Rank', color: 'text-yellow-600' },
+            { id: 'GAME' as StudentTab, icon: Gamepad2, label: 'Game', color: 'text-orange-600' },
+            { id: 'HISTORY' as StudentTab, icon: History, label: 'History', color: 'text-slate-600' },
+            { id: 'REDEEM' as StudentTab, icon: Gift, label: 'Redeem', color: 'text-pink-600' },
+            { id: 'STORE' as StudentTab, icon: ShoppingBag, label: 'Store', color: 'text-blue-500' },
+            { id: 'PROFILE' as StudentTab, icon: Settings, label: 'Profile', color: 'text-indigo-600' },
+        ].filter(item => {
+            if (item.id === 'AI_CHAT' && settings?.isAiEnabled === false) return false;
+            if (item.id === 'VIDEO' && settings?.contentVisibility?.VIDEO === false) return false;
+            if (item.id === 'PDF' && settings?.contentVisibility?.PDF === false) return false;
+            if (item.id === 'MCQ' && settings?.contentVisibility?.MCQ === false) return false;
+            if (item.id === 'LEADERBOARD' && settings?.dashboardLayout?.['tile_leaderboard']?.visible === false) return false;
+            if (item.id === 'GAME' && settings?.dashboardLayout?.['tile_game']?.visible === false) return false;
+            if (item.id === 'HISTORY' && settings?.dashboardLayout?.['tile_history']?.visible === false) return false;
+            if (item.id === 'REDEEM' && settings?.dashboardLayout?.['tile_redeem']?.visible === false) return false;
+            if (item.id === 'STORE' && settings?.dashboardLayout?.['tile_premium']?.visible === false) return false;
+            if (item.id === 'STORE' && settings?.isPaymentEnabled === false) return false;
+            if (item.id === 'GAME' && settings?.isGameEnabled === false) return false;
+            return true;
+        });
+    }, [settings]);
 
     const [isVisible, setIsVisible] = useState(true);
     const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -272,6 +305,32 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
                         </div>
 
 
+
+                        {/* QUICK NAVIGATION */}
+                        <div className="mb-6">
+                            <h4 className="font-bold text-slate-800 mb-3 text-sm flex items-center gap-2">
+                                <Menu size={16} className="text-blue-600" /> Quick Navigation
+                            </h4>
+                            <div className="grid grid-cols-5 gap-2">
+                                {quickNavItems.map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => {
+                                            if (onTabSelect) onTabSelect(item.id);
+                                            if (onGoHome) onGoHome();
+                                            setIsOpen(false);
+                                        }}
+                                        className="flex flex-col items-center gap-1 p-1 rounded-xl hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                                    >
+                                        <div className={`w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center ${item.color} shadow-sm border border-slate-100`}>
+                                            <item.icon size={18} />
+                                        </div>
+                                        <span className="text-[9px] font-bold text-slate-600 text-center leading-tight truncate w-full">{item.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
                         {/* QUICK NAVIGATION GRID AND PLAN MATRIX STYLE LAYOUT */}
                         <div className="flex flex-col max-h-[70vh] overflow-y-auto pr-1 pb-4">
 
@@ -336,13 +395,22 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
                                 <Zap size={16} className="text-orange-500 fill-orange-500" /> Plan Features Matrix
                             </h3>
 
+
                         {/* PLAN MATRIX STYLE LAYOUT */}
+
                         <div className="flex flex-col max-h-[60vh] overflow-y-auto">
 
 
                             {/* FIXED ACTIONS ROW */}
                             <div className="grid grid-cols-2 gap-3 mb-4 shrink-0">
                                 <button
+                                    onClick={() => { setIsOpen(false); setShowMatrixModal(true); }}
+                                    className="flex items-center justify-center gap-2 p-3 rounded-xl bg-purple-600 text-white font-bold shadow-lg hover:bg-purple-700 transition-all col-span-2"
+                                >
+                                    <Crown size={18} /> View Feature Matrix
+                                </button>
+                                <button
+
                                     onClick={() => { setIsOpen(false); onOpenStore(); }}
                                     className="flex items-center justify-center gap-2 p-3 rounded-xl bg-blue-600 text-white font-bold shadow-lg hover:bg-blue-700 transition-all"
                                 >
@@ -436,7 +504,18 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
                 </div>
             </div>
 
+
             {/* PLAN MODAL REMOVED */}
+
+            {showMatrixModal && (
+                <FeatureMatrixModal
+                    isOpen={showMatrixModal}
+                    onClose={() => setShowMatrixModal(false)}
+                    settings={settings}
+                    discountActive={isFlashSaleActive}
+                />
+            )}
+
         </>
     );
 };
