@@ -288,10 +288,8 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
                                         { id: 'MCQ', icon: CheckSquare, label: 'MCQ', color: 'text-purple-600' },
                                         { id: 'LEADERBOARD', icon: Trophy, label: 'Rank', color: 'text-yellow-600' },
                                         { id: 'GAME', icon: Gamepad2, label: 'Game', color: 'text-orange-600' },
-                                        { id: 'HISTORY', icon: History, label: 'History', color: 'text-slate-600' },
                                         { id: 'REDEEM', icon: Gift, label: 'Redeem', color: 'text-pink-600' },
                                         { id: 'STORE', icon: ShoppingBag, label: 'Store', color: 'text-blue-500' },
-                                        { id: 'PROFILE', icon: Settings, label: 'Profile', color: 'text-indigo-600' },
                                     ].filter(item => {
                                         if (item.id === 'AI_CHAT' && settings?.isAiEnabled === false) return false;
                                         if (item.id === 'VIDEO' && settings?.contentVisibility?.VIDEO === false) return false;
@@ -299,7 +297,6 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
                                         if (item.id === 'MCQ' && settings?.contentVisibility?.MCQ === false) return false;
                                         if (item.id === 'LEADERBOARD' && settings?.dashboardLayout?.['tile_leaderboard']?.visible === false) return false;
                                         if (item.id === 'GAME' && settings?.dashboardLayout?.['tile_game']?.visible === false) return false;
-                                        if (item.id === 'HISTORY' && settings?.dashboardLayout?.['tile_history']?.visible === false) return false;
                                         if (item.id === 'REDEEM' && settings?.dashboardLayout?.['tile_redeem']?.visible === false) return false;
                                         if (item.id === 'STORE' && settings?.dashboardLayout?.['tile_premium']?.visible === false) return false;
                                         if (item.id === 'STORE' && settings?.isPaymentEnabled === false) return false;
