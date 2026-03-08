@@ -1433,12 +1433,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
   };
 
 
-  const isStudyMode = ['PDF', 'VIDEO', 'MCQ', 'AUDIO', 'WEEKLY_TEST', 'CHALLENGE_20', 'PLAYER'].includes(activeTab) || contentViewStep === 'PLAYER';
-
   const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && activeTab !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20';
-
-  return (
-
 
   return (
     <div className={`min-h-screen bg-slate-50 pb-[100px] ${!isStudyMode ? 'pt-[105px] px-4' : ''}`}>
