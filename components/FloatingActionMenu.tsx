@@ -305,6 +305,7 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
                         </div>
 
 
+
                         {/* QUICK NAVIGATION */}
                         <div className="mb-6">
                             <h4 className="font-bold text-slate-800 mb-3 text-sm flex items-center gap-2">
@@ -329,6 +330,71 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
                                 ))}
                             </div>
                         </div>
+
+                        {/* QUICK NAVIGATION GRID AND PLAN MATRIX STYLE LAYOUT */}
+                        <div className="flex flex-col max-h-[70vh] overflow-y-auto pr-1 pb-4">
+
+                            {/* QUICK NAVIGATION SECTION */}
+                            <div className="mb-6 shrink-0">
+                                <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
+                                    <Menu size={16} className="text-blue-600" /> Quick Navigation
+                                </h3>
+
+                                <div className="grid grid-cols-4 gap-2 sm:gap-3">
+                                    {[
+                                        { id: 'AI_CHAT', icon: Bot, label: 'AI Tutor', color: 'text-indigo-600' },
+                                        { id: 'VIDEO', icon: Youtube, label: 'Video', color: 'text-red-600' },
+                                        { id: 'PDF', icon: FileText, label: 'Notes', color: 'text-blue-600' },
+                                        { id: 'MCQ', icon: CheckSquare, label: 'MCQ', color: 'text-purple-600' },
+                                        { id: 'LEADERBOARD', icon: Trophy, label: 'Rank', color: 'text-yellow-600' },
+                                        { id: 'GAME', icon: Gamepad2, label: 'Game', color: 'text-orange-600' },
+                                        { id: 'REDEEM', icon: Gift, label: 'Redeem', color: 'text-pink-600' },
+                                        { id: 'STORE', icon: ShoppingBag, label: 'Store', color: 'text-blue-500' },
+                                    ].filter(item => {
+                                        if (item.id === 'AI_CHAT' && settings?.isAiEnabled === false) return false;
+                                        if (item.id === 'VIDEO' && settings?.contentVisibility?.VIDEO === false) return false;
+                                        if (item.id === 'PDF' && settings?.contentVisibility?.PDF === false) return false;
+                                        if (item.id === 'MCQ' && settings?.contentVisibility?.MCQ === false) return false;
+                                        if (item.id === 'LEADERBOARD' && settings?.dashboardLayout?.['tile_leaderboard']?.visible === false) return false;
+                                        if (item.id === 'GAME' && settings?.dashboardLayout?.['tile_game']?.visible === false) return false;
+                                        if (item.id === 'REDEEM' && settings?.dashboardLayout?.['tile_redeem']?.visible === false) return false;
+                                        if (item.id === 'STORE' && settings?.dashboardLayout?.['tile_premium']?.visible === false) return false;
+                                        if (item.id === 'STORE' && settings?.isPaymentEnabled === false) return false;
+                                        if (item.id === 'GAME' && settings?.isGameEnabled === false) return false;
+                                        return true;
+                                    }).map(item => {
+                                        const Icon = item.icon;
+                                        return (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => {
+                                                    setIsOpen(false);
+                                                    if (item.id === 'STORE') {
+                                                        onOpenStore();
+                                                    } else if (item.id === 'PROFILE') {
+                                                        onOpenProfile();
+                                                    } else if (onNavigate) {
+                                                        onNavigate(item.id);
+                                                    }
+                                                }}
+                                                className="flex flex-col items-center gap-1.5 p-2 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 active:bg-slate-100 transition-colors shadow-sm"
+                                            >
+                                                <div className={`w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center ${item.color}`}>
+                                                    <Icon size={20} />
+                                                </div>
+                                                <span className="text-[9px] font-bold text-slate-600 text-center leading-tight truncate w-full">{item.label}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            <hr className="border-slate-100 mb-6 shrink-0" />
+
+                            <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wider shrink-0">
+                                <Zap size={16} className="text-orange-500 fill-orange-500" /> Plan Features Matrix
+                            </h3>
+
 
                         {/* PLAN MATRIX STYLE LAYOUT */}
 
